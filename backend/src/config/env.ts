@@ -1,0 +1,12 @@
+import dotenv from "dotenv"
+
+dotenv.config({quiet:true})
+
+export const ENV = {
+    port : process.env.PORT,
+    node_env : process.env.NODE_ENV,
+    db_url : process.env.DB_URL,
+    cp_key: process.env.CLERK_PUBLISHABLE_KEY,
+    cs_key: process.env.CLERK_SECRET_KEY,
+    frontend_url: process.env.FRONTEND_URL
+}
