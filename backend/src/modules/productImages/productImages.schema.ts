@@ -14,14 +14,11 @@ export const productImages = pgTable("product_images", {
     .$onUpdate(() => new Date()),
 });
 
-export const productImagesRelations = relations(
-  productImages,
-  ({ one, many }) => ({
-    // users: one(users, {fields: [productImages.userId], references: [users.id]}),
-    // groups: one(groups),
-    products: one(products, {
-      fields: [productImages.productId],
-      references: [products.id],
-    }),
-  })
-);
+export const productImagesRelations = relations(productImages, ({ one }) => ({
+  // users: one(users, {fields: [productImages.userId], references: [users.id]}),
+  // groups: one(groups),
+  products: one(products, {
+    fields: [productImages.productId],
+    references: [products.id],
+  }),
+}));
