@@ -1,18 +1,18 @@
 import { Pool } from "pg";
 import { ENV } from "../config/env.js";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema"
+import * as schema from "./schema.js";
 
-if (!ENV.database_url){
-    throw new Error("Database_URL is not missing.")
+if (!ENV.database_url) {
+  throw new Error("Database_URL is missing.");
 }
 
-const pool = new Pool({ 
-    connectionString: ENV.database_url,
-    max: ENV.database_pool_size ? parseInt(ENV.database_pool_size) : 10, // Default pool size: 10
-})
+const pool = new Pool({
+  connectionString: ENV.database_url,
+  max: ENV.database_pool_size ? parseInt(ENV.database_pool_size) : 10, // Default pool size: 10
+});
 
-pool.on("connect", () => console.log("Database connected."))
-pool.on("error", (err) => console.log("Database connection error:", err))
+pool.on("connect", () => console.log("Database connected."));
+pool.on("error", (err) => console.log("Database connection error:", err));
 
-export const dc = drizzle({client:pool, schema })
+export const db = drizzle({ client: pool, schema });
