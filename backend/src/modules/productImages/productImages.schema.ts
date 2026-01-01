@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { products } from "../products/products.schema";
+import { products } from "../products/products.schema.js";
 
 export const productImages = pgTable("product_images", {
   id: text("id").notNull().primaryKey(),

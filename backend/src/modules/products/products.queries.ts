@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
-import { db } from "../../config/db";
-import { products } from "./products.schema";
-import type { NewProduct } from "../../types";
+import { db } from "../../config/db.js";
+import { products } from "./products.schema.js";
+import type { NewProduct } from "../../types.js";
 
 export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();

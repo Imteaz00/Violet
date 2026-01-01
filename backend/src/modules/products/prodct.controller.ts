@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import * as productQueries from "./products.queries";
+import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
 
 export const getAllProducts = async (req: Request, res: Response) => {

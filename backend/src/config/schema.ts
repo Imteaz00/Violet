@@ -1,3 +1,3 @@
-export * from "../modules/users/users.schema";
-export * from "../modules/products/products.schema";
-export * from "../modules/productImages/productImages.schema";
+export * from "../modules/users/users.schema.js";
+export * from "../modules/products/products.schema.js";
+export * from "../modules/productImages/productImages.schema.js";

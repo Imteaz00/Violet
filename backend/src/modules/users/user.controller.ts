@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import * as userQueries from "./users.queries";
+import * as userQueries from "./users.queries.js";
 import { getAuth } from "@clerk/express";
 
 export async function syncUser(req: Request, res: Response) {

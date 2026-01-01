@@ -1,4 +1,4 @@
-import { productImages, products, users } from "./config/schema";
+import { productImages, products, users } from "./config/schema.js";
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;

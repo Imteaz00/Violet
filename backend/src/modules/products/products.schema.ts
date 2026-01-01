@@ -1,7 +1,7 @@
 import { date, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { users } from "../users/users.schema";
-import { productImages } from "../productImages/productImages.schema";
+import { users } from "../users/users.schema.js";
+import { productImages } from "../productImages/productImages.schema.js";
 
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),

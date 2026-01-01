@@ -1,10 +1,10 @@
 import express from "express";
-import { ENV } from "./config/env";
+import { ENV } from "./config/env.js";
 import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
-import userRouters from "./modules/users/user.routes";
-import productRouters from "./modules/products/product.routes";
-import productImageRouters from "./modules/productImages/productImage.routes";
+import userRouters from "./modules/users/user.routes.js";
+import productRouters from "./modules/products/product.routes.js";
+import productImageRouters from "./modules/productImages/productImage.routes.js";
 
 const app = express();
 
