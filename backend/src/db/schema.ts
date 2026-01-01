@@ -8,7 +8,7 @@ export const users = pgTable("users", {
     imageUrl: text("image_url"),
     phone: text("phone").unique(),
     createdAt: timestamp("created_at", {mode: "date"}).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow()
+    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow().$onUpdate(()=> new Date())
 })
 
 export const products =  pgTable("products", {
@@ -21,14 +21,14 @@ export const products =  pgTable("products", {
     location : text("location"),
     userId: text("user_id").notNull().references(()=> users.id,  { onDelete : "cascade"  }),
     createdAt: timestamp("created_at", {mode: "date"}).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow()
+    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow().$onUpdate(()=> new Date())
 })
 
 export const productImages = pgTable("product_images", {
     id: text("id").notNull().primaryKey(),
     productId: uuid("product_id").notNull().references(()=> products.id, {onDelete: "cascade"}),
     createdAt: timestamp("created_at", {mode: "date"}).notNull().defaultNow(),
-    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow()
+    updatedAt: timestamp("updated_at", {mode: "date"}).notNull().defaultNow().$onUpdate(()=> new Date())
 })
 
 // export const groups = pgTable("groups", {
@@ -45,7 +45,7 @@ export const usersRelations = relations(users, ({many}) => ({
 }))
 
 export const productRelations = relations(products, ({one, many}) => ({
-    users: one(users, {fields: [products.userId], references: [users.id]}),
+    user: one(users, {fields: [products.userId], references: [users.id]}),
     // groups: one(groups, {fields: [products.userId], references: [groups.id]}),
     product_images: many(productImages)
 }))
