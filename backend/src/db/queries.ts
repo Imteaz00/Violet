@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "./index.js";
 import { products, users } from "./schema.js";
-import { NewProduct, type NewUser } from "./types.js";
+import { type NewProduct, type NewUser } from "./types.js";
 
 export const createUser = async (data: NewUser) => {
   const [user] = await db.insert(users).values(data).returning();
@@ -22,9 +22,15 @@ export const updateUser = async (id: string, data: Partial<NewUser>) => {
 };
 
 export const upsertUser = async (data: NewUser) => {
-  const existingUser = await getUserById(data.id);
-  if (existingUser) return updateUser(data.id, data);
-  return createUser(data);
+  const [user] = await db
+    .insert(users)
+    .values(data)
+    .onConflictDoUpdate({
+      target: users.id,
+      set: data,
+    })
+    .returning();
+  return user;
 };
 
 export const createProduct = async (data: NewProduct) => {
@@ -32,10 +38,12 @@ export const createProduct = async (data: NewProduct) => {
   return product;
 };
 
-export const getAllProducts = async () => {
+export const getAllProducts = async (limit = 50, offset = 0) => {
   return db.query.products.findMany({
     with: { user: true },
     orderBy: (products, { desc }) => [desc(products.createdAt)],
+    limit,
+    offset,
   });
 };
 

@@ -68,7 +68,10 @@ export const productImagesRelations = relations(
   ({ one, many }) => ({
     // users: one(users, {fields: [productImages.userId], references: [users.id]}),
     // groups: one(groups),
-    products: one(products),
+    products: one(products, {
+      fields: [productImages.productId],
+      references: [products.id],
+    }),
   })
 );
 

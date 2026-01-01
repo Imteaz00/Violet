@@ -13,7 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/api", (req, res) => {
   res.json({
     message: "server",
-    endpoints: {},
+    endpoints: {
+      users: "api/users",
+      products: "api/products",
+    },
   });
 });
 
