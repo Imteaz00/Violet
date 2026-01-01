@@ -1,7 +1,7 @@
 import { Pool } from "pg";
-import { ENV } from "../config/env.js";
+import { ENV } from "./env";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema.js";
+import * as schema from "./schema";
 
 if (!ENV.database_url) {
   throw new Error("Database_URL is missing.");

@@ -1,7 +1,10 @@
 import express from "express";
-import { ENV } from "./config/env.js";
+import { ENV } from "./config/env";
 import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
+import userRouters from "./modules/users/user.routes";
+import productRouters from "./modules/products/product.routes";
+import productImageRouters from "./modules/productImages/productImage.routes";
 
 const app = express();
 
@@ -19,6 +22,10 @@ app.get("/api", (req, res) => {
     },
   });
 });
+
+app.use("/api/users", userRouters);
+app.use("/api/products", productRouters);
+app.use("/api/productImages", productImageRouters);
 
 app.listen(ENV.port, () =>
   console.log(`Server is running on port ${ENV.port}`)

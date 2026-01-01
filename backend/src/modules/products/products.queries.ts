@@ -1,37 +1,7 @@
 import { eq } from "drizzle-orm";
-import { db } from "./index.js";
-import { products, users } from "./schema.js";
-import { type NewProduct, type NewUser } from "./types.js";
-
-export const createUser = async (data: NewUser) => {
-  const [user] = await db.insert(users).values(data).returning();
-  return user;
-};
-
-export const getUserById = async (id: string) => {
-  return db.query.users.findFirst({ where: eq(users.id, id) });
-};
-
-export const updateUser = async (id: string, data: Partial<NewUser>) => {
-  const [user] = await db
-    .update(users)
-    .set(data)
-    .where(eq(users.id, id))
-    .returning();
-  return user;
-};
-
-export const upsertUser = async (data: NewUser) => {
-  const [user] = await db
-    .insert(users)
-    .values(data)
-    .onConflictDoUpdate({
-      target: users.id,
-      set: data,
-    })
-    .returning();
-  return user;
-};
+import { db } from "../../config/db";
+import { products } from "./products.schema";
+import type { NewProduct } from "../../types";
 
 export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();
