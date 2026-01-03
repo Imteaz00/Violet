@@ -3,21 +3,21 @@ import "./globals.css";
 import Navbar from "../components/navbar";
 
 export const metadata: Metadata = {
-  title: "Violet",
-  description: "...",
+	title: "Violet",
+	description: "...",
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col">
-        <Navbar />
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en" data-theme="retro">
+			<body className="min-h-screen flex flex-col">
+				<Navbar />
+				{children}
+			</body>
+		</html>
+	);
 }

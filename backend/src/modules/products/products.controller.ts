@@ -1,13 +1,15 @@
 import type { Request, Response } from "express";
 import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
+import { STATUS } from "../../constants.js";
+import { handleConnection } from "../application/app.controller.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await productQueries.getAllProducts();
     res.status(200).json(products);
   } catch (error) {
-    console.error("Erros getting all products:", error);
+    console.error("Error getting all products:", error);
     res.status(500).json({ error: "Failed to get all products" });
   }
 };
@@ -20,7 +22,7 @@ export const getProductById = async (req: Request, res: Response) => {
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.status(200).json(product);
   } catch (error) {
-    console.error("Erros getting product:", error);
+    console.error("Error getting product:", error);
     res.status(500).json({ error: "Failed to get product" });
   }
 };
@@ -33,7 +35,7 @@ export const getUserProduct = async (req: Request, res: Response) => {
     const products = await productQueries.getProductsByUserId(userId);
     res.status(200).json(products);
   } catch (error) {
-    console.error("Erros getting user product:", error);
+    console.error("Error getting user product:", error);
     res.status(500).json({ error: "Failed to get user product" });
   }
 };
@@ -44,38 +46,53 @@ export const createProduct = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const {
-      description,
       title,
+      description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      noOfShares,
+      status,
+      sellingReason,
+      type,
     } = req.body;
 
     if (
-      !description ||
       !title ||
+      !description ||
       !boughtFrom ||
-      !sellingReason ||
+      !askingPrice ||
       !expiryDate ||
-      !location
+      !location ||
+      !quantity ||
+      !condition
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
 
     const product = await productQueries.createProduct({
-      userId,
       title,
       description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      userId,
+      noOfShares,
+      status,
+      remainingShares: noOfShares,
+      sellingReason,
+      type,
     });
 
     res.status(201).json(product);
   } catch (error) {
-    console.error("Erros creating product:", error);
+    console.error("Error creating product:", error);
     res.status(500).json({ error: "Failed to create product" });
   }
 };
@@ -87,12 +104,18 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const { id } = req.params;
     const {
-      description,
       title,
+      description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      noOfShares,
+      status,
+      sellingReason,
+      type,
     } = req.body;
 
     const existingProduct = await productQueries.getProductById(id);
@@ -103,19 +126,25 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (existingProduct.userId != userId)
       return res.status(403).json({ error: "Can only update own products" });
 
-    const product = await productQueries.createProduct({
-      userId,
+    const product = await productQueries.updateProduct(id, {
+      userId: existingProduct.userId,
       title,
       description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      sellingReason,
+      type,
+      noOfShares,
+      status,
     });
 
     res.status(200).json(product);
   } catch (error) {
-    console.error("Erros updating product:", error);
+    console.error("Error updating product:", error);
     res.status(500).json({ error: "Failed to update product" });
   }
 };
@@ -137,6 +166,28 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Error deleting product:", error);
-    res.status(500).json({ errro: "Failed to delete product" });
+    res.status(500).json({ error: "Failed to delete product" });
+  }
+};
+
+export const validateProduct = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { id } = req.params;
+    const existingProduct = await productQueries.getProductById(id);
+
+    if (!existingProduct)
+      return res.status(404).json({ error: "Product not found" });
+
+    const status = STATUS.POPULATING;
+    const product = await productQueries.updateProduct(id, { status });
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Error validating product:", error);
+    res.status(500).json({ error: "Failed to validate product" });
   }
 };
