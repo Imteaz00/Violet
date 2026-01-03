@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as productControler from "./prodct.controller.js";
+import * as productControler from "./products.controller.js";
 import { requireAuth } from "@clerk/express";
 
 const productRouters = Router();

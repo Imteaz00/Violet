@@ -1,13 +1,14 @@
 import type { Request, Response } from "express";
 import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
+import { db } from "../../config/db.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await productQueries.getAllProducts();
     res.status(200).json(products);
   } catch (error) {
-    console.error("Erros getting all products:", error);
+    console.error("Error getting all products:", error);
     res.status(500).json({ error: "Failed to get all products" });
   }
 };
@@ -20,7 +21,7 @@ export const getProductById = async (req: Request, res: Response) => {
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.status(200).json(product);
   } catch (error) {
-    console.error("Erros getting product:", error);
+    console.error("Error getting product:", error);
     res.status(500).json({ error: "Failed to get product" });
   }
 };
@@ -33,7 +34,7 @@ export const getUserProduct = async (req: Request, res: Response) => {
     const products = await productQueries.getProductsByUserId(userId);
     res.status(200).json(products);
   } catch (error) {
-    console.error("Erros getting user product:", error);
+    console.error("Error getting user product:", error);
     res.status(500).json({ error: "Failed to get user product" });
   }
 };
@@ -44,38 +45,52 @@ export const createProduct = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const {
-      description,
       title,
+      description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      sellingReason,
+      type,
+      noOfShares,
     } = req.body;
 
     if (
       !description ||
       !title ||
       !boughtFrom ||
-      !sellingReason ||
+      !quantity ||
       !expiryDate ||
-      !location
+      !location ||
+      !condition ||
+      !askingPrice
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
 
-    const product = await productQueries.createProduct({
-      userId,
-      title,
-      description,
-      boughtFrom,
-      sellingReason,
-      expiryDate,
-      location,
+    const product = await db.transaction(async (tx) => {
+      productQueries.createProduct(tx, {
+        userId,
+        title,
+        description,
+        boughtFrom,
+        sellingReason,
+        expiryDate,
+        location,
+        askingPrice,
+        noOfShares,
+        type,
+        condition,
+        quantity,
+      });
     });
 
     res.status(201).json(product);
   } catch (error) {
-    console.error("Erros creating product:", error);
+    console.error("Error creating product:", error);
     res.status(500).json({ error: "Failed to create product" });
   }
 };
@@ -87,12 +102,17 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const { id } = req.params;
     const {
-      description,
       title,
+      description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      sellingReason,
+      type,
+      noOfShares,
     } = req.body;
 
     const existingProduct = await productQueries.getProductById(id);
@@ -103,19 +123,24 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (existingProduct.userId != userId)
       return res.status(403).json({ error: "Can only update own products" });
 
-    const product = await productQueries.createProduct({
-      userId,
+    const product = await productQueries.updateProduct(id, {
+      userId: existingProduct.userId,
       title,
       description,
       boughtFrom,
-      sellingReason,
+      askingPrice,
       expiryDate,
       location,
+      quantity,
+      condition,
+      sellingReason,
+      type,
+      noOfShares,
     });
 
     res.status(200).json(product);
   } catch (error) {
-    console.error("Erros updating product:", error);
+    console.error("Error updating product:", error);
     res.status(500).json({ error: "Failed to update product" });
   }
 };

@@ -1,6 +1,9 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { decimal, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { products } from "../products/products.schema.js";
+// import { listings } from "../listings/listings.schema.js";
+import { productImages } from "../productImages/productImages.schema.js";
+import { transactions } from "../transactions/transactions.schema.js";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -8,6 +11,8 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   imageUrl: text("image_url"),
   phone: text("phone").unique(),
+  balance: decimal("balance").notNull().default("0").$type<number>(),
+  location: text("location"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
     .notNull()
@@ -16,6 +21,8 @@ export const users = pgTable("users", {
 });
 
 export const usersRelations = relations(users, ({ many }) => ({
+  //   listings: many(listings),
+  productImages: many(productImages),
   products: many(products),
-  // groups = many(groups),
+  transactions: many(transactions),
 }));
