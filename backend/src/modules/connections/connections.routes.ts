@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as connectionControler from "./connections.controller.js";
+import * as connectionController from "./connections.controller.js";
 import { requireAuth } from "@clerk/express";
 
 const connectionRouters = Router();
@@ -10,16 +10,16 @@ const connectionRouters = Router();
 //   connectionControler.createConnection
 // );
 
-connectionRouters.get("/:id", connectionControler.getConnectionById);
+connectionRouters.get("/:id", connectionController.getConnectionById);
 connectionRouters.put(
   "/:id",
   requireAuth(),
-  connectionControler.updateConnection
+  connectionController.updateConnection
 );
 connectionRouters.delete(
   "/:id",
   requireAuth(),
-  connectionControler.deleteConnection
+  connectionController.deleteConnection
 );
 
 export default connectionRouters;

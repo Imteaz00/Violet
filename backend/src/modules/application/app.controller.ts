@@ -53,8 +53,7 @@ export const handleConnection = async (req: Request, res: Response) => {
 
     const data = await db.transaction(async (tx) => {
       if (buyer.balance < price) {
-        res.status(403).json({ error: "Not enough balance" });
-        throw new Error("Not enough balance");
+        tx.rollback();
       }
       const updatedProduct = await decreaseRemainingShare(
         tx,
@@ -62,8 +61,7 @@ export const handleConnection = async (req: Request, res: Response) => {
         productId
       );
       if (!updatedProduct) {
-        res.status(409).json({ error: "Failed to create connection" });
-        throw new Error("Conflict creating connection");
+        tx.rollback();
       }
 
       const connection = await createConnection(tx, {
@@ -75,6 +73,9 @@ export const handleConnection = async (req: Request, res: Response) => {
       });
       return { connection, updatedProduct };
     });
+    if (!data) {
+      return res.status(409).json({ error: "Failed to create connection" });
+    }
 
     // if (listing.remainingShares === 0) populatListing();
 
@@ -122,13 +123,15 @@ export const handleUpdateConnection = async (req: Request, res: Response) => {
       change;
     const data = await db.transaction(async (tx) => {
       if (buyer.balance < price) {
-        res.status(403).json({ error: "Not enough balance" });
-        throw new Error("Not enough balance");
+        tx.rollback();
       }
-      const updatedListing = await decreaseRemainingShare(tx, change, id);
+      const updatedListing = await decreaseRemainingShare(
+        tx,
+        change,
+        productId
+      );
       if (!updatedListing) {
-        res.status(409).json({ error: "Failed to create connection" });
-        throw new Error("Conflict creating connection");
+        tx.rollback();
       }
 
       const updatedConnection = await updateConnection(tx, id, {
@@ -141,6 +144,9 @@ export const handleUpdateConnection = async (req: Request, res: Response) => {
       return { updatedConnection, updatedListing };
     });
 
+    if (!data) {
+      return res.status(409).json({ error: "Failed to create connection" });
+    }
     // if (listing.remainingShares === 0) finalizeConnection();
 
     res.status(201).json(data);

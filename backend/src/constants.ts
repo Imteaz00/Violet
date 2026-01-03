@@ -1,7 +1,7 @@
 export const TYPE = {
   SELL: "sell",
   SHARE: "share",
-};
+} as const;
 export const STATUS = {
   VALIDATING: "validating",
   POPULATING: "populating",
@@ -10,6 +10,6 @@ export const STATUS = {
   CONFIRMING: "confirming",
   DONE: "done",
   OPEN: "open",
-};
+} as const;
 
-export const USER_LOCATION = "user location";
+export const USER_LOCATION = "user location" as const;

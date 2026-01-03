@@ -4,6 +4,7 @@ import { requireAuth } from "@clerk/express";
 
 const productRouters = Router();
 
+productRouters.get("/", productControler.getAllProducts);
 productRouters.get(
   "/myProduct",
   requireAuth(),
@@ -18,6 +19,5 @@ productRouters.put(
 productRouters.get("/:id", productControler.getProductById);
 productRouters.put("/:id", requireAuth(), productControler.updateProduct);
 productRouters.delete("/:id", requireAuth(), productControler.deleteProduct);
-productRouters.get("/", productControler.getAllProducts);
 
 export default productRouters;

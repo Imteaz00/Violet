@@ -166,7 +166,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Error deleting product:", error);
-    res.status(500).json({ errro: "Failed to delete product" });
+    res.status(500).json({ error: "Failed to delete product" });
   }
 };
 
@@ -189,16 +189,5 @@ export const validateProduct = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error validating product:", error);
     res.status(500).json({ error: "Failed to validate product" });
-  }
-};
-
-export const decreaseRemainingShare = async (req: Request, res: Response) => {
-  try {
-    await handleConnection(req, res);
-  } catch (error) {
-    console.error("Error decreasing remaining product share:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to decrease remaining product share" });
   }
 };

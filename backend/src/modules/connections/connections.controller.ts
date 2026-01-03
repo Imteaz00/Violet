@@ -33,8 +33,8 @@ export const updateConnection = async (req: Request, res: Response) => {
   try {
     await handleUpdateConnection(req, res);
   } catch (error) {
-    console.error("Error creating connection:", error);
-    res.status(500).json({ error: "Failed to create connection" });
+    console.error("Error updating connection:", error);
+    res.status(500).json({ error: "Failed to updating connection" });
   }
 };
 
@@ -51,7 +51,7 @@ export const deleteConnection = async (req: Request, res: Response) => {
     if (!existingConnection)
       return res.status(404).json({ error: "Connection not found" });
 
-    if (existingConnection.buyerId != userId)
+    if (existingConnection.buyerId !== userId)
       return res.status(403).json({ error: "Can only delete own connection" });
     await connectionQueries.deleteConnection(id);
     res.status(200).json({ message: "Connection deleted successfully" });

@@ -36,12 +36,11 @@ export const recharge = async (req: Request, res: Response) => {
 
     const { amount, id } = req.body;
 
-    if (amount <= 0) {
-      return res.status(403).json({ error: "Invalid amount" });
-    }
-
     if (!id || !amount) {
-      return res.status(400).json({ error: "Name and amount required" });
+      return res.status(400).json({ error: "Id and amount required" });
+    }
+    if (amount <= 0) {
+      return res.status(400).json({ error: "Invalid amount" });
     }
 
     const user = await userQueries.getUserById(id);
@@ -52,7 +51,7 @@ export const recharge = async (req: Request, res: Response) => {
     const updatedUser = await userQueries.updateUser(id, {
       id,
       name: user.name,
-      balance: user.balance + amount,
+      balance: Number(user.balance) + amount,
     });
 
     res.status(200).json(updatedUser);
