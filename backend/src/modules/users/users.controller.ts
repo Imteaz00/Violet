@@ -7,7 +7,7 @@ export async function syncUser(req: Request, res: Response) {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { name, email, imageUrl, phone } = req.body;
+    const { name, email, imageUrl, phone, location } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: "Name required" });
@@ -19,6 +19,7 @@ export async function syncUser(req: Request, res: Response) {
       email,
       imageUrl,
       phone,
+      location,
     });
 
     res.status(200).json(user);
@@ -28,7 +29,7 @@ export async function syncUser(req: Request, res: Response) {
   }
 }
 
-export async function recharge(req: Request, res: Response) {
+export const recharge = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -59,4 +60,4 @@ export async function recharge(req: Request, res: Response) {
     console.error("Error recharging:", error);
     res.status(500).json({ error: "Failed to recharge" });
   }
-}
+};

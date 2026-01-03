@@ -10,9 +10,8 @@ import {
 import { relations } from "drizzle-orm";
 import { users } from "../users/users.schema.js";
 import { productImages } from "../productImages/productImages.schema.js";
-// import { listings } from "../listings/listings.schema.js";
 import { transactions } from "../transactions/transactions.schema.js";
-import { TYPE } from "../../constants.js";
+import { STATUS, TYPE } from "../../constants.js";
 
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -27,6 +26,8 @@ export const products = pgTable("products", {
   noOfShares: integer("no_of_shares").default(1).notNull(),
   quantity: text("quantity").notNull(),
   condition: text("condition").notNull(),
+  remainingShares: integer("remainging_shares").default(1).notNull(),
+  status: text("status").notNull().default(STATUS.VALIDATING),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -38,7 +39,6 @@ export const products = pgTable("products", {
 });
 
 export const productRelations = relations(products, ({ one, many }) => ({
-  //   listing: one(listings),
   productImages: many(productImages),
   transactions: many(transactions),
   user: one(users, { fields: [products.userId], references: [users.id] }),

@@ -4,11 +4,11 @@ import { requireAuth } from "@clerk/express";
 
 const connectionRouters = Router();
 
-connectionRouters.post(
-  "/create",
-  requireAuth(),
-  connectionControler.createConnection
-);
+// connectionRouters.post(
+//   "/create/:id",
+//   requireAuth(),
+//   connectionControler.createConnection
+// );
 
 connectionRouters.get("/:id", connectionControler.getConnectionById);
 connectionRouters.put(

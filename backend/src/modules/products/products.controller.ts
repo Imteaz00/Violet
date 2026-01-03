@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
-import { db } from "../../config/db.js";
+import { STATUS } from "../../constants.js";
+import { handleConnection } from "../application/app.controller.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -53,39 +54,40 @@ export const createProduct = async (req: Request, res: Response) => {
       location,
       quantity,
       condition,
+      noOfShares,
+      status,
       sellingReason,
       type,
-      noOfShares,
     } = req.body;
 
     if (
-      !description ||
       !title ||
+      !description ||
       !boughtFrom ||
-      !quantity ||
+      !askingPrice ||
       !expiryDate ||
       !location ||
-      !condition ||
-      !askingPrice
+      !quantity ||
+      !condition
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
 
-    const product = await db.transaction(async (tx) => {
-      productQueries.createProduct(tx, {
-        userId,
-        title,
-        description,
-        boughtFrom,
-        sellingReason,
-        expiryDate,
-        location,
-        askingPrice,
-        noOfShares,
-        type,
-        condition,
-        quantity,
-      });
+    const product = await productQueries.createProduct({
+      title,
+      description,
+      boughtFrom,
+      askingPrice,
+      expiryDate,
+      location,
+      quantity,
+      condition,
+      userId,
+      noOfShares,
+      status,
+      remainingShares: noOfShares,
+      sellingReason,
+      type,
     });
 
     res.status(201).json(product);
@@ -110,9 +112,10 @@ export const updateProduct = async (req: Request, res: Response) => {
       location,
       quantity,
       condition,
+      noOfShares,
+      status,
       sellingReason,
       type,
-      noOfShares,
     } = req.body;
 
     const existingProduct = await productQueries.getProductById(id);
@@ -136,6 +139,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       sellingReason,
       type,
       noOfShares,
+      status,
     });
 
     res.status(200).json(product);
@@ -163,5 +167,38 @@ export const deleteProduct = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error deleting product:", error);
     res.status(500).json({ errro: "Failed to delete product" });
+  }
+};
+
+export const validateProduct = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const { id } = req.params;
+    const existingProduct = await productQueries.getProductById(id);
+
+    if (!existingProduct)
+      return res.status(404).json({ error: "Product not found" });
+
+    const status = STATUS.POPULATING;
+    const product = await productQueries.updateProduct(id, { status });
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error("Error validating product:", error);
+    res.status(500).json({ error: "Failed to validate product" });
+  }
+};
+
+export const decreaseRemainingShare = async (req: Request, res: Response) => {
+  try {
+    await handleConnection(req, res);
+  } catch (error) {
+    console.error("Error decreasing remaining product share:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to decrease remaining product share" });
   }
 };

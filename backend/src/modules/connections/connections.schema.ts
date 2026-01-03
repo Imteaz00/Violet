@@ -4,15 +4,11 @@ import { productImages } from "../productImages/productImages.schema.js";
 import { products } from "../products/products.schema.js";
 import { relations } from "drizzle-orm";
 import { STATUS } from "../../constants.js";
-import { listings } from "../listings/listings.schema.js";
 
 export const connections = pgTable("connections", {
   id: uuid("id").defaultRandom().primaryKey(),
   noOfShares: integer("no_of_shares").default(1).notNull(),
   status: text("status").notNull().default(STATUS.OPEN),
-  listingId: uuid("listing_id")
-    .notNull()
-    .references(() => listings.id, { onDelete: "cascade" }),
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
@@ -31,10 +27,6 @@ export const connections = pgTable("connections", {
 });
 
 export const connectionRelations = relations(connections, ({ one, many }) => ({
-  listing: one(listings, {
-    fields: [connections.listingId],
-    references: [listings.id],
-  }),
   productImages: many(productImages),
   product: one(products, {
     fields: [connections.productId],

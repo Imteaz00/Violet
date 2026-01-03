@@ -10,7 +10,6 @@ import { users } from "../users/users.schema.js";
 import { productImages } from "../productImages/productImages.schema.js";
 import { products } from "../products/products.schema.js";
 import { relations } from "drizzle-orm";
-import { listings } from "../listings/listings.schema.js";
 
 export const transactions = pgTable("transactions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -19,9 +18,6 @@ export const transactions = pgTable("transactions", {
   sellerName: text("product_name").notNull(),
   noOfShares: integer("no_of_shares").default(1),
   sharePrice: decimal("share_price").notNull().$type<number>(),
-  listingId: uuid("listing_id")
-    .notNull()
-    .references(() => listings.id),
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id),
@@ -37,10 +33,6 @@ export const transactions = pgTable("transactions", {
 export const transactionRelations = relations(
   transactions,
   ({ one, many }) => ({
-    listing: one(listings, {
-      fields: [transactions.listingId],
-      references: [listings.id],
-    }),
     productImages: many(productImages),
     product: one(products, {
       fields: [transactions.productId],

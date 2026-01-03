@@ -4,7 +4,6 @@ import { clerkMiddleware } from "@clerk/express";
 import cors from "cors";
 import userRouters from "./modules/users/users.routes.js";
 import productRouters from "./modules/products/products.routes.js";
-import listingRouters from "./modules/listings/listings.routes.js";
 // import productImageRouters from "./modules/productImages/productImages.routes.js";
 
 const app = express();
@@ -24,7 +23,6 @@ app.get("/api", (req, res) => {
   });
 });
 
-app.use("/api/listings", listingRouters);
 // app.use("/api/productImages", productImageRouters);
 app.use("/api/products", productRouters);
 app.use("/api/users", userRouters);
