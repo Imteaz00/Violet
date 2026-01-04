@@ -48,7 +48,7 @@ const categories = [
 
 ];
 
-export default function Catagories() {
+export default function Categories() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathName = usePathname()

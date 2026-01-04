@@ -1,5 +1,5 @@
 export type ProductType = {
-  id: string | number;
+  id: string | number; //remove number
   name: string;
   description: string;
   price: number;

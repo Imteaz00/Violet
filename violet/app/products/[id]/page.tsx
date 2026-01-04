@@ -1,4 +1,3 @@
-// import ProductInteraction from "@/components/ProductInteraction";
 import ProductInteraction from "@/components/ProductInteraction";
 import { formatCurrency } from "@/lib/formaters";
 import { ProductType } from "@/types";
@@ -29,11 +28,15 @@ export const generateMetadata = async ({
     // TEMPORARY
     return {
         title: product.name,
-        describe: product.description,
+        description: product.description,
     };
 };
 
-export default async function ProductPage() {
+export default async function ProductPage({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) {
 
     return (
         <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">

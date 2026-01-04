@@ -78,5 +78,3 @@ export default function ProductInteraction({ product }: { product: ProductType }
         </div>
     );
 };
-
-// export default ProductInteraction;

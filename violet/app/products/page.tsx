@@ -1,6 +1,6 @@
 import ProductList from "@/components/ProductList";
 
-export default async function pageasync({
+export default async function ProductPage({
     searchParams,
 }: {
     searchParams: Promise<{ category: string }>;

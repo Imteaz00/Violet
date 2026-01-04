@@ -40,7 +40,7 @@ const bagItems: BagItemType[] = [
 
 const total = formatCurrency(bagItems.reduce((acc, item) => acc + item.price * item.shares, 0))
 
-export default function page() {
+export default function BagPage() {
     return (
         <div className="flex flex-col gap-8 items-center justify-center mt-12">
 
@@ -52,7 +52,7 @@ export default function page() {
                         <div className="flex items-center justify-between" key={item.id}>
                             <div className="flex gap-8">
                                 <div className="relative w-32 h-32 rounded-lg overflow-hidden bg-muted">
-                                    {/* <Image src={} alt={item.nam} fill className="object-contain"/> */}
+                                    {/* <Image src={} alt={item.name} fill className="object-contain"/> */}
                                 </div>
                                 <div className="flex flex-col justify-between">
                                     <div className="flex flex-col gap-1">
@@ -83,7 +83,7 @@ export default function page() {
                             <p>{total}</p>
                         </div>
                     </div>
-                    <p className="text-xs text-destructive">Keep enough balance to avoid losing you items</p>
+                    <p className="text-xs text-destructive">Keep enough balance to avoid losing your items</p>
                     <Button className="transition-colors duration-300">
                         <span className="flex items-center gap-2 transition-transform duration-300 pl-10 pr-10 hover:scale-110">
                             <CircleDollarSign />
