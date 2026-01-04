@@ -7,7 +7,6 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { users } from "../users/users.schema.js";
-import { productImages } from "../productImages/productImages.schema.js";
 import { products } from "../products/products.schema.js";
 import { relations } from "drizzle-orm";
 
@@ -16,7 +15,7 @@ export const transactions = pgTable("transactions", {
   productName: text("product_name").notNull(),
   buyerName: text("buyer_name").notNull(),
   sellerName: text("seller_name").notNull(),
-  noOfShares: integer("no_of_shares").default(1),
+  noOfShares: integer("no_of_shares").default(1).notNull(),
   sharePrice: decimal("share_price").notNull().$type<number>(),
   productId: uuid("product_id")
     .notNull()
