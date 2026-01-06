@@ -8,44 +8,18 @@ const categories = [
     {
         name: "All",
         icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "alli",
-    },
-    {
-        name: "All",
-        icon: <ShoppingBasket className="w-4 h-4" />,
         slug: "all",
     },
     {
-        name: "All",
+        name: "Body Care",
         icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
+        slug: "body-care",
     },
     {
-        name: "All",
+        name: "Fragrance",
         icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
+        slug: "fragrance",
     },
-    {
-        name: "All",
-        icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
-    },
-    {
-        name: "All",
-        icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
-    },
-    {
-        name: "All",
-        icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
-    },
-    {
-        name: "All",
-        icon: <ShoppingBasket className="w-4 h-4" />,
-        slug: "all",
-    },
-
 ];
 
 export default function Categories() {

@@ -2,11 +2,18 @@ import type { Request, Response } from "express";
 import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
 import { STATUS } from "../../constants.js";
-import { handleConnection } from "../application/app.controller.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await productQueries.getAllProducts();
+    let { sort, category, search, limit, offset } = req.query;
+
+    const products = await productQueries.getAllProducts({
+      category: category ? String(category) : "",
+      search: search ? String(search) : "",
+      sort: sort ? String(sort) : "",
+      limit: limit ? Number(limit) : 20,
+      offset: offset ? Number(offset) : 0,
+    });
     res.status(200).json(products);
   } catch (error) {
     console.error("Error getting all products:", error);
@@ -120,8 +127,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
     const existingProduct = await productQueries.getProductById(id);
 
-    if (!existingProduct)
-      return res.status(404).json({ error: "Product not found" });
+    if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
     if (existingProduct.userId != userId)
       return res.status(403).json({ error: "Can only update own products" });
@@ -157,8 +163,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     const existingProduct = await productQueries.getProductById(id);
 
-    if (!existingProduct)
-      return res.status(404).json({ error: "Product not found" });
+    if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
     if (existingProduct.userId != userId)
       return res.status(403).json({ error: "Can only delete own products" });
@@ -179,8 +184,7 @@ export const validateProduct = async (req: Request, res: Response) => {
     const { id } = req.params;
     const existingProduct = await productQueries.getProductById(id);
 
-    if (!existingProduct)
-      return res.status(404).json({ error: "Product not found" });
+    if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
     const status = STATUS.POPULATING;
     const product = await productQueries.updateProduct(id, { status });

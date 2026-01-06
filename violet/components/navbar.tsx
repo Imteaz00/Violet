@@ -3,6 +3,8 @@ import SearchBar from "./SearchBar";
 import { Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import ShoppingBagIcon from "./ShoppingBagIcon";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
+import { ButtonGroup } from "./ui/button-group";
 
 export default function Navbar() {
     return (
@@ -13,12 +15,31 @@ export default function Navbar() {
                     VIOLET
                 </h1>
             </Link>
-            <div className="flex items-center gap-6">
-
+            <div className="flex items-center gap-4">
                 <SearchBar />
                 <Bell className="w-4 h-4 text-foreground" />
                 <ShoppingBagIcon />
-                <Button> Sign In</Button>
+                <SignedOut>
+                    <ButtonGroup>
+                        <SignInButton>
+                            <Button variant={"secondary"} className="w-17">
+                                <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground">
+                                    Sign In
+                                </span>
+                            </Button>
+                        </SignInButton>
+                        <SignUpButton>
+                            <Button className="w-17">
+                                <span className="transition-transform duration-300 hover:scale-110">
+                                    Sign Up
+                                </span>
+                            </Button>
+                        </SignUpButton>
+                    </ButtonGroup>
+                </SignedOut>
+                <SignedIn>
+                    <UserButton />
+                </SignedIn>
             </div>
         </nav>
     )

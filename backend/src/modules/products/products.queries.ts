@@ -1,4 +1,4 @@
-import { and, eq, ExtractTablesWithRelations, gte, sql } from "drizzle-orm";
+import { and, eq, ExtractTablesWithRelations, gte, ilike, or, sql } from "drizzle-orm";
 import { db } from "../../config/db.js";
 import { products } from "./products.schema.js";
 import type { NewProduct } from "../../types.js";
@@ -10,14 +10,82 @@ export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();
   return product;
 };
+export const getAllProducts = async ({
+  category,
+  search,
+  sort,
+  limit,
+  offset,
+}: {
+  category: string;
+  search: string;
+  sort: string;
+  limit: number;
+  offset: number;
+}) => {
+  switch (sort) {
+    case "asc":
+      return db.query.products.findMany({
+        where: or(
+          ilike(products.title, `%${search}%`),
+          ilike(products.description, `%${search}%`),
+          ilike(products.location, `%${search}%`),
+          ilike(products.condition, `%${search}%`),
+          ilike(products.slug, `%${category}%`)
+        ),
+        with: {
+          user: true,
+          productImages: true,
+        },
+        orderBy: (_, { asc }) => [asc(sql`${products.askingPrice} /${products.noOfShares}`)],
+        limit,
+        offset,
+      });
+    case "desc":
+      console.log(category, 1, search, 2, sort, 3, limit, offset);
+      return db.query.products.findMany({
+        where: search
+          ? or(
+              ilike(products.title, `%${search}%`),
+              ilike(products.description, `%${search}%`),
+              ilike(products.location, `%${search}%`),
+              ilike(products.condition, `%${search}%`),
+              ilike(products.slug, `%${category}%`)
+            )
+          : undefined,
 
-export const getAllProducts = async (limit = 50, offset = 0) => {
-  return db.query.products.findMany({
-    with: { user: true, productImages: true },
-    orderBy: (products, { desc }) => [desc(products.createdAt)],
-    limit,
-    offset,
-  });
+        with: {
+          user: true,
+          productImages: true,
+        },
+
+        orderBy: (_, { desc }) => [desc(sql`${products.askingPrice} /${products.noOfShares}`)],
+
+        limit,
+        offset,
+      });
+
+    default:
+      return db.query.products.findMany({
+        where: search
+          ? or(
+              ilike(products.title, `%${search}%`),
+              ilike(products.description, `%${search}%`),
+              ilike(products.location, `%${search}%`),
+              ilike(products.condition, `%${search}%`),
+              ilike(products.slug, `%${category}%`)
+            )
+          : undefined,
+
+        with: {
+          user: true,
+          productImages: true,
+        },
+        orderBy: (_, { desc }) => [desc(products.createdAt)],
+        limit,
+        offset,
+      });
+  }
 };
 
 export const getProductById = async (id: string) => {
@@ -39,19 +107,12 @@ export const getProductsByUserId = async (userId: string) => {
 };
 
 export const updateProduct = async (id: string, data: Partial<NewProduct>) => {
-  const [product] = await db
-    .update(products)
-    .set(data)
-    .where(eq(products.id, id))
-    .returning();
+  const [product] = await db.update(products).set(data).where(eq(products.id, id)).returning();
   return product;
 };
 
 export const deleteProduct = async (id: string) => {
-  const [product] = await db
-    .delete(products)
-    .where(eq(products.id, id))
-    .returning();
+  const [product] = await db.delete(products).where(eq(products.id, id)).returning();
   return product;
 };
 

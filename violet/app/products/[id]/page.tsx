@@ -3,31 +3,23 @@ import { formatCurrency } from "@/lib/formaters";
 import { ProductType } from "@/types";
 import Image from "next/image";
 
-// TEMPORARY
-const product: ProductType = {
-    id: 1,
-    name: "Adidas CoreFit T-Shirt",
-    description:
-        "Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit. Lorem ipsum dolor sit amet consect adipisicing elit lorem ipsum dolor sit.",
-    price: 59.9,
-    images: {
-        gray: "/products/1g.png",
-        purple: "/products/1p.png",
-        green: "/products/1gr.png",
-    },
-    noOfShares: 4,
-    remainingShares: 2
-};
 
-export const generateMetadata = async ({
+const fetchProduct = async (id: string) => {
+    const res = await fetch(`${process.env.BACKEND_URL}/products/${id}`)
+    const data: ProductType = await res.json()
+    return data
+
+}
+
+export async function generateMetadata({
     params,
 }: {
-    params: { id: string };
-}) => {
-    // TODO:get the product from db
-    // TEMPORARY
+    params: Promise<{ id: string }>
+}) {
+    const { id } = await params
+    const product = await fetchProduct(id)
     return {
-        title: product.name,
+        title: product.title,
         description: product.description,
     };
 };
@@ -37,6 +29,8 @@ export default async function ProductPage({
 }: {
     params: Promise<{ id: string }>
 }) {
+    const { id } = await params
+    const product = await fetchProduct(id)
 
     return (
         <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
@@ -51,10 +45,10 @@ export default async function ProductPage({
             </div>
             {/* DETAILS */}
             <div className="w-full lg:w-7/12 flex flex-col gap-4">
-                <h1 className="text-2xl font-medium">{product.name}</h1>
+                <h1 className="text-2xl font-medium">{product.title}</h1>
                 <p className="text-muted-foreground">{product.description}</p>
                 <p className="text-sm text-muted-foreground">Remaining Shares: {product.remainingShares}/{product.noOfShares}</p>
-                <h2 className="text-2xl font-semibold">{formatCurrency(product.price)}</h2>
+                <h2 className="text-2xl font-semibold">{formatCurrency(Math.ceil(product.askingPrice / product.noOfShares))}</h2>
                 <ProductInteraction
                     product={product}
                 />
