@@ -20,6 +20,16 @@ const categories = [
         icon: <ShoppingBasket className="w-4 h-4" />,
         slug: "fragrance",
     },
+    {
+        name: "Fragrance",
+        icon: <ShoppingBasket className="w-4 h-4" />,
+        slug: "fragrance",
+    },
+    {
+        name: "Fragrance",
+        icon: <ShoppingBasket className="w-4 h-4" />,
+        slug: "fragrance",
+    },
 ];
 
 export default function Categories() {
@@ -34,7 +44,7 @@ export default function Categories() {
     }
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 xl:grid-cols-8 gap-2 rounded-lg text-sm bg-muted mb-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 rounded-lg text-sm bg-muted mb-4">
             {categories.map((category) => (category.slug === selectedCategory ?
                 <Button className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md" key={category.name}>
                     {category.icon}

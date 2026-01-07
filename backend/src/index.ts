@@ -25,7 +25,7 @@ app.get("/api", (req, res) => {
     },
   });
 });
-app.get("/healht", (req, res) => {
+app.get("/health", (req, res) => {
   return res.status(200).json({
     status: "ok",
     uptime: process.uptime(),

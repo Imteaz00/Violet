@@ -13,5 +13,5 @@ export const categories = pgTable("categories", {
 });
 
 export const categoryRelations = relations(categories, ({ many }) => ({
-  product: many(products),
+  products: many(products),
 }));

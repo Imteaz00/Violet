@@ -1,18 +1,30 @@
 import type { Request, Response } from "express";
 import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
-import { STATUS } from "../../constants.js";
+import { ROLE, STATUS } from "../../constants.js";
+import { getUserById } from "../users/users.queries.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     let { sort, category, search, limit, offset } = req.query;
 
+    const parsedLimit = limit ? parseInt(String(limit), 10) : 20;
+    const parsedOffset = offset ? parseInt(String(offset), 10) : 0;
+
+    if (limit && (isNaN(parsedLimit) || parsedLimit < 1)) {
+      return res.status(400).json({ error: "Invalid limit parameter" });
+    }
+
+    if (offset && (isNaN(parsedOffset) || parsedOffset < 0)) {
+      return res.status(400).json({ error: "Invalid offset parameter" });
+    }
+
     const products = await productQueries.getAllProducts({
       category: category ? String(category) : "",
       search: search ? String(search) : "",
       sort: sort ? String(sort) : "",
-      limit: limit ? Number(limit) : 20,
-      offset: offset ? Number(offset) : 0,
+      limit: parsedLimit,
+      offset: parsedOffset,
     });
     res.status(200).json(products);
   } catch (error) {
@@ -181,12 +193,15 @@ export const validateProduct = async (req: Request, res: Response) => {
 
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
+    const user = await getUserById(userId);
+    if (user?.role !== ROLE.ADMIN) return res.status(401).json({ error: "Unauthorized" });
+
     const { id } = req.params;
     const existingProduct = await productQueries.getProductById(id);
 
     if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
-    const status = STATUS.POPULATING;
+    const status = STATUS.ACTIVE;
     const product = await productQueries.updateProduct(id, { status });
 
     res.status(200).json(product);

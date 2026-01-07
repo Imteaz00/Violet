@@ -1,5 +1,5 @@
 import { ProductType } from "../types";
-import Categories from "./Catagories";
+import Categories from "./Categories";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 import { CONSTANT } from "@/constants";
@@ -7,9 +7,17 @@ import Filter from "./Filter";
 import SearchBar from "./SearchBar";
 
 const fetchData = async ({ category, search, sort, params }: { category?: string, search?: string, sort?: string, params: "homepage" | "products" }) => {
-    const res = await fetch(`${process.env.BACKEND_URL}/products?${category ? `category=${category}` : ""}${search ? `&search=${search}` : ""}&sort=${sort || "newest"}${params === "homepage" ? "&limit=8" : "&limit=20"}`)
+    const queryParams = new URLSearchParams();
+    if (category) queryParams.set("category", category);
+    if (search) queryParams.set("search", search);
+    queryParams.set("sort", sort || "newest");
+    queryParams.set("limit", params === "homepage" ? "8" : "20");
+
+    const res = await fetch(`${process.env.BACKEND_URL}/products?${queryParams.toString()}`);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch products: ${res.statusText}`);
+    }
     const data: ProductType[] = await res.json()
-    console.log(data)
     return data
 }
 

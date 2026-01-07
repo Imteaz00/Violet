@@ -6,7 +6,7 @@ export const getAllCategories = async () => {
   return db.query.categories.findMany({});
 };
 export const getCategoryBySlug = async (slug: string) => {
-  return db.query.categories.findFirst();
+  return db.query.categories.findFirst({ where: eq(categories.slug, slug) });
 };
 
 export const deleteCategory = async (slug: string) => {

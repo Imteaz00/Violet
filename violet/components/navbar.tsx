@@ -5,8 +5,13 @@ import { Button } from "./ui/button";
 import ShoppingBagIcon from "./ShoppingBagIcon";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { ButtonGroup } from "./ui/button-group";
+import { ModeToggle } from "./ui/mode-toggle";
+import { currentUser } from "@clerk/nextjs/server";
+import { syncUser } from "@/app/(user)/actions/user.action";
 
-export default function Navbar() {
+export default async function Navbar() {
+    const user = await currentUser()
+    if (user) await syncUser()
     return (
         <nav className="w-full flex items-center justify-between border-b pb-4">
 
@@ -17,18 +22,19 @@ export default function Navbar() {
             </Link>
             <div className="flex items-center gap-4">
                 <SearchBar />
+                <ModeToggle />
                 <Bell className="w-4 h-4 text-foreground" />
                 <ShoppingBagIcon />
                 <SignedOut>
                     <ButtonGroup>
-                        <SignInButton>
+                        <SignInButton mode="modal">
                             <Button variant={"secondary"} className="w-17">
                                 <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground">
                                     Sign In
                                 </span>
                             </Button>
                         </SignInButton>
-                        <SignUpButton>
+                        <SignUpButton mode="modal">
                             <Button className="w-17">
                                 <span className="transition-transform duration-300 hover:scale-110">
                                     Sign Up

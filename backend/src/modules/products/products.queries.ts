@@ -4,7 +4,7 @@ import { products } from "./products.schema.js";
 import type { NewProduct } from "../../types.js";
 import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
-import * as productSchema from "./products.schema.js";
+import * as schema from "../../config/schema.js";
 
 export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();
@@ -23,67 +23,47 @@ export const getAllProducts = async ({
   limit: number;
   offset: number;
 }) => {
-  switch (sort) {
-    case "asc":
-      return db.query.products.findMany({
-        where: or(
+  const baseQuery = {
+    where: search
+      ? or(
           ilike(products.title, `%${search}%`),
           ilike(products.description, `%${search}%`),
           ilike(products.location, `%${search}%`),
           ilike(products.condition, `%${search}%`),
           ilike(products.slug, `%${category}%`)
-        ),
+        )
+      : undefined,
+    limit,
+    offset,
+  };
+
+  switch (sort) {
+    case "asc":
+      return db.query.products.findMany({
+        ...baseQuery,
         with: {
           user: true,
           productImages: true,
         },
-        orderBy: (_, { asc }) => [asc(sql`${products.askingPrice} /${products.noOfShares}`)],
-        limit,
-        offset,
+        orderBy: (_, { asc }) => [asc(sql`${products.askingPrice} / ${products.noOfShares}`)],
       });
     case "desc":
-      console.log(category, 1, search, 2, sort, 3, limit, offset);
       return db.query.products.findMany({
-        where: search
-          ? or(
-              ilike(products.title, `%${search}%`),
-              ilike(products.description, `%${search}%`),
-              ilike(products.location, `%${search}%`),
-              ilike(products.condition, `%${search}%`),
-              ilike(products.slug, `%${category}%`)
-            )
-          : undefined,
-
+        ...baseQuery,
         with: {
           user: true,
           productImages: true,
         },
-
-        orderBy: (_, { desc }) => [desc(sql`${products.askingPrice} /${products.noOfShares}`)],
-
-        limit,
-        offset,
+        orderBy: (_, { desc }) => [desc(sql`${products.askingPrice} / ${products.noOfShares}`)],
       });
-
     default:
       return db.query.products.findMany({
-        where: search
-          ? or(
-              ilike(products.title, `%${search}%`),
-              ilike(products.description, `%${search}%`),
-              ilike(products.location, `%${search}%`),
-              ilike(products.condition, `%${search}%`),
-              ilike(products.slug, `%${category}%`)
-            )
-          : undefined,
-
+        ...baseQuery,
         with: {
           user: true,
           productImages: true,
         },
         orderBy: (_, { desc }) => [desc(products.createdAt)],
-        limit,
-        offset,
       });
   }
 };
@@ -117,11 +97,7 @@ export const deleteProduct = async (id: string) => {
 };
 
 export const decreaseRemainingShare = async (
-  tx: PgTransaction<
-    NodePgQueryResultHKT,
-    typeof productSchema,
-    ExtractTablesWithRelations<typeof productSchema>
-  >,
+  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
   noOfShares: number,
   id: string
 ) => {

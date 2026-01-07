@@ -17,14 +17,10 @@ import { STATUS, TYPE } from "../../constants.js";
 import { categories } from "../categories/categories.schema.js";
 
 export const typeEnum = pgEnum("type", [TYPE.SELL, TYPE.SHARE]);
-export const statusEnum = pgEnum("status", [
-  STATUS.CONFIRMING,
+export const productStatusEnum = pgEnum("product_status", [
   STATUS.VALIDATING,
-  STATUS.DELIVERING,
-  STATUS.DONE,
-  STATUS.OPEN,
-  STATUS.POPULATING,
-  STATUS.RECEIVING,
+  STATUS.SOLD,
+  STATUS.ACTIVE,
 ]);
 
 export const products = pgTable(
@@ -43,7 +39,7 @@ export const products = pgTable(
     quantity: text("quantity").notNull(),
     condition: text("condition").notNull(),
     remainingShares: integer("remaining_shares").default(1).notNull(),
-    status: statusEnum("status").notNull().default(STATUS.VALIDATING),
+    status: productStatusEnum("status").notNull().default(STATUS.VALIDATING),
     slug: text("slug"),
     userId: text("user_id")
       .notNull()
@@ -56,6 +52,7 @@ export const products = pgTable(
   },
   (table) => ({
     sharesCheck: check("shares_check", sql`${table.remainingShares} <= ${table.noOfShares}`),
+    notZeroCheck: check("not_zero_check", sql`${table.noOfShares} > 0`),
   })
 );
 
@@ -63,5 +60,5 @@ export const productRelations = relations(products, ({ one, many }) => ({
   productImages: many(productImages),
   transactions: many(transactions),
   user: one(users, { fields: [products.userId], references: [users.id] }),
-  slug: one(categories, { fields: [products.slug], references: [categories.slug] }),
+  category: one(categories, { fields: [products.slug], references: [categories.slug] }),
 }));

@@ -1,25 +1,39 @@
 import { faker } from "@faker-js/faker";
-import { productImages } from "./src/modules/productImages/productImages.schema";
-import { products } from "./src/modules/products/products.schema";
-import { users } from "./src/modules/users/users.schema";
-import { categories } from "./src/modules/categories/categories.schema";
 import { db } from "./src/config/db";
+import {
+  categories,
+  connections,
+  productImages,
+  products,
+  transactions,
+  users,
+} from "./src/config/schema";
 
-const USERS_COUNT = 10;
-const PRODUCTS_PER_USER = 3;
-const IMAGES_PER_PRODUCT = 2;
+const USER_COUNT = 10;
+const PRODUCT_COUNT = 20;
+const CONNECTION_COUNT = 25;
+const TRANSACTION_COUNT = 15;
 
-async function seed() {
-  console.log("🌱 Starting database seed...");
+export async function seed() {
+  console.log("🌱 Seeding database...");
 
-  /* ---------- CLEAN TABLES (ORDER MATTERS) ---------- */
-  await db.delete(productImages);
-  await db.delete(products);
-  await db.delete(users);
-  await db.delete(categories);
-  // categories are static → do NOT delete
+  /* -------------------- USERS -------------------- */
+  const userRows = Array.from({ length: USER_COUNT }).map(() => ({
+    id: faker.string.uuid(),
+    email: faker.internet.email(),
+    name: faker.person.fullName(),
+    imageUrl: faker.image.avatar(),
+    phone: faker.helpers.maybe(() => faker.phone.number()),
+    location: faker.location.city(),
+    role: "user" as const,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }));
 
-  /* ---------- CATEGORIES ---------- */
+  await db.insert(users).values(userRows);
+  console.log("✅ Users seeded");
+
+  /* -------------------- CATEGORIES -------------------- */
   console.log("🏷️ Seeding categories...");
 
   const categoryValues = [
@@ -34,81 +48,92 @@ async function seed() {
 
   const insertedCategories = await db.select().from(categories);
 
-  /* ---------- USERS ---------- */
-  console.log("👤 Seeding users...");
+  /* -------------------- PRODUCTS -------------------- */
+  const productRows = Array.from({ length: PRODUCT_COUNT }).map(() => ({
+    id: faker.string.uuid(),
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    boughtFrom: faker.company.name(),
+    askingPrice: Number(faker.finance.amount({ min: 10, max: 500 })),
+    sellingReason: faker.helpers.maybe(() => faker.lorem.sentence()),
+    expiryDate: faker.date.future({ years: 2 }).toISOString().split("T")[0],
+    location: faker.location.city(),
+    type: "sell" as const,
+    noOfShares: 5,
+    remainingShares: faker.number.int({ min: 1, max: 5 }),
+    quantity: faker.commerce.productAdjective(),
+    condition: faker.helpers.arrayElement(["new", "used", "sealed"]),
+    status: faker.helpers.arrayElement(["validating", "active", "sold"]) as any,
+    slug: faker.helpers.slugify(faker.commerce.productName()),
+    userId: faker.helpers.arrayElement(userRows).id,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }));
 
-  const insertedUsers = await db
-    .insert(users)
-    .values(
-      Array.from({ length: USERS_COUNT }).map(() => ({
-        id: `user_${faker.string.uuid()}`,
-        email: faker.internet.email(),
-        name: faker.person.fullName(),
-        imageUrl: faker.helpers.maybe(() => faker.image.avatar()),
-        phone: faker.helpers.maybe(() => faker.phone.number()),
-        location: faker.helpers.arrayElement(["Dhaka", "Chittagong", "Sylhet", "Rajshahi"]),
-        balance: 0,
-      }))
-    )
-    .returning();
+  await db.insert(products).values(productRows);
+  console.log("✅ Products seeded");
 
-  /* ---------- PRODUCTS ---------- */
-  console.log("📦 Seeding products...");
-
-  const productValues = insertedUsers.flatMap((user) =>
-    Array.from({ length: PRODUCTS_PER_USER }).map(() => {
-      const type = faker.helpers.arrayElement(["sell", "share"]) as "sell" | "share";
-
-      const noOfShares = type === "sell" ? 1 : faker.number.int({ min: 2, max: 5 });
-
-      const remainingShares = type === "sell" ? 1 : faker.number.int({ min: 1, max: noOfShares });
-
-      return {
-        title: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-        boughtFrom: faker.company.name(),
-        sellingReason: faker.helpers.maybe(() => faker.lorem.sentence()),
-
-        expiryDate: faker.date.future({ years: 2 }).toISOString().split("T")[0],
-
-        location: user.location ?? "Dhaka",
-        userId: user.id,
-
-        askingPrice: faker.number.int({ min: 300, max: 5000 }),
-
-        type,
-        noOfShares,
-        remainingShares,
-
-        quantity: faker.helpers.arrayElement(["80%", "90%", "95%"]),
-        condition: faker.helpers.arrayElement(["Like New", "Very Good", "Excellent"]),
-
-        status: "validating" as "validating",
-        categoryId: faker.helpers.arrayElement(insertedCategories).slug,
-      };
-    })
+  /* -------------------- PRODUCT IMAGES -------------------- */
+  const imageRows = productRows.flatMap((product) =>
+    Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(() => ({
+      id: faker.string.uuid(),
+      productId: product.id,
+      userId: product.userId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }))
   );
 
-  const insertedProducts = await db.insert(products).values(productValues).returning();
+  await db.insert(productImages).values(imageRows);
+  console.log("✅ Product images seeded");
 
-  /* ---------- PRODUCT IMAGES ---------- */
-  console.log("🖼️ Seeding product images...");
+  /* -------------------- CONNECTIONS -------------------- */
+  const connectionRows = Array.from({ length: CONNECTION_COUNT }).map(() => {
+    const product = faker.helpers.arrayElement(productRows);
+    const buyer = faker.helpers.arrayElement(userRows);
 
-  await db.insert(productImages).values(
-    insertedProducts.flatMap((product) =>
-      Array.from({ length: IMAGES_PER_PRODUCT }).map(() => ({
-        id: `img_${faker.string.uuid()}`,
-        productId: product.id,
-        userId: product.userId,
-      }))
-    )
-  );
+    return {
+      id: faker.string.uuid(),
+      noOfShares: faker.number.int({ min: 1, max: product.noOfShares }),
+      status: faker.helpers.arrayElement(["pending"]) as any,
+      productId: product.id,
+      buyerId: faker.helpers.maybe(() => buyer.id),
+      guestBuyer: faker.datatype.boolean(),
+      sellerId: product.userId,
+      location: faker.location.city(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  });
 
-  console.log("✅ Database seeded successfully");
-  process.exit(0);
+  await db.insert(connections).values(connectionRows);
+  console.log("✅ Connections seeded");
+
+  /* -------------------- TRANSACTIONS -------------------- */
+  const transactionRows = Array.from({ length: TRANSACTION_COUNT }).map(() => {
+    const product = faker.helpers.arrayElement(productRows);
+    const buyer = faker.helpers.arrayElement(userRows);
+    const seller = userRows.find((u) => u.id === product.userId)!;
+
+    return {
+      id: faker.string.uuid(),
+      productName: product.title,
+      buyerName: buyer.name,
+      sellerName: seller.name,
+      noOfShares: faker.number.int({ min: 1, max: product.noOfShares }),
+      sharePrice: Number(faker.finance.amount({ min: 10, max: 300 })),
+      productId: product.id,
+      buyerId: buyer.id,
+      sellerId: seller.id,
+      createdAt: new Date(),
+    };
+  });
+
+  await db.insert(transactions).values(transactionRows);
+  console.log("✅ Transactions seeded");
+
+  console.log("🌱 Seeding complete!");
 }
 
-seed().catch((err) => {
-  console.error("❌ Seed failed", err);
-  process.exit(1);
-});
+await seed();
+process.exit(0);

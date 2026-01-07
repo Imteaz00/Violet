@@ -4,12 +4,14 @@ export const TYPE = {
 } as const;
 export const STATUS = {
   VALIDATING: "validating",
-  POPULATING: "populating",
-  RECEIVING: "receiving",
+  ACTIVE: "active",
+  SOLD: "sold",
+  PENDING: "pending",
   DELIVERING: "delivering",
   CONFIRMING: "confirming",
   DONE: "done",
-  OPEN: "open",
 } as const;
 
 export const USER_LOCATION = "user location" as const;
+
+export const ROLE = { ADMIN: "admin", USER: "user" };

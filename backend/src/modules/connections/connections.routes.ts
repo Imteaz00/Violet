@@ -4,22 +4,10 @@ import { requireAuth } from "@clerk/express";
 
 const connectionRouters = Router();
 
-// connectionRouters.post(
-//   "/create/:id",
-//   requireAuth(),
-//   connectionControler.createConnection
-// );
-
+connectionRouters.get("/", connectionController.getAllConnections);
+connectionRouters.post("/create", connectionController.createConnection);
+connectionRouters.get("/user-connections", connectionController.getUserConnection);
 connectionRouters.get("/:id", connectionController.getConnectionById);
-connectionRouters.put(
-  "/:id",
-  requireAuth(),
-  connectionController.updateConnection
-);
-connectionRouters.delete(
-  "/:id",
-  requireAuth(),
-  connectionController.deleteConnection
-);
+connectionRouters.put("/:id", requireAuth(), connectionController.updateConnectionStatus);
 
 export default connectionRouters;
