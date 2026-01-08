@@ -8,10 +8,6 @@ export const metadata: Metadata = {
   description: "Platform for sharing your cosmetics",
 };
 
-if (!process.env.BACKEND_URL) {
-  throw new Error("BACKEND_URL environment variable is not defined");
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{

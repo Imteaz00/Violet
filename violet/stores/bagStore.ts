@@ -11,9 +11,13 @@ const useBagStore = create<BagStoreStateType & BagStoreActionsType>()(
         set((state) => {
           const existingIndex = state.bag.findIndex((p) => p.id === product.id);
           if (existingIndex !== -1) {
-            const updatedBag = [...state.bag];
-            updatedBag[existingIndex].shares += product.shares || 1;
-            return { bag: updatedBag };
+            return {
+              bag: state.bag.map((item, index) =>
+                index === existingIndex
+                  ? { ...item, shares: item.shares + (product.shares || 1) }
+                  : item
+              ),
+            };
           }
           return { bag: [...state.bag, { ...product, shares: product.shares || 1 }] };
         }),

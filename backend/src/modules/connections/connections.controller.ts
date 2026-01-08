@@ -45,10 +45,15 @@ export const createConnection = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Seller not found" });
     }
 
+    if (noOfShares > product.remainingShares) {
+      return res.status(400).json({ error: "Insufficient shares available" });
+    }
+
     const data = await db.transaction(async (tx) => {
       const updatedProduct = await decreaseRemainingShare(tx, noOfShares, productId);
       if (!updatedProduct) {
         tx.rollback();
+        throw new Error("Failed to decrease remaining shares");
       }
 
       const connection = await connectionQueries.createConnection(tx, {
@@ -74,6 +79,13 @@ export const createConnection = async (req: Request, res: Response) => {
 
 export const getAllConnections = async (req: Request, res: Response) => {
   try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const user = await getUserById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    if (user.role !== ROLE.ADMIN) return res.status(403).json({ error: "Forbidden" });
+
     const connections = await connectionQueries.getAllConnections();
     res.status(200).json(connections);
   } catch (error) {
@@ -84,11 +96,20 @@ export const getAllConnections = async (req: Request, res: Response) => {
 
 export const getConnectionById = async (req: Request, res: Response) => {
   try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
     const { id } = req.params;
     const connection = await connectionQueries.getConnectionById(id);
 
     if (!connection) return res.status(404).json({ error: "Connection not found" });
     res.status(200).json(connection);
+
+    const user = await getUserById(userId);
+    const isAuthorized =
+      connection.buyerId === userId || connection.sellerId === userId || user?.role === ROLE.ADMIN;
+
+    if (!isAuthorized) return res.status(403).json({ error: "Forbidden" });
   } catch (error) {
     console.error("Error getting connection:", error);
     res.status(500).json({ error: "Failed to get connection" });

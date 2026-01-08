@@ -1,4 +1,5 @@
 import { formatCurrency } from "@/lib/formaters";
+import { BACKEND_URL } from "@/server";
 import { OrderType } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 
@@ -6,7 +7,7 @@ const fetchOrders = async () => {
   const { getToken } = await auth();
   const token = await getToken();
 
-  const res = await fetch(`${process.env.BACKEND_URL}/connections/user-connections`, {
+  const res = await fetch(`${BACKEND_URL}/connections/user-connections`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

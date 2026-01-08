@@ -36,29 +36,33 @@ export default function ProductInteraction({ product }: { product: ProductType }
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex flex-col gap-2 text-sm">
         <span className="text-muted-foreground">Quantity</span>
-        <div className="flex items-center gap-2">
-          <Button
-            variant={"outline"}
-            disabled={quantity === 1}
-            onClick={() => handleQuantityChange("decrement")}
-            className={quantity > 1 ? "transition-all duration-300 hover:scale-110" : ""}
-          >
-            <Minus className="w-4 h-4" />
-          </Button>
-          <span className="select-none">{quantity}</span>
-          <Button
-            variant={"outline"}
-            disabled={quantity === product.remainingShares}
-            onClick={() => handleQuantityChange("increment")}
-            className={
-              quantity < product.remainingShares
-                ? "transition-all duration-300 hover:scale-110"
-                : ""
-            }
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
-        </div>
+        {product.remainingShares > 0 ? (
+          <div className="flex items-center gap-2">
+            <Button
+              variant={"outline"}
+              disabled={quantity === 1}
+              onClick={() => handleQuantityChange("decrement")}
+              className={quantity > 1 ? "transition-all duration-300 hover:scale-110" : ""}
+            >
+              <Minus className="w-4 h-4" />
+            </Button>
+            <span className="select-none">{quantity}</span>
+            <Button
+              variant={"outline"}
+              disabled={quantity === product.remainingShares}
+              onClick={() => handleQuantityChange("increment")}
+              className={
+                quantity < product.remainingShares
+                  ? "transition-all duration-300 hover:scale-110"
+                  : ""
+              }
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="text-destructive font-medium">Sold Out</div>
+        )}
       </div>
       <Button
         variant={"secondary"}

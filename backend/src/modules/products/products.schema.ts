@@ -41,7 +41,7 @@ export const products = pgTable(
     condition: text("condition").notNull(),
     remainingShares: integer("remaining_shares").default(1).notNull(),
     status: productStatusEnum("status").notNull().default(STATUS.VALIDATING),
-    slug: text("slug"),
+    slug: text("slug").references(() => categories.slug, { onDelete: "set null" }),
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),

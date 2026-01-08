@@ -12,7 +12,7 @@ import categoryRouters from "./modules/categories/categories.router.js";
 const app = express();
 
 if (!ENV.frontend_url) {
-  throw new Error("Database_URL is missing.");
+  throw new Error("Frontend URL is missing.");
 }
 
 app.use(cors({ origin: ENV.frontend_url, credentials: true }));

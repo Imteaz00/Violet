@@ -1,10 +1,12 @@
 import ProductInteraction from "@/components/ProductInteraction";
 import { formatCurrency } from "@/lib/formaters";
+import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 
 const fetchProduct = async (id: string) => {
-  const res = await fetch(`${process.env.BACKEND_URL}/products/${id}`, {
+  const res = await fetch(`${BACKEND_URL}/products/${id}`, {
     next: { revalidate: 3600 }, // Revalidate every hour
   });
   if (!res.ok) {
@@ -32,7 +34,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const product = await fetchProduct(id);
+  let product: ProductType;
+  try {
+    product = await fetchProduct(id);
+  } catch {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">

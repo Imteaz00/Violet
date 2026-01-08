@@ -24,15 +24,17 @@ export const getAllProducts = async ({
   offset: number;
 }) => {
   const baseQuery = {
-    where: search
-      ? or(
-          ilike(products.title, sql`%${search}%`),
-          ilike(products.description, sql`%${search}%`),
-          ilike(products.location, sql`%${search}%`),
-          ilike(products.condition, sql`%${search}%`),
-          ilike(products.slug, sql`%${category}%`)
-        )
-      : undefined,
+    where: and(
+      search
+        ? or(
+            ilike(products.title, sql`%${search}%`),
+            ilike(products.description, sql`%${search}%`),
+            ilike(products.location, sql`%${search}%`),
+            ilike(products.condition, sql`%${search}%`)
+          )
+        : undefined,
+      category ? eq(products.slug, category) : undefined
+    ),
     limit,
     offset,
   };

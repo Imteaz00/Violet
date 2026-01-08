@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CONSTANT } from "@/constants";
 import Filter from "./Filter";
 import SearchBar from "./SearchBar";
+import { BACKEND_URL } from "@/server";
 
 const fetchData = async ({
   category,
@@ -23,7 +24,7 @@ const fetchData = async ({
   queryParams.set("sort", sort || "newest");
   queryParams.set("limit", params === "homepage" ? "8" : "20");
 
-  const res = await fetch(`${process.env.BACKEND_URL}/products?${queryParams.toString()}`, {
+  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`, {
     signal: AbortSignal.timeout(10000),
     next: { revalidate: 60 }, // adjust as needed
   });

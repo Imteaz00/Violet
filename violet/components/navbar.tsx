@@ -6,58 +6,44 @@ import ShoppingBagIcon from "./ShoppingBagIcon";
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { ButtonGroup } from "./ui/button-group";
 import { ModeToggle } from "./ui/mode-toggle";
-import { currentUser } from "@clerk/nextjs/server";
-import { syncUser } from "@/app/(user)/actions/user.action";
-import { cookies } from "next/headers";
+import { syncUserIfNeeded } from "@/app/(user)/actions/user.action";
 
 export default async function Navbar() {
-    const user = await currentUser()
-    if (user) {
-        // Only sync if last sync was > 1 hour ago (implement via session/cookie)
-        const cookieStore = await cookies()
-        const lastSync = cookieStore.get("last_user_sync")?.value
-        const shouldSync = !lastSync || Date.now() - parseInt(lastSync) > 3600000
-        if (shouldSync) {
-            await syncUser()
-            cookieStore.set("last_user_sync", Date.now().toString())
-        }
-    }
-    return (
-        <nav className="w-full flex items-center justify-between border-b pb-4">
-
-            <Link href="/" className="flex items-center">
-                <h1 className="text-4xl text-primary font-semibold tracking-wider"> {/* hidden md:block */}
-                    VIOLET
-                </h1>
-            </Link>
-            <div className="flex items-center gap-4">
-                <SearchBar />
-                <ModeToggle />
-                <Bell className="w-4 h-4 text-foreground" />
-                <ShoppingBagIcon />
-                <SignedOut>
-                    <ButtonGroup>
-                        <SignInButton mode="modal">
-                            <Button variant={"secondary"} className="w-17">
-                                <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground">
-                                    Sign In
-                                </span>
-                            </Button>
-                        </SignInButton>
-                        <SignUpButton mode="modal">
-                            <Button className="w-17">
-                                <span className="transition-transform duration-300 hover:scale-110">
-                                    Sign Up
-                                </span>
-                            </Button>
-                        </SignUpButton>
-                    </ButtonGroup>
-                </SignedOut>
-                <SignedIn>
-                    <UserButton />
-                </SignedIn>
-            </div>
-        </nav>
-    )
-
+  await syncUserIfNeeded();
+  return (
+    <nav className="w-full flex items-center justify-between border-b pb-4">
+      <Link href="/" className="flex items-center">
+        <h1 className="text-4xl text-primary font-semibold tracking-wider">
+          {" "}
+          {/* hidden md:block */}
+          VIOLET
+        </h1>
+      </Link>
+      <div className="flex items-center gap-4">
+        <SearchBar />
+        <ModeToggle />
+        <Bell className="w-4 h-4 text-foreground" />
+        <ShoppingBagIcon />
+        <SignedOut>
+          <ButtonGroup>
+            <SignInButton mode="modal">
+              <Button variant={"secondary"} className="w-17">
+                <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground">
+                  Sign In
+                </span>
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button className="w-17">
+                <span className="transition-transform duration-300 hover:scale-110">Sign Up</span>
+              </Button>
+            </SignUpButton>
+          </ButtonGroup>
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </div>
+    </nav>
+  );
 }
