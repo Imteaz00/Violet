@@ -2,16 +2,16 @@ import {
   productImages,
   products,
   users,
-  //   listings,
   transactions,
   connections,
+  categories,
 } from "./config/schema.js";
+
+export type Category = typeof categories.$inferSelect;
+export type NewCategory = typeof categories.$inferInsert;
 
 export type Connection = typeof connections.$inferSelect;
 export type NewConnection = typeof connections.$inferInsert;
-
-// export type Listing = typeof listings.$inferSelect;
-// export type NewListing = typeof listings.$inferInsert;
 
 export type ProductImage = typeof productImages.$inferSelect;
 export type NewProductImage = typeof productImages.$inferInsert;

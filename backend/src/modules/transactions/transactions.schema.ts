@@ -1,11 +1,4 @@
-import {
-  decimal,
-  integer,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { decimal, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "../users/users.schema.js";
 import { products } from "../products/products.schema.js";
 import { relations } from "drizzle-orm";

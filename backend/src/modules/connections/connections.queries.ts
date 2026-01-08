@@ -7,44 +7,41 @@ import * as schema from "./connections.schema.js";
 import { connections } from "./connections.schema.js";
 
 export const createConnection = async (
-  tx: PgTransaction<
-    NodePgQueryResultHKT,
-    typeof schema,
-    ExtractTablesWithRelations<typeof schema>
-  >,
+  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
   data: NewConnection
 ) => {
   const [connection] = await tx.insert(connections).values(data).returning();
   return connection;
 };
 
-export const getConnectionById = async (id: string) => {
-  return db.query.connections.findFirst({
-    where: eq(connections.id, id),
-    with: {},
+export const getAllConnections = async () => {
+  return db.query.connections.findMany({
+    with: { buyer: true, seller: true, product: true },
   });
 };
 
-export const updateConnection = async (
-  tx: PgTransaction<
-    NodePgQueryResultHKT,
-    typeof schema,
-    ExtractTablesWithRelations<typeof schema>
-  >,
-  id: string,
-  data: Partial<NewConnection>
-) => {
-  const [connection] = await tx
-    .update(connections)
-    .set(data)
-    .where(eq(connections.id, id))
-    .returning();
-  return connection;
+export const getConnectionById = async (id: string) => {
+  return db.query.connections.findFirst({
+    where: eq(connections.id, id),
+    with: { buyer: true, seller: true, product: true },
+  });
 };
 
-export const deleteConnection = async (id: string) => {
-  const [connection] = await db
-    .delete(connections)
+export const getUserConnection = async (userId: string) => {
+  return db.query.connections.findMany({
+    where: eq(connections.buyerId, userId),
+    with: { buyer: true, seller: true, product: true },
+    orderBy: (connections, { desc }) => [desc(connections.createdAt)],
+  });
+};
+
+export const updateConnectionStatus = async (
+  id: string,
+  status: "pending" | "delivering" | "confirming" | "done"
+) => {
+  const connection = await db
+    .update(connections)
+    .set({ status })
     .where(eq(connections.id, id))
     .returning();
   return connection;

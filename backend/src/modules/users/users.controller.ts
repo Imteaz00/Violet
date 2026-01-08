@@ -7,7 +7,7 @@ export async function syncUser(req: Request, res: Response) {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { name, email, imageUrl, phone, location } = req.body;
+    const { name, email, imageUrl } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: "Name required" });
@@ -18,14 +18,27 @@ export async function syncUser(req: Request, res: Response) {
       name,
       email,
       imageUrl,
-      phone,
-      location,
     });
 
     res.status(200).json(user);
   } catch (error) {
     console.error("Error syncing user:", error);
     res.status(500).json({ error: "Failed to sync user" });
+  }
+}
+
+export async function getUser(req: Request, res: Response) {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const user = await userQueries.getUserById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Failed to fetch user" });
   }
 }
 
