@@ -103,13 +103,13 @@ export const getConnectionById = async (req: Request, res: Response) => {
     const connection = await connectionQueries.getConnectionById(id);
 
     if (!connection) return res.status(404).json({ error: "Connection not found" });
-    res.status(200).json(connection);
 
     const user = await getUserById(userId);
     const isAuthorized =
       connection.buyerId === userId || connection.sellerId === userId || user?.role === ROLE.ADMIN;
 
     if (!isAuthorized) return res.status(403).json({ error: "Forbidden" });
+    res.status(200).json(connection);
   } catch (error) {
     console.error("Error getting connection:", error);
     res.status(500).json({ error: "Failed to get connection" });
@@ -145,14 +145,16 @@ export const updateConnectionStatus = async (req: Request, res: Response) => {
       status = STATUS.DELIVERING;
     } else if (existingConnection.status === STATUS.DELIVERING) {
       status = STATUS.CONFIRMING;
-    } else {
+    } else if (existingConnection.status === STATUS.CONFIRMING) {
       status = STATUS.DONE;
+    } else {
+      return res.status(400).json({ error: "Connection is already completed" });
     }
 
     const updatedConnection = await connectionQueries.updateConnectionStatus(id, status);
     res.status(200).json(updatedConnection);
   } catch (error) {
     console.error("Error updating connection status:", error);
-    res.status(500).json({ error: "Failed to updating connection status" });
+    res.status(500).json({ error: "Failed to update connection status" });
   }
 };

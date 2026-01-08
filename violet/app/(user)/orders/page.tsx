@@ -2,10 +2,15 @@ import { formatCurrency } from "@/lib/formaters";
 import { BACKEND_URL } from "@/server";
 import { OrderType } from "@/types";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 const fetchOrders = async () => {
   const { getToken } = await auth();
   const token = await getToken();
+
+  if (!token) {
+    await redirect("/sign-in");
+  }
 
   const res = await fetch(`${BACKEND_URL}/connections/user-connections`, {
     headers: {

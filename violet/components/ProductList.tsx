@@ -24,10 +24,7 @@ const fetchData = async ({
   queryParams.set("sort", sort || "newest");
   queryParams.set("limit", params === "homepage" ? "8" : "20");
 
-  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`, {
-    signal: AbortSignal.timeout(10000),
-    next: { revalidate: 60 }, // adjust as needed
-  });
+  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`);
   if (!res.ok) {
     throw new Error(`Failed to fetch products: ${res.statusText}`);
   }
