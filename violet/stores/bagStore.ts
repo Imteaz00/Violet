@@ -15,7 +15,7 @@ const useBagStore = create<BagStoreStateType & BagStoreActionsType>()(
             updatedBag[existingIndex].shares += product.shares || 1;
             return { bag: updatedBag };
           }
-          return { bag: [...state.bag, { ...product, shares: product.shares }] };
+          return { bag: [...state.bag, { ...product, shares: product.shares || 1 }] };
         }),
       removeFromBag: (product) =>
         set((state) => ({ bag: state.bag.filter((p) => p.id !== product.id) })),

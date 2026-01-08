@@ -14,4 +14,4 @@ export const STATUS = {
 
 export const USER_LOCATION = "user location" as const;
 
-export const ROLE = { ADMIN: "admin", USER: "user" };
+export const ROLE = { ADMIN: "admin", USER: "user" } as const;

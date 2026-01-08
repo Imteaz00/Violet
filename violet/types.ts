@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export type ProductType = {
-  id: string | number; //remove number
+  id: string;
+  sellerId: string;
+  category: string;
   title: string;
   description: string;
   images: Record<string, string>;
@@ -29,7 +31,7 @@ export const shippingForm = z.object({
     .min(11, "Please add your phone number")
     .max(14, "Invalid")
     .regex(/^\d+$/, "Invalid"),
-  district: z.string().min(1, "Please enter your delivery destrict"),
+  district: z.string().min(1, "Please enter your delivery district"),
   address: z.string().min(1, "Please enter delivery address"),
 });
 
@@ -47,15 +49,15 @@ export type BagStoreActionsType = {
 };
 
 export type OrderType = {
-  _id: String;
-  noOfShares: Number;
+  _id: string;
+  noOfShares: number;
   status: "pending" | "delivering" | "confirming" | "done";
-  location: String;
+  location: string;
   createdAt: Date;
   updatedAt: Date;
-  productId: String;
-  buyerId: String | null;
-  guestBuyer: Boolean;
-  sellerId: String;
+  productId: string;
+  buyerId: string | null;
+  guestBuyer: boolean;
+  sellerId: string;
   product: ProductType;
 };

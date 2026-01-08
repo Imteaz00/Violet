@@ -1,5 +1,3 @@
-import Appsidebar from "@/components/admin/Appsidebar";
-
 export default async function Homepage() {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-col-4 gap-4">

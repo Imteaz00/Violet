@@ -16,7 +16,9 @@ const steps = [
     { id: 3, name: "Payment" },
 ]
 
-
+const pricePerShare = (askingPrice: number, noOfShares: number): number => {
+    return noOfShares > 0 ? Math.ceil(askingPrice / noOfShares) : askingPrice;
+}
 
 export default function BagPage() {
     const [shippingForm, setShippingForm] = useState<ShippingFormInputs>()
@@ -26,12 +28,10 @@ export default function BagPage() {
     const activeStep = parseInt(searchParams.get("step") || "1")
     const { bag, emptyBag, removeFromBag } = useBagStore()
 
-    const total = formatCurrency(bag.reduce((acc, item) => acc + (item.noOfShares > 0 ? Math.ceil(item.askingPrice / item.noOfShares) : item.askingPrice) * item.shares, 0))
+    const total = formatCurrency(bag.reduce((acc, item) => acc + pricePerShare(item.askingPrice, item.noOfShares) * item.shares, 0))
     return (
         <div className="flex flex-col gap-8 items-center justify-center mt-12">
-            {/* TITLE */}
             <h1 className="text-2xl font-medium">Your Shopping Cart</h1>
-            {/* STEPS */}
             <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
                 {steps.map((step) => (
                     <div
@@ -82,7 +82,7 @@ export default function BagPage() {
                                             <p className="text-xs text-muted-foreground">Remaining Shares: {item.remainingShares}/{item.noOfShares}</p>
 
                                         </div>
-                                        <p className="font-medium">${formatCurrency(item.noOfShares > 0 ? Math.ceil(item.askingPrice / item.noOfShares) : item.askingPrice)}</p>
+                                        <p className="font-medium">${formatCurrency(pricePerShare(item.askingPrice, item.noOfShares))}</p>
                                     </div>
                                 </div>
                                 <Button variant={"destructive"}
@@ -109,9 +109,9 @@ export default function BagPage() {
                     <h2 className="font-semibold">Details</h2>
                     <div className="flex flex-col gap-4">
                         {bag.map(item => (
-                            <div className="flex justify-between text-sm">
+                            <div key={item.id} className="flex justify-between text-sm">
                                 <p className="text-muted-foreground">{item.title}<span className="text-xs text-accent-foreground">{"  x"}{item.shares}</span></p>
-                                <p className="font-medium">{(item.noOfShares > 0 ? Math.ceil(item.askingPrice / item.noOfShares) : item.askingPrice) * item.shares}</p>
+                                <p className="font-medium">{formatCurrency(pricePerShare(item.askingPrice, item.noOfShares) * item.shares)}</p>
                             </div>
                         ))}
                         < hr className="border-gray-200" />

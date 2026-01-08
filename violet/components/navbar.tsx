@@ -8,10 +8,20 @@ import { ButtonGroup } from "./ui/button-group";
 import { ModeToggle } from "./ui/mode-toggle";
 import { currentUser } from "@clerk/nextjs/server";
 import { syncUser } from "@/app/(user)/actions/user.action";
+import { cookies } from "next/headers";
 
 export default async function Navbar() {
     const user = await currentUser()
-    if (user) await syncUser()
+    if (user) {
+        // Only sync if last sync was > 1 hour ago (implement via session/cookie)
+        const cookieStore = await cookies()
+        const lastSync = cookieStore.get("last_user_sync")?.value
+        const shouldSync = !lastSync || Date.now() - parseInt(lastSync) > 3600000
+        if (shouldSync) {
+            await syncUser()
+            cookieStore.set("last_user_sync", Date.now().toString())
+        }
+    }
     return (
         <nav className="w-full flex items-center justify-between border-b pb-4">
 

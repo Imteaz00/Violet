@@ -2,12 +2,12 @@ import { Router } from "express";
 import * as connectionController from "./connections.controller.js";
 import { requireAuth } from "@clerk/express";
 
-const connectionRouters = Router();
+const connectionRouter = Router();
 
-connectionRouters.get("/", connectionController.getAllConnections);
-connectionRouters.post("/create", connectionController.createConnection);
-connectionRouters.get("/user-connections", connectionController.getUserConnection);
-connectionRouters.get("/:id", connectionController.getConnectionById);
-connectionRouters.put("/:id", requireAuth(), connectionController.updateConnectionStatus);
+connectionRouter.get("/", requireAuth(), connectionController.getAllConnections);
+connectionRouter.post("/create", connectionController.createConnection);
+connectionRouter.get("/user-connections", connectionController.getUserConnection);
+connectionRouter.get("/:id", requireAuth(), connectionController.getConnectionById);
+connectionRouter.put("/:id", requireAuth(), connectionController.updateConnectionStatus);
 
-export default connectionRouters;
+export default connectionRouter;

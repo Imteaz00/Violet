@@ -194,7 +194,7 @@ export const validateProduct = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const user = await getUserById(userId);
-    if (user?.role !== ROLE.ADMIN) return res.status(401).json({ error: "Unauthorized" });
+    if (user?.role !== ROLE.ADMIN) return res.status(403).json({ error: "Forbidden" });
 
     const { id } = req.params;
     const existingProduct = await productQueries.getProductById(id);

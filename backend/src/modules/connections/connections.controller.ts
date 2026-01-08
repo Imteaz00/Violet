@@ -13,14 +13,15 @@ export const createConnection = async (req: Request, res: Response) => {
 
     const { productId, noOfShares } = req.body;
     let location = req.body.location;
-    let buyer;
+    let buyer = null;
+    let guestBuyer = false;
 
     if (!productId || !noOfShares) {
       return res.status(400).json({ error: "All info not provided" });
     }
 
     if (userId) {
-      const buyer = await getUserById(userId);
+      buyer = await getUserById(userId);
       if (location === USER_LOCATION) {
         if (!buyer?.location) {
           return res.status(400).json({ error: "Location not provided" });
@@ -28,7 +29,7 @@ export const createConnection = async (req: Request, res: Response) => {
         location = buyer.location;
       }
     } else {
-      const guestBuyer = true;
+      guestBuyer = true;
       if (!location) {
         return res.status(400).json({ error: "Location not provided" });
       }
@@ -43,8 +44,6 @@ export const createConnection = async (req: Request, res: Response) => {
     if (!seller) {
       return res.status(404).json({ error: "Seller not found" });
     }
-    const price =
-      ((product.askingPrice * (1 + PERCENTAGE.BUYER)) / product.noOfShares) * noOfShares;
 
     const data = await db.transaction(async (tx) => {
       const updatedProduct = await decreaseRemainingShare(tx, noOfShares, productId);
@@ -58,14 +57,13 @@ export const createConnection = async (req: Request, res: Response) => {
         noOfShares,
         sellerId: seller.id,
         location,
+        guestBuyer,
       });
       return { connection, updatedProduct };
     });
     if (!data) {
       return res.status(409).json({ error: "Failed to create connection" });
     }
-
-    // if (listing.remainingShares === 0) populatListing();
 
     res.status(201).json(data);
   } catch (error) {
@@ -102,8 +100,8 @@ export const getUserConnection = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const connecions = await connectionQueries.getUserConnection(userId);
-    res.status(200).json(connecions);
+    const connections = await connectionQueries.getUserConnection(userId);
+    res.status(200).json(connections);
   } catch (error) {
     console.error("Error getting user connection:", error);
     res.status(500).json({ error: "Failed to get user connection" });
@@ -117,7 +115,7 @@ export const updateConnectionStatus = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
     const user = await getUserById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-    if (user.role !== ROLE.ADMIN) return res.status(401).json({ error: "Unauthorized" });
+    if (user.role !== ROLE.ADMIN) return res.status(403).json({ error: "Forbidden" });
     const existingConnection = await connectionQueries.getConnectionById(id);
     if (!existingConnection) return res.status(404).json({ error: "Connection not found" });
 

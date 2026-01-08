@@ -19,7 +19,7 @@ export default function RootLayout({
             <Navbar />
             {children}
             <Footer />
-            <ToastContainer position="top-right" autoClose={2000} hideProgressBar theme="light" />
+            <ToastContainer position="top-right" autoClose={2000} hideProgressBar theme="colored" />
         </div>
 
     );

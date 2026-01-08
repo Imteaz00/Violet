@@ -12,7 +12,7 @@ export function ModeToggle() {
         <Button
             variant="outline"
             size="icon"
-            onClick={() => (theme === "light" ? setTheme("dark") : setTheme("light"))}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             aria-label="Toggle theme"
             className="transition-all duration-300 hover:scale-110"
         >

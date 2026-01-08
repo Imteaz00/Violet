@@ -2,6 +2,7 @@ import {
   check,
   date,
   decimal,
+  index,
   integer,
   pgEnum,
   pgTable,
@@ -53,6 +54,11 @@ export const products = pgTable(
   (table) => ({
     sharesCheck: check("shares_check", sql`${table.remainingShares} <= ${table.noOfShares}`),
     notZeroCheck: check("not_zero_check", sql`${table.noOfShares} > 0`),
+    titleIdx: index("title_idx").on(table.title),
+    descriptionIdx: index("description_idx").on(table.description),
+    locationIdx: index("location_idx").on(table.location),
+    conditionIdx: index("condition_idx").on(table.condition),
+    slugIdx: index("slug_idx").on(table.slug),
   })
 );
 

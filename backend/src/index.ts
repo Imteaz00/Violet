@@ -11,6 +11,10 @@ import categoryRouters from "./modules/categories/categories.router.js";
 
 const app = express();
 
+if (!ENV.frontend_url) {
+  throw new Error("Database_URL is missing.");
+}
+
 app.use(cors({ origin: ENV.frontend_url, credentials: true }));
 app.use(clerkMiddleware());
 app.use(express.json());
@@ -41,7 +45,6 @@ app.use("/api/products", productRouters);
 app.use("/api/users", userRouters);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
   return res.status(err.status || 500).json({ message: err.message || "Internal server error" });
 });
 

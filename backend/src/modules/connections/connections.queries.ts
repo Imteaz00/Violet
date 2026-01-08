@@ -23,7 +23,7 @@ export const getAllConnections = async () => {
 export const getConnectionById = async (id: string) => {
   return db.query.connections.findFirst({
     where: eq(connections.id, id),
-    with: {},
+    with: { buyer: true, seller: true, product: true },
   });
 };
 
@@ -41,7 +41,7 @@ export const updateConnectionStatus = async (
 ) => {
   const connection = await db
     .update(connections)
-    .set({ status: status })
+    .set({ status })
     .where(eq(connections.id, id))
     .returning();
   return connection;

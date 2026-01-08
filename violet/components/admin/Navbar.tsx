@@ -8,7 +8,7 @@ export default function Navbar() {
         <nav className="p-4 flex items-center justify-between">
             <SidebarTrigger />
             <div className="flex items-center gap-4">
-                <Link href="/home">Dashsboard</Link>
+                <Link href="/home">Dashboard</Link>
                 <ModeToggle />
             </div>
         </nav>
