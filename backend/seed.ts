@@ -58,6 +58,7 @@ export async function seed() {
     sellingReason: faker.helpers.maybe(() => faker.lorem.sentence()),
     expiryDate: faker.date.future({ years: 2 }).toISOString().split("T")[0],
     location: faker.location.city(),
+    district: faker.location.city(),
     type: "sell" as const,
     noOfShares: 5,
     remainingShares: faker.number.int({ min: 1, max: 5 }),
@@ -94,6 +95,11 @@ export async function seed() {
 
     return {
       id: faker.string.uuid(),
+      name: faker.person.fullName(),
+      email: faker.internet.email(),
+      phone: faker.phone.number(),
+      district: faker.location.city(),
+      address: faker.location.streetAddress(),
       noOfShares: faker.number.int({ min: 1, max: product.noOfShares }),
       status: faker.helpers.arrayElement(["pending"]) as any,
       productId: product.id,

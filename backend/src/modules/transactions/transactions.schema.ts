@@ -13,9 +13,7 @@ export const transactions = pgTable("transactions", {
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id),
-  buyerId: text("buyer_id")
-    .notNull()
-    .references(() => users.id),
+  buyerId: text("buyer_id").references(() => users.id),
   sellerId: text("seller_id")
     .notNull()
     .references(() => users.id),

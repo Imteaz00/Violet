@@ -77,6 +77,7 @@ export const createProduct = async (req: Request, res: Response) => {
       status,
       sellingReason,
       type,
+      district,
     } = req.body;
 
     if (
@@ -87,7 +88,8 @@ export const createProduct = async (req: Request, res: Response) => {
       !expiryDate ||
       !location ||
       !quantity ||
-      !condition
+      !condition ||
+      !district
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
@@ -107,6 +109,7 @@ export const createProduct = async (req: Request, res: Response) => {
       remainingShares: noOfShares,
       sellingReason,
       type,
+      district,
     });
 
     res.status(201).json(product);

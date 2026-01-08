@@ -34,17 +34,18 @@ export const products = pgTable(
     askingPrice: decimal("asking_price").notNull().$type<number>(),
     sellingReason: text("selling_reason"),
     expiryDate: date("expiry_date").notNull(),
-    location: text("location").notNull(),
+    location: text("location"),
+    district: text("district").notNull(),
     type: typeEnum("type").notNull().default(TYPE.SELL),
-    noOfShares: integer("no_of_shares").default(1).notNull(),
     quantity: text("quantity").notNull(),
     condition: text("condition").notNull(),
-    remainingShares: integer("remaining_shares").default(1).notNull(),
-    status: productStatusEnum("status").notNull().default(STATUS.VALIDATING),
-    slug: text("slug").references(() => categories.slug, { onDelete: "set null" }),
+    noOfShares: integer("no_of_shares").default(1).notNull(),
+    category: text("slug").references(() => categories.slug, { onDelete: "set null" }),
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    remainingShares: integer("remaining_shares").default(1).notNull(),
+    status: productStatusEnum("status").notNull().default(STATUS.VALIDATING),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date" })
       .notNull()
@@ -58,7 +59,7 @@ export const products = pgTable(
     descriptionIdx: index("description_idx").on(table.description),
     locationIdx: index("location_idx").on(table.location),
     conditionIdx: index("condition_idx").on(table.condition),
-    slugIdx: index("slug_idx").on(table.slug),
+    categoryIdx: index("slug_idx").on(table.category),
   })
 );
 
@@ -66,5 +67,5 @@ export const productRelations = relations(products, ({ one, many }) => ({
   productImages: many(productImages),
   transactions: many(transactions),
   user: one(users, { fields: [products.userId], references: [users.id] }),
-  category: one(categories, { fields: [products.slug], references: [categories.slug] }),
+  category: one(categories, { fields: [products.category], references: [categories.slug] }),
 }));
