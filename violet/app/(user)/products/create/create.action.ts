@@ -8,6 +8,10 @@ export async function createProduct(formData: CreateProductType) {
     const { getToken } = await auth();
     const token = await getToken();
 
+    if (!token) {
+      return { error: "Authentication required" };
+    }
+
     const res = await fetch(`${BACKEND_URL}/products/create`, {
       method: "POST",
       headers: {
