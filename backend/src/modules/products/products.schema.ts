@@ -40,7 +40,7 @@ export const products = pgTable(
     quantity: text("quantity").notNull(),
     condition: text("condition").notNull(),
     noOfShares: integer("no_of_shares").default(1).notNull(),
-    category: text("slug").references(() => categories.slug, { onDelete: "set null" }),
+    category: text("category").references(() => categories.slug, { onDelete: "set null" }),
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
@@ -59,7 +59,7 @@ export const products = pgTable(
     descriptionIdx: index("description_idx").on(table.description),
     locationIdx: index("location_idx").on(table.location),
     conditionIdx: index("condition_idx").on(table.condition),
-    categoryIdx: index("slug_idx").on(table.category),
+    categoryIdx: index("category_idx").on(table.category),
   })
 );
 

@@ -91,11 +91,13 @@ export const createProductForm = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
   boughtFrom: z.string().min(1, "Please state where you bought the item from"),
-  askingPrice: z.number("This field is required").min(1, "Asking price must be at least 1"),
+  askingPrice: z
+    .number({ error: "This field is required" })
+    .min(1, "Asking price must be at least 1"),
   sellingReason: z.string().optional(),
   expiryDate: z.iso.date("This field is required"),
   location: z.string().optional(),
-  district: z.enum(District),
+  district: z.nativeEnum(District),
   type: z.enum(["share", "sell"]),
   quantity: z.string().min(1, "Please state the available quantity"),
   condition: z.string().min(1, "State your item's condition"),

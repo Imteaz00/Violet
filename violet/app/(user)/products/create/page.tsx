@@ -20,10 +20,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { BACKEND_URL } from "@/server";
-import { createProduct } from "./create.action";
 
-export default function createProductPage() {
+export default function CreateProductPage() {
   const {
     register,
     control,
@@ -272,9 +270,11 @@ export default function createProductPage() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{!errors && "Warning"}</DialogTitle>
+              <DialogTitle>
+                {Object.keys(errors).length > 0 ? "Warning" : "This is what are you submitting"}
+              </DialogTitle>
               <DialogDescription>
-                {!errors ? (
+                {Object.keys(errors).length > 0 ? (
                   "All required fields are not filled"
                 ) : (
                   <div className="gap-2">
@@ -361,11 +361,11 @@ export default function createProductPage() {
                 )}
               </DialogDescription>
             </DialogHeader>
-            {!errors && (
+            {Object.keys(errors).length > 0 && (
               <Button
                 className="transition-transform duration-300 pl-10 pr-10 hover:scale-105 w-full"
                 type="submit"
-                onClick={() => createProduct(formData!)}
+                onClick={formData ? handleSubmit(handleForm) : undefined}
               >
                 Submit
               </Button>
