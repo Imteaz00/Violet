@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-function ShippingForm({
+export default function ShippingForm({
   setShippingForm,
 }: {
   setShippingForm: (data: ShippingFormInputs) => void;
@@ -50,7 +50,7 @@ function ShippingForm({
           id="email"
           placeholder="jane@email.com"
           {...register("email")}
-          className="border-b border-muted-foreground py-2 outlin-none text-sm"
+          className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"
         ></input>
         {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
@@ -64,7 +64,7 @@ function ShippingForm({
           id="Phone"
           placeholder="011223344"
           {...register("phone")}
-          className="border-b border-muted-foreground py-2 outlin-none text-sm"
+          className="border-b border-muted-foreground py-2 outline-none text-sm"
         ></input>
         {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
       </div>
@@ -77,7 +77,7 @@ function ShippingForm({
           id="address"
           placeholder="221B Baker Street"
           {...register("address")}
-          className="border-b border-muted-foreground py-2 outlin-none text-sm"
+          className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"
         ></input>
         {errors.address && <p className="text-xs text-destructive">{errors.address.message}</p>}
@@ -91,7 +91,7 @@ function ShippingForm({
           id="district"
           placeholder="Bogura"
           {...register("district")}
-          className="border-b border-muted-foreground py-2 outlin-none text-sm"
+          className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"
         ></input>
         {errors.district && <p className="text-xs text-destructive">{errors.district.message}</p>}
@@ -106,5 +106,3 @@ function ShippingForm({
     </form>
   );
 }
-
-export default ShippingForm;

@@ -33,7 +33,7 @@ export const getAllProducts = async ({
             ilike(products.condition, sql`%${search}%`)
           )
         : undefined,
-      category ? eq(products.slug, category) : undefined
+      category ? eq(products.category, category) : undefined
     ),
     limit,
     offset,

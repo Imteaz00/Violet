@@ -11,28 +11,10 @@ export const createConnection = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
 
-    const { productId, noOfShares } = req.body;
-    let location = req.body.location;
-    let buyer = null;
-    let guestBuyer = false;
+    const { productId, noOfShares, name, email, phone, district, address } = req.body;
 
-    if (!productId || !noOfShares) {
+    if (!productId || !noOfShares || !name || !phone || !district || !address) {
       return res.status(400).json({ error: "All info not provided" });
-    }
-
-    if (userId) {
-      buyer = await getUserById(userId);
-      if (location === USER_LOCATION) {
-        if (!buyer?.location) {
-          return res.status(400).json({ error: "Location not provided" });
-        }
-        location = buyer.location;
-      }
-    } else {
-      guestBuyer = true;
-      if (!location) {
-        return res.status(400).json({ error: "Location not provided" });
-      }
     }
 
     const product = await getProductById(productId);
@@ -57,12 +39,15 @@ export const createConnection = async (req: Request, res: Response) => {
       }
 
       const connection = await connectionQueries.createConnection(tx, {
+        name,
+        email,
+        phone,
+        district,
+        address,
         buyerId: userId,
         productId,
         noOfShares,
         sellerId: seller.id,
-        location,
-        guestBuyer,
       });
       return { connection, updatedProduct };
     });

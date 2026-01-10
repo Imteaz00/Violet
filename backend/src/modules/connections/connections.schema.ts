@@ -1,4 +1,4 @@
-import { boolean, integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "../users/users.schema.js";
 import { productImages } from "../productImages/productImages.schema.js";
 import { products } from "../products/products.schema.js";
@@ -14,17 +14,20 @@ export const connectionStatusEnum = pgEnum("connection_status", [
 
 export const connections = pgTable("connections", {
   id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email"),
+  phone: text("phone").notNull(),
+  district: text("district").notNull(),
+  address: text("location").notNull(),
   noOfShares: integer("no_of_shares").default(1).notNull(),
-  status: connectionStatusEnum("status").notNull().default(STATUS.PENDING),
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
-  buyerId: text("buyer_id").references(() => users.id),
-  guestBuyer: boolean("guest_buyer").notNull().default(false),
+  status: connectionStatusEnum("status").notNull().default(STATUS.PENDING),
   sellerId: text("seller_id")
     .notNull()
     .references(() => users.id),
-  location: text("location").notNull(),
+  buyerId: text("buyer_id").references(() => users.id),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
     .notNull()
