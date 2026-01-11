@@ -84,6 +84,7 @@ export type ProductType = CreateProductType & {
   createdAt: Date;
   user: UserType;
   remainingShares: number;
+  userId: string;
   //   image: any;
 };
 

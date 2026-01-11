@@ -1,7 +1,9 @@
+"use server";
+
 import { BACKEND_URL } from "@/server";
 import { CreateProductType } from "@/types";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 
 export async function createProduct(formData: CreateProductType) {
   try {
@@ -22,11 +24,20 @@ export async function createProduct(formData: CreateProductType) {
       body: JSON.stringify(formData),
     });
     if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || "Failed to create product");
+      throw new Error(`Failed to create product: ${res.statusText}`);
     }
-    redirect("/home");
   } catch (error) {
-    return { error: error instanceof Error ? error.message : "Unknown error" };
+    console.error("Error creating product:", error);
+  }
+  redirect("/products", RedirectType.push);
+}
+
+export async function getCategories() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/categories`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
   }
 }

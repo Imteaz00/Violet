@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createProductForm, CreateProductType, District } from "@/types";
+import { CategoryType, createProductForm, CreateProductType, District } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createProduct, getCategories } from "./create.action";
 
 export default function CreateProductPage() {
   const {
@@ -36,6 +37,11 @@ export default function CreateProductPage() {
     },
   });
   const [formData, setFormData] = useState<CreateProductType>();
+  const [categories, setCategories] = useState<CategoryType[]>();
+
+  useEffect(() => {
+    getCategories().then((categories) => setCategories(categories));
+  }, []);
 
   const handleForm: SubmitHandler<CreateProductType> = (data) => {
     setFormData(data);
@@ -114,8 +120,11 @@ export default function CreateProductPage() {
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="CatA">CatA</SelectItem>
-                    <SelectItem value="CatB">CatB</SelectItem>
+                    {categories?.map((category) => (
+                      <SelectItem key={category.slug} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}
@@ -271,7 +280,7 @@ export default function CreateProductPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {Object.keys(errors).length > 0 ? "Warning" : "This is what are you submitting"}
+                {Object.keys(errors).length > 0 ? "Warning" : "Confirm Your Submission"}
               </DialogTitle>
               <DialogDescription>
                 {Object.keys(errors).length > 0 ? (
@@ -361,11 +370,11 @@ export default function CreateProductPage() {
                 )}
               </DialogDescription>
             </DialogHeader>
-            {Object.keys(errors).length > 0 && (
+            {!(Object.keys(errors).length > 0) && (
               <Button
                 className="transition-transform duration-300 pl-10 pr-10 hover:scale-105 w-full"
                 type="submit"
-                onClick={formData ? handleSubmit(handleForm) : undefined}
+                onClick={formData ? () => createProduct(formData) : undefined}
               >
                 Submit
               </Button>

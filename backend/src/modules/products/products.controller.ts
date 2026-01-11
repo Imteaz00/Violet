@@ -4,6 +4,10 @@ import { getAuth } from "@clerk/express";
 import { ROLE, STATUS } from "../../constants.js";
 import { getUserById } from "../users/users.queries.js";
 
+// Basic UUID format validator (accepts any UUID version)
+const isUuid = (value: string) =>
+  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
+
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     let { sort, category, search, limit, offset } = req.query;
@@ -74,7 +78,6 @@ export const createProduct = async (req: Request, res: Response) => {
       quantity,
       condition,
       noOfShares,
-      status,
       sellingReason,
       type,
       district,
@@ -86,30 +89,27 @@ export const createProduct = async (req: Request, res: Response) => {
       !boughtFrom ||
       !askingPrice ||
       !expiryDate ||
-      !location ||
       !quantity ||
       !condition ||
       !district
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
-
     const product = await productQueries.createProduct({
       title,
       description,
       boughtFrom,
       askingPrice,
+      sellingReason,
       expiryDate,
       location,
+      district,
+      type,
       quantity,
       condition,
-      userId,
       noOfShares,
-      status,
+      userId,
       remainingShares: noOfShares,
-      sellingReason,
-      type,
-      district,
     });
 
     res.status(201).json(product);

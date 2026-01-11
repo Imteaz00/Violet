@@ -23,54 +23,51 @@ export const getAllProducts = async ({
   limit: number;
   offset: number;
 }) => {
-  const baseQuery = {
-    where: and(
-      search
-        ? or(
-            ilike(products.title, sql`%${search}%`),
-            ilike(products.description, sql`%${search}%`),
-            ilike(products.location, sql`%${search}%`),
-            ilike(products.condition, sql`%${search}%`)
-          )
-        : undefined,
-      category ? eq(products.category, category) : undefined
-    ),
+  // Normalize inputs: treat empty strings as absent
+  const qCategory = category?.trim() || undefined;
+  const qSearch = search?.trim() || undefined;
+
+  // Build conditions safely
+  const conditions: any[] = [];
+  if (qSearch) {
+    const pattern = sql`'%' || ${qSearch} || '%'`;
+    conditions.push(
+      or(
+        ilike(products.title, pattern),
+        ilike(products.description, pattern),
+        ilike(products.location, pattern),
+        ilike(products.condition, pattern)
+      )
+    );
+  }
+  if (qCategory) {
+    conditions.push(eq(products.category, qCategory));
+  }
+
+  // Base query options
+  const queryOptions: any = {
     limit,
     offset,
+    with: { user: true, productImages: true },
+  };
+  if (conditions.length) queryOptions.where = and(...conditions);
+
+  // Single place to compute ordering based on `sort`
+  const orderBy = (p: typeof products, helpers: any) => {
+    const { asc, desc } = helpers;
+    if (sort === "asc") return [asc(sql`${p.askingPrice} / ${p.noOfShares}`)];
+    if (sort === "desc") return [desc(sql`${p.askingPrice} / ${p.noOfShares}`)];
+    return [desc(p.createdAt)];
   };
 
-  switch (sort) {
-    case "asc":
-      return db.query.products.findMany({
-        ...baseQuery,
-        with: {
-          user: true,
-          productImages: true,
-        },
-        orderBy: (_, { asc }) => [asc(sql`${products.askingPrice} / ${products.noOfShares}`)],
-      });
-    case "desc":
-      return db.query.products.findMany({
-        ...baseQuery,
-        with: {
-          user: true,
-          productImages: true,
-        },
-        orderBy: (_, { desc }) => [desc(sql`${products.askingPrice} / ${products.noOfShares}`)],
-      });
-    default:
-      return db.query.products.findMany({
-        ...baseQuery,
-        with: {
-          user: true,
-          productImages: true,
-        },
-        orderBy: (_, { desc }) => [desc(products.createdAt)],
-      });
-  }
+  return db.query.products.findMany({ ...queryOptions, orderBy });
 };
 
 export const getProductById = async (id: string) => {
+  const isUuid = (value: string) =>
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
+  if (!isUuid(id)) return null;
+
   return db.query.products.findFirst({
     where: eq(products.id, id),
     with: {

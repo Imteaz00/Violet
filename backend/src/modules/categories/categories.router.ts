@@ -5,7 +5,7 @@ import { requireAuth } from "@clerk/express";
 const categoryRouters = Router();
 
 categoryRouters.get("/", categoryController.getAllCategory);
-categoryRouters.get("/:slug", categoryController.getCategoryBySlug);
-categoryRouters.delete("/:slug", requireAuth(), categoryController.deleteCategory);
+// categoryRouters.get("/:slug", categoryController.getCategoryBySlug);
+// categoryRouters.delete("/:slug", requireAuth(), categoryController.deleteCategory);
 
 export default categoryRouters;

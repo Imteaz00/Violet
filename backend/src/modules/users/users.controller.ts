@@ -32,7 +32,8 @@ export async function getUser(req: Request, res: Response) {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const user = await userQueries.getUserById(userId);
+    const id = req.params.id;
+    const user = await userQueries.getUserById(id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     res.status(200).json(user);
