@@ -9,6 +9,8 @@ import { useState } from "react";
 import ShippingForm from "@/components/ShippingForm";
 import PaymentForm from "@/components/PaymentForm";
 import useBagStore from "@/stores/bagStore";
+import submitOrder from "@/actions/submitOrder";
+import { toast } from "react-toastify";
 
 const steps = [
   { id: 1, name: "Shopping Bag" },
@@ -25,7 +27,7 @@ export default function BagPage() {
   const router = useRouter();
 
   const activeStep = parseInt(searchParams.get("step") || "1");
-  const { bag, removeFromBag } = useBagStore();
+  const { bag, removeFromBag, emptyBag } = useBagStore();
 
   const total = formatCurrency(
     bag.reduce(
@@ -33,6 +35,23 @@ export default function BagPage() {
       0
     )
   );
+
+  const handleOrderSubmit = async ({
+    method,
+    transactionId,
+  }: {
+    method: string;
+    transactionId?: string;
+  }) => {
+    const success = await submitOrder({
+      shippingForm: shippingForm!,
+      payment: { method, transactionId },
+      bag,
+    });
+    emptyBag();
+    toast.success(`Order placed successfully for: ${success.join(", ")}`);
+    router.replace("/", { scroll: false });
+  };
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center mt-12">
@@ -105,10 +124,10 @@ export default function BagPage() {
                 </Button>
               </div>
             ))
-          ) : activeStep === 2 ? (
+          ) : activeStep === 2 && bag.length !== 0 ? (
             <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
-            <PaymentForm />
+            <PaymentForm handleOrderSubmit={handleOrderSubmit} />
           ) : (
             <p className="text-sm text-destructive">Please fill in shipping address to continue.</p>
           )}
@@ -140,7 +159,7 @@ export default function BagPage() {
             {activeStep === 1 && (
               <Button
                 onClick={() => router.replace("/bag?step=2", { scroll: false })}
-                className="w-full duration-300 hover:scale-110 hover:text-accent-foreground p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
+                className="w-full duration-300 hover:scale-110 p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
               >
                 Continue
                 <ArrowRight className="w-3 h-3" />

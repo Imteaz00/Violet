@@ -1,11 +1,11 @@
 import { integer, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "../users/users.schema.js";
-import { productImages } from "../productImages/productImages.schema.js";
 import { products } from "../products/products.schema.js";
 import { relations } from "drizzle-orm";
 import { STATUS } from "../../constants.js";
 
 export const connectionStatusEnum = pgEnum("connection_status", [
+  STATUS.AWATING,
   STATUS.PENDING,
   STATUS.DELIVERING,
   STATUS.CONFIRMING,
@@ -20,6 +20,8 @@ export const connections = pgTable("connections", {
   district: text("district").notNull(),
   address: text("location").notNull(),
   noOfShares: integer("no_of_shares").default(1).notNull(),
+  paymentMethod: text("payment_method").notNull(),
+  transactionId: text("transaction_id"),
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),

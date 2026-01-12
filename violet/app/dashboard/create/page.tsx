@@ -19,8 +19,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { createProduct, getCategories } from "./create.action";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function CreateProductPage() {
   const {
@@ -52,20 +54,15 @@ export default function CreateProductPage() {
     setFormData(data);
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const handleFinalSubmit = async () => {
     if (!formData) return;
     setIsSubmitting(true);
-    try {
-      await createProduct(formData);
-      // Add success feedback (toast, redirect, etc.)
-      alert("Product created successfully!");
-    } catch (err) {
-      console.error("Failed to create product:", err);
-      alert("Failed to create product. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    await createProduct(formData);
+    toast.success("Product created successfully!");
+    router.push("/products");
+    setIsSubmitting(false);
   };
 
   return (
@@ -142,7 +139,7 @@ export default function CreateProductPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.map((category) => (
-                      <SelectItem key={category.slug} value={category.name}>
+                      <SelectItem key={category.slug} value={category.slug}>
                         {category.name}
                       </SelectItem>
                     ))}

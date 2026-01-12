@@ -24,8 +24,9 @@ export const getAllProducts = async ({
   offset: number;
 }) => {
   // Normalize inputs: treat empty strings as absent
-  const qCategory = category?.trim() || undefined;
+  let qCategory = category?.trim() || undefined;
   const qSearch = search?.trim() || undefined;
+  if (category === "all") qCategory = undefined;
 
   // Build conditions safely
   const conditions: (SQL | undefined)[] = [];
@@ -43,6 +44,7 @@ export const getAllProducts = async ({
   if (qCategory) {
     conditions.push(eq(products.category, qCategory));
   }
+  conditions.push(eq(products.status, "active"));
 
   // Base query options
   const queryOptions: any = {
