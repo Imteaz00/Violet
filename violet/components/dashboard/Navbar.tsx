@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ModeToggle } from "../ui/mode-toggle";
 import { SidebarTrigger } from "../ui/sidebar";
 

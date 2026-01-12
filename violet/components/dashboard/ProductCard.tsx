@@ -1,6 +1,5 @@
 import { ProductType } from "@/types";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
-import { ShieldAlertIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 

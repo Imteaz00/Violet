@@ -40,11 +40,32 @@ export default function CreateProductPage() {
   const [categories, setCategories] = useState<CategoryType[]>();
 
   useEffect(() => {
-    getCategories().then((categories) => setCategories(categories));
+    getCategories()
+      .then((categories) => setCategories(categories))
+      .catch((err) => {
+        console.error("Failed to fetch categories:", err);
+        setCategories([]);
+      });
   }, []);
 
   const handleForm: SubmitHandler<CreateProductType> = (data) => {
     setFormData(data);
+  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleFinalSubmit = async () => {
+    if (!formData) return;
+    setIsSubmitting(true);
+    try {
+      await createProduct(formData);
+      // Add success feedback (toast, redirect, etc.)
+      alert("Product created successfully!");
+    } catch (err) {
+      console.error("Failed to create product:", err);
+      alert("Failed to create product. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -274,7 +295,7 @@ export default function CreateProductPage() {
               className="w-full transition-transform duration-300 pl-10 pr-10 hover:scale-105"
               type="submit"
             >
-              Submit
+              Next
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -373,10 +394,11 @@ export default function CreateProductPage() {
             {!(Object.keys(errors).length > 0) && (
               <Button
                 className="transition-transform duration-300 pl-10 pr-10 hover:scale-105 w-full"
-                type="submit"
-                onClick={formData ? () => createProduct(formData) : undefined}
+                type="button"
+                onClick={handleFinalSubmit}
+                disabled={isSubmitting}
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Confirm & Submit"}
               </Button>
             )}
           </DialogContent>

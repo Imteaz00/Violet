@@ -8,7 +8,7 @@ import { ButtonGroup } from "./ui/button-group";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Suspense } from "react";
 
-export default async function Navbar() {
+export default function Navbar() {
   return (
     <nav className="w-full flex items-center justify-between border-b pb-4 bg-secondary rounded-lg px-4 pt-3 shadow-md">
       <Link href="/" className="flex items-center">

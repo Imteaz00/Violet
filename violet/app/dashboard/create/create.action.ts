@@ -24,10 +24,10 @@ export async function createProduct(formData: CreateProductType) {
       body: JSON.stringify(formData),
     });
     if (!res.ok) {
-      throw new Error(`Failed to create product: ${res.statusText}`);
+      return { error: `Failed to create product: ${res.statusText}` };
     }
   } catch (error) {
-    console.error("Error creating product:", error);
+    return { error: "An unexpected error occurred" };
   }
   redirect("/products", RedirectType.push);
 }
@@ -35,6 +35,10 @@ export async function createProduct(formData: CreateProductType) {
 export async function getCategories() {
   try {
     const res = await fetch(`${BACKEND_URL}/categories`);
+    if (!res.ok) {
+      console.error("Failed to fetch categories:", res.statusText);
+      return [];
+    }
     const data = await res.json();
     return data;
   } catch (error) {

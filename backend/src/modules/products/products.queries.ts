@@ -1,4 +1,4 @@
-import { and, eq, ExtractTablesWithRelations, gte, ilike, or, sql } from "drizzle-orm";
+import { and, eq, ExtractTablesWithRelations, gte, ilike, or, SQL, sql } from "drizzle-orm";
 import { db } from "../../config/db.js";
 import { products } from "./products.schema.js";
 import type { NewProduct } from "../../types.js";
@@ -28,7 +28,7 @@ export const getAllProducts = async ({
   const qSearch = search?.trim() || undefined;
 
   // Build conditions safely
-  const conditions: any[] = [];
+  const conditions: (SQL | undefined)[] = [];
   if (qSearch) {
     const pattern = sql`'%' || ${qSearch} || '%'`;
     conditions.push(

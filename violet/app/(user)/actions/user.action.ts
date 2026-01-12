@@ -44,7 +44,7 @@ export async function syncUserIfNeeded({ force = false } = {}) {
   const cookieStore = await cookies();
   const lastSyncRaw = cookieStore.get("last_user_sync")?.value;
   const lastSyncTs = lastSyncRaw ? Number(lastSyncRaw) : 0;
-  const shouldSync = force || !lastSyncTs || Date.now() - lastSyncTs > 5 * 60 * 1000; // 5 minutes
+  const shouldSync = force || !lastSyncTs || Date.now() - lastSyncTs > 30 * 60 * 1000; // 30 minutes
 
   if (!shouldSync) return { synced: false, reason: "recent" };
 

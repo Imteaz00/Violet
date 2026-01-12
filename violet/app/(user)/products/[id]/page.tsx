@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <p className="text-muted-foreground text-sm">
             Category:{" "}
             <Link href={`/products?category=${product.category}`} className="underline">
-              ashjd
+              {product.category}
             </Link>
           </p>
         </div>

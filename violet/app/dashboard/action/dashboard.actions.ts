@@ -11,7 +11,7 @@ export async function getMyProductsCount() {
 
 export async function getMyProducts() {
   const { userId, getToken } = await auth();
-  if (!userId) return;
+  if (!userId) throw new Error("User not authenticated");
 
   const token = await getToken();
   const res = await fetch(`${BACKEND_URL}/products/myProduct`, {

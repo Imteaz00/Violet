@@ -30,7 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { SignedIn, SignOutButton } from "@clerk/nextjs";
+import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import useBagStore from "@/stores/bagStore";
 import { usePathname } from "next/navigation";
@@ -78,11 +78,17 @@ const items = [
 export default function Appsidebar() {
   const pathName = usePathname();
   const { bag } = useBagStore();
+  const { user } = useUser();
 
   const [myProductsCount, setMyProductsCount] = useState<number | null>(null);
 
   useEffect(() => {
-    getMyProductsCount().then((count) => setMyProductsCount(count));
+    getMyProductsCount()
+      .then((count) => setMyProductsCount(count))
+      .catch((err) => {
+        console.error("Failed to fetch products count:", err);
+        setMyProductsCount(0);
+      });
   }, []);
   return (
     <Sidebar className="border-none">
@@ -143,7 +149,8 @@ export default function Appsidebar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton>
-                    <User2 /> Jone Doe <ChevronUp className="ml-auto" />
+                    <User2 /> {user?.fullName || user?.firstName || "User"}{" "}
+                    <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

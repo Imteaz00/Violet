@@ -2,12 +2,10 @@
 
 import useBagStore from "@/stores/bagStore";
 import { ProductType } from "@/types";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
-import { getAuth } from "@clerk/nextjs/server";
 import { getUserId } from "@/app/(user)/actions/user.action";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
@@ -37,7 +35,12 @@ export default function ProductInteraction({ product }: { product: ProductType }
   };
 
   useEffect(() => {
-    getUserId().then((id) => setUserId(id));
+    getUserId()
+      .then((id) => setUserId(id))
+      .catch((error) => {
+        console.error("Failed to fetch user ID:", error);
+        // Optionally: show a toast notification
+      });
   }, []);
   return (
     <div className="flex flex-col gap-4 mt-4">

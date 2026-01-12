@@ -1,7 +1,7 @@
 import React from "react";
 
-function page() {
+function InboxPage() {
   return <div>hi</div>;
 }
 
-export default page;
+export default InboxPage;

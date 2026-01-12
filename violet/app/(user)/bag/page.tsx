@@ -110,7 +110,7 @@ export default function BagPage() {
           ) : activeStep === 3 && shippingForm ? (
             <PaymentForm />
           ) : (
-            <p className="text-sm text-destructive">Please fill in shipping address continue.</p>
+            <p className="text-sm text-destructive">Please fill in shipping address to continue.</p>
           )}
         </div>
         {bag.length !== 0 && (
