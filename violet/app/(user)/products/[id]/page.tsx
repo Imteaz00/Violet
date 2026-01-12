@@ -3,6 +3,7 @@ import { formatCurrency } from "@/lib/formaters";
 import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const fetchProduct = async (id: string) => {
@@ -42,7 +43,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   }
 
   return (
-    <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
+    <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-6 bg-card rounded-lg p-6 shadow-lg">
       <div className="w-full lg:w-5/12 relative aspect-2/3">
         {/* <Image
                     src={product.images[0]}
@@ -52,7 +53,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
                 /> */}
       </div>
       <div className="w-full lg:w-7/12 flex flex-col gap-4">
-        <h1 className="text-2xl font-medium">{product.title}</h1>
+        <div>
+          <h1 className="text-2xl font-medium">{product.title}</h1>
+          <p className="text-muted-foreground text-sm">
+            Category:{" "}
+            <Link href={`/products?category=${product.category}`} className="underline">
+              {product.category}
+            </Link>
+          </p>
+        </div>
         <p className="text-muted-foreground">{product.description}</p>
         <p className="text-sm text-muted-foreground">
           Remaining Shares:{" "}

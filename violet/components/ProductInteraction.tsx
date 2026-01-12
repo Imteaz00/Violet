@@ -2,14 +2,15 @@
 
 import useBagStore from "@/stores/bagStore";
 import { ProductType } from "@/types";
-import { Minus, Plus, ShoppingCart } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Minus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
+import { getUserId } from "@/app/(user)/actions/user.action";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const { addToBag } = useBagStore();
 
@@ -32,6 +33,15 @@ export default function ProductInteraction({ product }: { product: ProductType }
       className: "",
     });
   };
+
+  useEffect(() => {
+    getUserId()
+      .then((id) => setUserId(id))
+      .catch((error) => {
+        console.error("Failed to fetch user ID:", error);
+        // Optionally: show a toast notification
+      });
+  }, []);
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex flex-col gap-2 text-sm">
@@ -66,6 +76,7 @@ export default function ProductInteraction({ product }: { product: ProductType }
       </div>
       <Button
         variant={"secondary"}
+        disabled={product.remainingShares === 0 || product.userId === userId}
         onClick={handleAddToCart}
         className=" px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium"
       >

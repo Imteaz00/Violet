@@ -6,14 +6,16 @@ import { cookies } from "next/headers";
 
 export async function syncUser() {
   try {
-    const { userId } = await auth();
+    const { userId, getToken } = await auth();
     const user = await currentUser();
     if (!userId || !user) return;
 
-    const res = await fetch(`${BACKEND_URL}/api/users/sync`, {
+    const token = await getToken();
+    const res = await fetch(`${BACKEND_URL}/users/sync`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         id: userId,
@@ -21,6 +23,7 @@ export async function syncUser() {
         email: user.primaryEmailAddress?.emailAddress,
         imageUrl: user.imageUrl,
       }),
+      credentials: "include",
     });
 
     if (!res.ok) {
@@ -34,16 +37,34 @@ export async function syncUser() {
   }
 }
 
-export async function syncUserIfNeeded() {
+export async function syncUserIfNeeded({ force = false } = {}) {
   const user = await currentUser();
-  if (!user) return;
+  if (!user) return { synced: false, reason: "no_user" };
 
   const cookieStore = await cookies();
-  const lastSync = cookieStore.get("last_user_sync")?.value;
-  const shouldSync = !lastSync || Date.now() - parseInt(lastSync) > 3600000;
+  const lastSyncRaw = cookieStore.get("last_user_sync")?.value;
+  const lastSyncTs = lastSyncRaw ? Number(lastSyncRaw) : 0;
+  const shouldSync = force || !lastSyncTs || Date.now() - lastSyncTs > 30 * 60 * 1000; // 30 minutes
 
-  if (shouldSync) {
-    await syncUser();
-    cookieStore.set("last_user_sync", Date.now().toString());
+  if (!shouldSync) return { synced: false, reason: "recent" };
+
+  await syncUser();
+
+  try {
+    cookieStore.set({
+      name: "last_user_sync",
+      value: Date.now().toString(),
+      path: "/",
+      httpOnly: true, // server-only cookie
+    });
+  } catch (err) {
+    console.warn("Could not set last_user_sync cookie:", err);
   }
+
+  return { synced: true };
+}
+
+export async function getUserId() {
+  const { userId } = await auth();
+  return userId;
 }
