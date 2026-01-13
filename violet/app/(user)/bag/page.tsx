@@ -43,14 +43,22 @@ export default function BagPage() {
     method: string;
     transactionId?: string;
   }) => {
-    const success = await submitOrder({
-      shippingForm: shippingForm!,
-      payment: { method, transactionId },
-      bag,
-    });
-    emptyBag();
-    toast.success(`Order placed successfully for: ${success.join(", ")}`);
-    router.replace("/", { scroll: false });
+    if (!shippingForm) {
+      toast.error("Shipping information is missing");
+      return;
+    }
+    try {
+      const success = await submitOrder({
+        shippingForm: shippingForm!,
+        payment: { method, transactionId },
+        bag,
+      });
+      emptyBag();
+      toast.success(`Order placed successfully for: ${success.join(", ")}`);
+      router.replace("/", { scroll: false });
+    } catch (error) {
+      toast.error("Failed to place order. Please try again.");
+    }
   };
 
   return (

@@ -39,6 +39,11 @@ export default function PaymentForm({
   const handleSubmit = () => {
     setIsLoading(true);
     handleOrderSubmit({ method: selectedPayment, transactionId: transactionId || undefined });
+    try {
+      handleOrderSubmit({ method: selectedPayment, transactionId: transactionId || undefined });
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,7 +73,6 @@ export default function PaymentForm({
                           <Input
                             id="transactionId"
                             type="text"
-                            placeholder="Max Leiter"
                             onChange={(e) => setTransactionId(e.target.value)}
                           />
                           <FieldDescription>
@@ -87,7 +91,7 @@ export default function PaymentForm({
       </div>
       <div>
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             {" "}
             <Button
               type="submit"

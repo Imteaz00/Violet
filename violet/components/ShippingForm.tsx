@@ -40,7 +40,7 @@ export default function ShippingForm({
       .catch((err) => {
         console.error("Failed to fetch user data:", err);
       });
-  }, []);
+  }, [setValue]);
 
   const handleShippingForm: SubmitHandler<ShippingFormInputs> = (data) => {
     setShippingForm(data);
@@ -57,7 +57,6 @@ export default function ShippingForm({
           type="text"
           id="name"
           placeholder="Jane Doe"
-          //   defaultValue={userData?.name || ""}
           {...register("name")}
           className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"
@@ -72,7 +71,6 @@ export default function ShippingForm({
           type="email"
           id="email"
           placeholder="jane@email.com"
-          //   defaultValue={userData?.email || ""}
           {...register("email")}
           className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"
@@ -87,7 +85,6 @@ export default function ShippingForm({
           type="text"
           id="Phone"
           placeholder="011223344"
-          //   defaultValue={userData?.phone || ""}
           {...register("phone")}
           className="border-b border-muted-foreground py-2 outline-none text-sm"
         ></input>
@@ -101,7 +98,6 @@ export default function ShippingForm({
           type="text"
           id="address"
           placeholder="221B Baker Street"
-          //   defaultValue={userData?.location || ""}
           {...register("address")}
           className="border-b border-muted-foreground py-2 outline-none text-sm"
           autoComplete="off"

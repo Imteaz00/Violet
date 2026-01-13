@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createProduct, getCategories } from "./create.action";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -59,12 +59,17 @@ export default function CreateProductPage() {
   const handleFinalSubmit = async () => {
     if (!formData) return;
     setIsSubmitting(true);
-    await createProduct(formData);
-    toast.success("Product created successfully!");
-    router.push("/products");
-    setIsSubmitting(false);
+    try {
+      await createProduct(formData);
+      toast.success("Product created successfully!");
+      router.push("/products");
+    } catch (error) {
+      console.error("Failed to create product:", error);
+      toast.error("Failed to create product. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
   return (
     <div className="bg-card rounded-lg p-6 max-w-2xl mx-auto mt-10">
       <h1 className="text-2xl font-bold">Add your Item</h1>

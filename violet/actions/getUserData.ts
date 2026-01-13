@@ -15,8 +15,11 @@ export default async function getUserData(): Promise<UserType | null> {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        credentials: "include",
       });
+      if (!res.ok) {
+        console.error("Failed to fetch user data:", res.status, res.statusText);
+        return null;
+      }
       const data = await res.json();
       return data;
     }

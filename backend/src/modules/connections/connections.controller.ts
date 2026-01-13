@@ -9,7 +9,6 @@ import { db } from "../../config/db.js";
 
 export const createConnection = async (req: Request, res: Response) => {
   try {
-    console.log("Create connection request body:", req.body);
     const { userId } = getAuth(req);
 
     const {

@@ -4,6 +4,9 @@ import { BACKEND_URL } from "@/server";
 import { auth } from "@clerk/nextjs/server";
 
 export default async function deleteProduct(productId: string) {
+  if (!productId) {
+    throw new Error("Product ID is required");
+  }
   const { userId, getToken } = await auth();
   if (!userId) {
     throw new Error("Authentication required");

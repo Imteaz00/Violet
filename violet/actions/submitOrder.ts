@@ -2,7 +2,6 @@
 
 import { BACKEND_URL } from "@/server";
 import { BagItemType, ShippingFormInputs } from "@/types";
-import { auth } from "@clerk/nextjs/server";
 
 export default async function submitOrder({
   shippingForm,
@@ -13,9 +12,8 @@ export default async function submitOrder({
   payment: { method: string; transactionId?: string };
   bag: BagItemType[];
 }) {
-  const success: string[] = [];
-  bag.forEach(async (item) => {
-    try {
+  const results = await Promise.all(
+    bag.map(async (item) => {
       const res = await fetch(`${BACKEND_URL}/connections/create`, {
         method: "POST",
         headers: {
@@ -36,10 +34,8 @@ export default async function submitOrder({
       if (!res.ok) {
         throw new Error(`Failed to create connection: ${res.status} ${res.statusText}`);
       }
-      success.push(item.title);
-    } catch (error) {
-      throw new Error("An unexpected error occurred while submitting the order.", { cause: error });
-    }
-  });
-  return success;
+      return item.title;
+    })
+  );
+  return results;
 }

@@ -13,3 +13,9 @@ const NUMBER_FORMATTER = new Intl.NumberFormat("en-BD");
 export function formatNumber(number: number) {
   return NUMBER_FORMATTER.format(number);
 }
+
+const DATE_FORMATTER = new Intl.DateTimeFormat(["ban", "id"]);
+
+export function formatDate(date: Date) {
+  return DATE_FORMATTER.format(date);
+}

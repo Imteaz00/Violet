@@ -20,15 +20,16 @@ export default function Categories() {
     router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
   useEffect(() => {
-    getCategories().then((data) =>
+    getCategories().then((data) => {
+      if (!data) return;
       setCategories([
         {
           name: "All",
           slug: "all",
         },
         ...data,
-      ])
-    );
+      ]);
+    });
   }, []);
 
   return (
@@ -37,7 +38,7 @@ export default function Categories() {
         category.slug === selectedCategory ? (
           <Button
             className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md"
-            key={category.name}
+            key={category.slug}
           >
             {category.name}
           </Button>

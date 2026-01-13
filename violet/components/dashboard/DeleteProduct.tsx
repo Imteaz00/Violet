@@ -19,15 +19,25 @@ import {
 export default function DeleteProduct({ productId }: { productId: string }) {
   async function handleDelete(productId: string) {
     setIsDeleting(true);
-    const data = await deleteProduct(productId);
-    toast.success("Product deleted successfully!");
-    window.location.reload();
-    setIsDeleting(false);
+    try {
+      const data = await deleteProduct(productId);
+      if (data?.error) {
+        toast.error(data.error);
+        setIsDeleting(false);
+        return;
+      }
+      toast.success("Product deleted successfully!");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Failed to delete product");
+      setIsDeleting(false);
+    }
   }
+
   const [isDeleting, setIsDeleting] = useState(false);
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
         <Button
           variant="destructive"
           size="sm"
