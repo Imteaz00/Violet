@@ -5,6 +5,7 @@ import { ProductType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { formatDate } from "../../../../lib/formaters";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`, {
@@ -68,14 +69,21 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <span className="text-accent-foreground text-lg">{product.remainingShares}</span> /
           {product.noOfShares}
         </p>
+        <p className="text-muted-foreground text-sm">Quantity: {product.quantity} (whole)</p>
         <h2 className="text-2xl font-semibold">
           {formatCurrency(
             product.noOfShares > 0
               ? Math.ceil(product.askingPrice / product.noOfShares)
               : product.askingPrice
-          )}
+          )}{" "}
+          <span className="text-sm font-normal text-muted-foreground"> per share</span>
         </h2>
         <ProductInteraction product={product} />
+        <div className="text-sm text-muted-foreground">
+          <p>Location: {product.district}</p>
+          <p>Condition: {product.condition}</p>
+          <p>Date of Expiration: {formatDate(new Date(product.expiryDate))}</p>
+        </div>
       </div>
     </div>
   );

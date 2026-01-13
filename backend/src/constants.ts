@@ -6,6 +6,7 @@ export const STATUS = {
   VALIDATING: "validating",
   ACTIVE: "active",
   SOLD: "sold",
+  AWATING: "awaiting",
   PENDING: "pending",
   DELIVERING: "delivering",
   CONFIRMING: "confirming",

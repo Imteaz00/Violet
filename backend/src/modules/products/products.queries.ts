@@ -5,6 +5,7 @@ import type { NewProduct } from "../../types.js";
 import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import * as schema from "../../config/schema.js";
+import { STATUS } from "../../constants.js";
 
 export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();
@@ -24,9 +25,9 @@ export const getAllProducts = async ({
   offset: number;
 }) => {
   // Normalize inputs: treat empty strings as absent
-  const qCategory = category?.trim() || undefined;
+  let qCategory = category?.trim() || undefined;
   const qSearch = search?.trim() || undefined;
-
+  if (qCategory === "all") qCategory = undefined;
   // Build conditions safely
   const conditions: (SQL | undefined)[] = [];
   if (qSearch) {
@@ -43,6 +44,7 @@ export const getAllProducts = async ({
   if (qCategory) {
     conditions.push(eq(products.category, qCategory));
   }
+  conditions.push(eq(products.status, STATUS.ACTIVE));
 
   // Base query options
   const queryOptions: any = {

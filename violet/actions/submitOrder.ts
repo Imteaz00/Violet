@@ -1,0 +1,41 @@
+"use server";
+
+import { BACKEND_URL } from "@/server";
+import { BagItemType, ShippingFormInputs } from "@/types";
+
+export default async function submitOrder({
+  shippingForm,
+  payment,
+  bag,
+}: {
+  shippingForm: ShippingFormInputs;
+  payment: { method: string; transactionId?: string };
+  bag: BagItemType[];
+}) {
+  const results = await Promise.all(
+    bag.map(async (item) => {
+      const res = await fetch(`${BACKEND_URL}/connections/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: item.id,
+          noOfShares: item.shares,
+          name: shippingForm.name,
+          email: shippingForm.email,
+          phone: shippingForm.phone,
+          address: shippingForm.address,
+          district: shippingForm.district,
+          paymentMethod: payment.method,
+          transactionId: payment.transactionId || null,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to create connection: ${res.status} ${res.statusText}`);
+      }
+      return item.title;
+    })
+  );
+  return results;
+}

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { getUserId } from "@/app/(user)/actions/user.action";
+import { formatCurrency } from "../lib/formaters";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);
@@ -42,10 +43,15 @@ export default function ProductInteraction({ product }: { product: ProductType }
         // Optionally: show a toast notification
       });
   }, []);
+
+  const calculatedTotal = formatCurrency(
+    product.noOfShares > 0
+      ? Math.ceil(product.askingPrice / product.noOfShares) * quantity
+      : product.askingPrice * quantity
+  );
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex flex-col gap-2 text-sm">
-        <span className="text-muted-foreground">Quantity</span>
         {product.remainingShares > 0 ? (
           <div className="flex items-center gap-2">
             <Button
@@ -82,7 +88,7 @@ export default function ProductInteraction({ product }: { product: ProductType }
       >
         <span className="flex items-center gap-2 transition-transform duration-300 pl-10 pr-10 hover:scale-110">
           <Plus className="w-4 h-4" />
-          Add to Bag
+          Add to Bag <span className="text-muted-foreground">(Total: {calculatedTotal})</span>
         </span>
       </Button>
     </div>

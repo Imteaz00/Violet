@@ -1,14 +1,3 @@
-import Filter from "@/components/Filter";
-import SearchBar from "@/components/SearchBar";
-import { Suspense } from "react";
-
-export default function DashboardPage() {
-  return (
-    <Suspense fallback={<div className="w-48 h-10 bg-muted animate-pulse rounded" />}>
-      <div className="flex justify-between h-10 mb-5 items-center ml-5">
-        <SearchBar />
-        <Filter />
-      </div>
-    </Suspense>
-  );
+export default function DashboardPageage() {
+  return <h1 className="text-2xl font-bold text-center">Welcome to your dashboard!</h1>;
 }

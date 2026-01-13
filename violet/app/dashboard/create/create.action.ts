@@ -29,7 +29,6 @@ export async function createProduct(formData: CreateProductType) {
   } catch (error) {
     return { error: "An unexpected error occurred" };
   }
-  redirect("/products", RedirectType.push);
 }
 
 export async function getCategories() {

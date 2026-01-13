@@ -11,9 +11,19 @@ export const createConnection = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
 
-    const { productId, noOfShares, name, email, phone, district, address } = req.body;
+    const {
+      productId,
+      noOfShares,
+      name,
+      email,
+      phone,
+      district,
+      address,
+      paymentMethod,
+      transactionId,
+    } = req.body;
 
-    if (!productId || !noOfShares || !name || !phone || !district || !address) {
+    if (!productId || !noOfShares || !name || !phone || !district || !address || !paymentMethod) {
       return res.status(400).json({ error: "All info not provided" });
     }
 
@@ -47,6 +57,8 @@ export const createConnection = async (req: Request, res: Response) => {
         buyerId: userId,
         productId,
         noOfShares,
+        paymentMethod,
+        transactionId,
         sellerId: seller.id,
       });
       return { connection, updatedProduct };

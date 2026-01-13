@@ -1,9 +1,13 @@
-import { shippingForm, ShippingFormInputs } from "@/types";
+"use client";
+import { District, shippingForm, ShippingFormInputs, UserType } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import getUserData from "@/actions/getUserData";
+import { useEffect, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export default function ShippingForm({
   setShippingForm,
@@ -13,12 +17,30 @@ export default function ShippingForm({
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<ShippingFormInputs>({
     resolver: zodResolver(shippingForm),
   });
 
   const router = useRouter();
+
+  useEffect(() => {
+    getUserData()
+      .then((data) => {
+        if (data) {
+          setValue("name", data.name || "");
+          setValue("email", data.email || "");
+          setValue("phone", data.phone || "");
+          setValue("address", data.location || "");
+          setValue("district", "Dhaka");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch user data:", err);
+      });
+  }, [setValue]);
 
   const handleShippingForm: SubmitHandler<ShippingFormInputs> = (data) => {
     setShippingForm(data);
@@ -83,22 +105,30 @@ export default function ShippingForm({
         {errors.address && <p className="text-xs text-destructive">{errors.address.message}</p>}
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="district" className="text-foreground font-medium">
-          District
-        </label>
-        <input
-          type="text"
-          id="district"
-          placeholder="Bogura"
-          {...register("district")}
-          className="border-b border-muted-foreground py-2 outline-none text-sm"
-          autoComplete="off"
-        ></input>
+        <label className="font-medium">District</label>
+        <Controller
+          name="district"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="p-4 focus:border-primary transition-colors">
+                <SelectValue placeholder="Select district" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(District).map((d) => (
+                  <SelectItem key={d} value={d}>
+                    {d}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
         {errors.district && <p className="text-xs text-destructive">{errors.district.message}</p>}
       </div>
       <Button
         type="submit"
-        className="w-full duration-300 hover:scale-110 hover:text-accent-foreground p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
+        className="w-full duration-300 hover:scale-110 p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
       >
         Continue
         <ArrowRight className="w-3 h-3" />

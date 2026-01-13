@@ -2,8 +2,10 @@ import { ProductType } from "@/types";
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "../ui/item";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import DeleteProduct from "./DeleteProduct";
+import { Badge } from "../ui/badge";
 
-export default function ProductCard({ product, param }: { product: ProductType; param?: string }) {
+export default function ProductCard({ product }: { product: ProductType }) {
   return (
     <Item variant="outline" className="bg-card relative">
       <ItemMedia variant="image">
@@ -14,7 +16,13 @@ export default function ProductCard({ product, param }: { product: ProductType; 
         </Link>
       </ItemMedia>
       <ItemContent>
-        <ItemTitle>{product.title}</ItemTitle>
+        <ItemTitle className="font-semibold text-lg">
+          {product.title}{" "}
+          <span className="text-muted-foreground text-sm font-light">
+            Remaining: {product.remainingShares}/{product.noOfShares}
+          </span>
+          <Badge className="ml-2">{product.status}</Badge>
+        </ItemTitle>
         <ItemDescription>{product.description}</ItemDescription>
       </ItemContent>
       <ItemActions>
@@ -27,6 +35,7 @@ export default function ProductCard({ product, param }: { product: ProductType; 
             View
           </Button>
         </Link>
+        <DeleteProduct productId={product.id} />
       </ItemActions>
     </Item>
   );

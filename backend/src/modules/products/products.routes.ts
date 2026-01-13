@@ -10,6 +10,6 @@ productRouters.post("/create", requireAuth(), productControler.createProduct);
 // productRouters.put("/:id/validate", requireAuth(), productControler.validateProduct);
 productRouters.get("/:id", productControler.getProductById);
 // productRouters.put("/:id", requireAuth(), productControler.updateProduct);
-// productRouters.delete("/:id", requireAuth(), productControler.deleteProduct);
+productRouters.delete("/:id", requireAuth(), productControler.deleteProduct);
 
 export default productRouters;

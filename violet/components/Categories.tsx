@@ -3,36 +3,13 @@ import { ShoppingBasket } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 import { CONSTANT } from "@/constants";
-
-const categories = [
-  {
-    name: "All",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "all",
-  },
-  {
-    name: "Body Care",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "body-care",
-  },
-  {
-    name: "Fragrance",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "fragrance",
-  },
-  {
-    name: "Fragrance",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "fragrance",
-  },
-  {
-    name: "Fragrance",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "fragrance",
-  },
-];
+import { useEffect, useState } from "react";
+import { getCategories } from "@/actions/getCategories";
+import { CategoryType } from "@/types";
 
 export default function Categories() {
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathName = usePathname();
@@ -42,6 +19,18 @@ export default function Categories() {
     params.set(CONSTANT.CATEGORY, value || "all");
     router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
+  useEffect(() => {
+    getCategories().then((data) => {
+      if (!data) return;
+      setCategories([
+        {
+          name: "All",
+          slug: "all",
+        },
+        ...data,
+      ]);
+    });
+  }, []);
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 rounded-lg text-sm bg-muted mb-4 mt-2">
@@ -49,9 +38,8 @@ export default function Categories() {
         category.slug === selectedCategory ? (
           <Button
             className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md"
-            key={category.name}
+            key={category.slug}
           >
-            {category.icon}
             {category.name}
           </Button>
         ) : (
@@ -60,7 +48,6 @@ export default function Categories() {
             key={category.name}
             onClick={() => handleChange(category.slug)}
           >
-            {category.icon}
             {category.name}
           </div>
         )

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ToastContainer } from "react-toastify";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SyncOnMount from "@/components/SyncOnMount";
@@ -20,7 +19,6 @@ export default function RootLayout({
       <SyncOnMount />
       {children}
       <Footer />
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar theme="colored" />
     </div>
   );
 }

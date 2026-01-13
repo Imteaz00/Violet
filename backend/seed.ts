@@ -101,6 +101,8 @@ export async function seed() {
       district: faker.location.city(),
       address: faker.location.streetAddress(),
       noOfShares: faker.number.int({ min: 1, max: product.noOfShares }),
+      paymentMethod: faker.helpers.arrayElement(["credit card", "paypal", "bank transfer"]),
+      transactionId: faker.string.uuid(),
       status: faker.helpers.arrayElement(["pending"]) as any,
       productId: product.id,
       buyerId: faker.helpers.maybe(() => buyer.id),
