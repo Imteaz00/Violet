@@ -8,6 +8,7 @@ import productRouters from "./modules/products/products.routes.js";
 import connectionRouters from "./modules/connections/connections.routes.js";
 import categoryRouters from "./modules/categories/categories.router.js";
 // import transactionRouters from "./modules/transactions/transactions.routes.js";
+import messageRouters from "./modules/messages/messages.router.js";
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.use("/api/connections", connectionRouters);
 app.use("/api/products", productRouters);
 // app.use("/api/transaction", transactionRouters);
 app.use("/api/users", userRouters);
+app.use("/api/messages", messageRouters);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   return res.status(err.status || 500).json({ message: err.message || "Internal server error" });

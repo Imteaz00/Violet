@@ -5,9 +5,9 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import getUserData from "@/actions/getUserData";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import fetchUserData from "@/actions/fetchUserData";
 
 export default function ShippingForm({
   setShippingForm,
@@ -27,7 +27,7 @@ export default function ShippingForm({
   const router = useRouter();
 
   useEffect(() => {
-    getUserData()
+    fetchUserData()
       .then((data) => {
         if (data) {
           setValue("name", data.name || "");

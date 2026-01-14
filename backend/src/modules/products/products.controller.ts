@@ -6,7 +6,7 @@ import { getUserById } from "../users/users.queries.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    let { sort, category, search, limit, offset } = req.query;
+    let { sort, category, search, limit, offset, status } = req.query;
 
     const parsedLimit = limit ? parseInt(String(limit), 10) : 20;
     const parsedOffset = offset ? parseInt(String(offset), 10) : 0;
@@ -25,11 +25,24 @@ export const getAllProducts = async (req: Request, res: Response) => {
       sort: sort ? String(sort) : "",
       limit: parsedLimit,
       offset: parsedOffset,
+      status: status ? String(status) : "",
     });
     res.status(200).json(products);
   } catch (error) {
     console.error("Error getting all products:", error);
     res.status(500).json({ error: "Failed to get all products" });
+  }
+};
+
+export const countProduct = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const count = await productQueries.countProduct(userId);
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error("Error counting products:", error);
+    res.status(500).json({ error: "Failed to count products" });
   }
 };
 
@@ -172,13 +185,14 @@ export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const user = await getUserById(userId);
     const { id } = req.params;
 
     const existingProduct = await productQueries.getProductById(id);
 
     if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
-    if (existingProduct.userId != userId)
+    if (existingProduct.userId != userId && user?.role !== ROLE.ADMIN)
       return res.status(403).json({ error: "Can only delete own products" });
     await productQueries.deleteProduct(id);
     res.status(200).json({ message: "Product deleted successfully" });

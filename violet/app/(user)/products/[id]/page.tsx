@@ -1,15 +1,15 @@
 import ProductInteraction from "@/components/ProductInteraction";
-import { formatCurrency } from "@/lib/formaters";
+import { formatCurrency } from "@/lib/formatters";
 import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate } from "../../../../lib/formaters";
+import { formatDate } from "../../../../lib/formatters";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`, {
-    next: { revalidate: 3600 }, // Revalidate every hour
+    next: { revalidate: 120 },
   });
   if (!res.ok) {
     throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);

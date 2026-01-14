@@ -1,11 +1,10 @@
-import {
-  productImages,
-  products,
-  users,
-  transactions,
-  connections,
-  categories,
-} from "./config/schema.js";
+import { messages } from "./modules/messages/messages.schema.js";
+import { users } from "./modules/users/users.schema.js";
+import { products } from "./modules/products/products.schema.js";
+import { productImages } from "./modules/productImages/productImages.schema.js";
+import { categories } from "./modules/categories/categories.schema.js";
+import { connections } from "./modules/connections/connections.schema.js";
+import { transactions } from "./modules/transactions/transactions.schema.js";
 
 export type Category = typeof categories.$inferSelect;
 export type NewCategory = typeof categories.$inferInsert;
@@ -24,3 +23,6 @@ export type NewTransaction = typeof transactions.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export type Message = typeof messages.$inferSelect;
+export type NewMessage = typeof messages.$inferInsert;

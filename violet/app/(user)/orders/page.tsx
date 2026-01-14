@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/formaters";
+import { formatCurrency } from "@/lib/formatters";
 import { BACKEND_URL } from "@/server";
 import { OrderType } from "@/types";
 import { auth } from "@clerk/nextjs/server";

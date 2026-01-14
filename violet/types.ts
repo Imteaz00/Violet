@@ -154,3 +154,12 @@ export type BagStoreActionsType = {
   removeFromBag: (product: BagItemType) => void;
   emptyBag: () => void;
 };
+
+export type MessageType = {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  createdAt: Date;
+  seen: boolean;
+};

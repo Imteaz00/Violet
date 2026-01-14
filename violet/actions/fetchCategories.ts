@@ -3,7 +3,7 @@
 import { BACKEND_URL } from "@/server";
 import { CategoryType } from "@/types";
 
-export async function getCategories(): Promise<CategoryType[]> {
+export async function fetchCategories(): Promise<CategoryType[]> {
   try {
     const res = await fetch(`${BACKEND_URL}/categories`);
     if (!res.ok) {

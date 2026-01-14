@@ -94,7 +94,6 @@ export default function PaymentForm({
           <DialogTrigger asChild>
             {" "}
             <Button
-              type="submit"
               className="w-full duration-300 hover:scale-110 transition-all"
               disabled={selectedPayment === "bkash" && transactionId.trim() === ""}
             >

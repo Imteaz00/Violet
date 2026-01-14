@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { getUserId } from "@/app/(user)/actions/user.action";
-import { formatCurrency } from "../lib/formaters";
+import { formatCurrency } from "../lib/formatters";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);

@@ -4,11 +4,15 @@ import { BACKEND_URL } from "@/server";
 import { UserType } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 
-export default async function getUserData(): Promise<UserType | null> {
+export default async function fetchUserData(): Promise<UserType | null> {
   try {
     const { userId, getToken } = await auth();
     if (userId) {
       const token = await getToken();
+      if (!token) {
+        console.error("Failed to get authentication token");
+        return null;
+      }
       const res = await fetch(`${BACKEND_URL}/users/${userId}`, {
         method: "GET",
         headers: {

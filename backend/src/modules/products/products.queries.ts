@@ -1,4 +1,4 @@
-import { and, eq, ExtractTablesWithRelations, gte, ilike, or, SQL, sql } from "drizzle-orm";
+import { and, count, eq, ExtractTablesWithRelations, gte, ilike, or, SQL, sql } from "drizzle-orm";
 import { db } from "../../config/db.js";
 import { products } from "./products.schema.js";
 import type { NewProduct } from "../../types.js";
@@ -11,18 +11,34 @@ export const createProduct = async (data: NewProduct) => {
   const [product] = await db.insert(products).values(data).returning();
   return product;
 };
+
+export const countProduct = async (userId: string) => {
+  const [product] = await db
+    .select({ count: count() })
+    .from(products)
+    .where(
+      and(
+        or(eq(products.status, STATUS.ACTIVE), eq(products.status, STATUS.VALIDATING)),
+        eq(products.userId, userId)
+      )
+    );
+  return product.count;
+};
+
 export const getAllProducts = async ({
   category,
   search,
   sort,
   limit,
   offset,
+  status,
 }: {
   category: string;
   search: string;
   sort: string;
   limit: number;
   offset: number;
+  status: string;
 }) => {
   // Normalize inputs: treat empty strings as absent
   let qCategory = category?.trim() || undefined;
@@ -44,7 +60,11 @@ export const getAllProducts = async ({
   if (qCategory) {
     conditions.push(eq(products.category, qCategory));
   }
-  conditions.push(eq(products.status, STATUS.ACTIVE));
+  if (status === "active" || status === "validating" || status === "sold") {
+    conditions.push(eq(products.status, status));
+  } else if (status !== "all") {
+    conditions.push(eq(products.status, STATUS.ACTIVE));
+  }
 
   // Base query options
   const queryOptions: any = {

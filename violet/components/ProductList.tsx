@@ -1,36 +1,10 @@
-import { ProductType } from "../types";
 import Categories from "./Categories";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 import { CONSTANT } from "@/constants";
 import Filter from "./Filter";
 import SearchBar from "./SearchBar";
-import { BACKEND_URL } from "@/server";
-
-const fetchData = async ({
-  category,
-  search,
-  sort,
-  params,
-}: {
-  category?: string;
-  search?: string;
-  sort?: string;
-  params: "homepage" | "products";
-}) => {
-  const queryParams = new URLSearchParams();
-  if (category) queryParams.set("category", category);
-  if (search) queryParams.set("search", search);
-  queryParams.set("sort", sort || "newest");
-  queryParams.set("limit", params === "homepage" ? "8" : "20");
-
-  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch products: ${res.statusText}`);
-  }
-  const data: ProductType[] = await res.json();
-  return data;
-};
+import fetchProducts from "@/actions/fetchProducts";
 
 export default async function ProductList({
   category,
@@ -43,7 +17,7 @@ export default async function ProductList({
   sort?: string;
   search?: string;
 }) {
-  const products = await fetchData({ category, sort, search, params });
+  const products = await fetchProducts({ category, sort, search, params });
   return (
     <div className="w-full">
       <Categories />

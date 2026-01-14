@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/formaters";
+import { formatCurrency } from "@/lib/formatters";
 import { ShippingFormInputs } from "../../../types";
 import { ArrowRight, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

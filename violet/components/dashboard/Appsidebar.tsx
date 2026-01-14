@@ -4,7 +4,6 @@ import {
   ChevronUp,
   Inbox,
   Package2Icon,
-  Search,
   ShoppingBagIcon,
   Truck,
   User2,
@@ -34,15 +33,10 @@ import { SignedIn, SignOutButton, useUser } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import useBagStore from "@/stores/bagStore";
 import { usePathname } from "next/navigation";
-import { getMyProductsCount } from "@/app/dashboard/action/dashboard.actions";
 import { useEffect, useState } from "react";
+import { fetchMyProductsCount } from "@/actions/fetchMyProductsCount";
 
 const items = [
-  {
-    title: "Search",
-    url: "/dashboard",
-    icon: Search,
-  },
   {
     title: "My Products",
     url: "/dashboard/myProducts",
@@ -81,13 +75,21 @@ export default function Appsidebar() {
   const { user } = useUser();
 
   const [myProductsCount, setMyProductsCount] = useState<number | null>(null);
+  const [messageCount, setMessageCount] = useState<number | null>(null);
 
   useEffect(() => {
-    getMyProductsCount()
+    fetchMyProductsCount()
       .then((count) => setMyProductsCount(count))
       .catch((err) => {
         console.error("Failed to fetch products count:", err);
         setMyProductsCount(0);
+      });
+
+    fetchMyProductsCount()
+      .then((count) => setMessageCount(count))
+      .catch((err) => {
+        console.error("Failed to fetch products count:", err);
+        setMessageCount(0);
       });
   }, []);
   return (
@@ -115,7 +117,7 @@ export default function Appsidebar() {
                       <div className="flex gap-2">
                         <item.icon /> <span>{item.title}</span>
                       </div>
-                      {item.title === "Inbox" && <span>12</span>}
+                      {item.title === "Inbox" && <span>{messageCount}</span>}
                       {item.title === "My Bag" && <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>}
                       {item.title === "My Products" && (
                         <SidebarMenuBadge>{myProductsCount}</SidebarMenuBadge>
@@ -130,7 +132,7 @@ export default function Appsidebar() {
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
-                    {item.title === "Inbox" && <SidebarMenuBadge>12</SidebarMenuBadge>}
+                    {item.title === "Inbox" && <SidebarMenuBadge>{messageCount}</SidebarMenuBadge>}
                     {item.title === "My Bag" && <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>}
                     {item.title === "My Products" && (
                       <SidebarMenuBadge>{myProductsCount}</SidebarMenuBadge>

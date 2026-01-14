@@ -1,10 +1,9 @@
 "use client";
-import { ShoppingBasket } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 import { CONSTANT } from "@/constants";
 import { useEffect, useState } from "react";
-import { getCategories } from "@/actions/getCategories";
+import { fetchCategories } from "@/actions/fetchCategories";
 import { CategoryType } from "@/types";
 
 export default function Categories() {
@@ -20,7 +19,7 @@ export default function Categories() {
     router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
   useEffect(() => {
-    getCategories().then((data) => {
+    fetchCategories().then((data) => {
       if (!data) return;
       setCategories([
         {
