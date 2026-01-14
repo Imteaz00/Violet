@@ -5,7 +5,7 @@ import { relations } from "drizzle-orm";
 import { STATUS } from "../../constants.js";
 
 export const connectionStatusEnum = pgEnum("connection_status", [
-  STATUS.AWATING,
+  STATUS.AWAITING,
   STATUS.PENDING,
   STATUS.DELIVERING,
   STATUS.CONFIRMING,

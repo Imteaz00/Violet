@@ -1,0 +1,157 @@
+import ProductInteraction from "@/components/ProductInteraction";
+import { formatCurrency } from "@/lib/formaters";
+import { BACKEND_URL } from "@/server";
+import { ProductType } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { formatDate } from "../../../../lib/formaters";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import DeleteProduct from "@/components/dashboard/DeleteProduct";
+import ValidateProduct from "@/components/admin/ValidateProduct";
+import { STATUS } from "@/constants";
+import MessageUser from "@/components/admin/MessageUser";
+
+const fetchProduct = async (id: string) => {
+  const res = await fetch(`${BACKEND_URL}/products/${id}`, {
+    next: { revalidate: 120 },
+  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
+  }
+  const data: ProductType = await res.json();
+  return data;
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  try {
+    const product = await fetchProduct(id);
+    return {
+      title: product.title,
+      description: product.description,
+    };
+  } catch (error) {
+    return {
+      title: "Product Not Found",
+      description: "The requested product could not be found.",
+    };
+  }
+}
+
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  let product: ProductType;
+  try {
+    product = await fetchProduct(id);
+  } catch {
+    notFound();
+  }
+
+  return (
+    <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-6 bg-card rounded-lg p-6 shadow-lg">
+      <div className="w-full lg:w-5/12 relative aspect-2/3">
+        {/* <Image
+                    src={product.images[0]}
+                    alt={product.title}
+                    fill
+                    className="object-contain rounded-md"
+                    /> */}
+      </div>
+      <div className="w-full lg:w-7/12 flex flex-col gap-4">
+        <h1 className="text-2xl font-medium">{product.title}</h1>
+        <p className="text-muted-foreground">{product.description}</p>
+        <Table>
+          <TableCaption>Product Details</TableCaption>
+          <TableBody>
+            <TableRow>
+              <TableCell className="text-center">Seller</TableCell>
+              <TableCell className="text-center">{product.user.name}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Seller Email</TableCell>
+              <TableCell className="text-center">{product.user.email}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Seller Phone</TableCell>
+              <TableCell className="text-center">{product.user.phone}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Shares</TableCell>
+              <TableCell className="text-center">{product.noOfShares}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Quantity</TableCell>
+              <TableCell className="text-center">{product.quantity}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Remaining Shares</TableCell>
+              <TableCell className="text-center">{product.remainingShares}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Asking Price</TableCell>
+              <TableCell className="text-center">{formatCurrency(product.askingPrice)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Price per Share</TableCell>
+              <TableCell className="text-center">
+                {formatCurrency(Math.ceil(product.askingPrice / product.noOfShares))}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">District</TableCell>
+              <TableCell className="text-center">{product.district}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Location</TableCell>
+              <TableCell className="text-center">{product.location}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Created At</TableCell>
+              <TableCell className="text-center">
+                {formatDate(new Date(product.createdAt))}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Expirey Date</TableCell>
+              <TableCell className="text-center">
+                {formatDate(new Date(product.expiryDate))}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Bought From</TableCell>
+              <TableCell className="text-center">{product.boughtFrom}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Condition</TableCell>
+              <TableCell className="text-center">{product.condition}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Selling Reason</TableCell>
+              <TableCell className="text-center">{product.sellingReason}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Type</TableCell>
+              <TableCell className="text-center">{product.type}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="text-center">Status</TableCell>
+              <TableCell className="text-center">{product.status}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+        {product.status === STATUS.VALIDATING && <ValidateProduct productId={product.id} />}
+        <MessageUser user={product.user} />
+        <DeleteProduct productId={product.id} />
+      </div>
+    </div>
+  );
+}

@@ -4,6 +4,7 @@ import { products } from "../products/products.schema.js";
 import { productImages } from "../productImages/productImages.schema.js";
 import { transactions } from "../transactions/transactions.schema.js";
 import { ROLE } from "../../constants.js";
+import { messages } from "../messages/messages.schema.js";
 
 export const roleEnum = pgEnum("role", [ROLE.ADMIN, ROLE.USER]);
 export const users = pgTable("users", {
@@ -26,4 +27,5 @@ export const usersRelations = relations(users, ({ many }) => ({
   productImages: many(productImages),
   products: many(products),
   transactions: many(transactions),
+  messages: many(messages),
 }));

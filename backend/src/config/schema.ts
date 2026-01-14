@@ -4,3 +4,4 @@ export * from "../modules/products/products.schema.js";
 export * from "../modules/transactions/transactions.schema.js";
 export * from "../modules/users/users.schema.js";
 export * from "../modules/categories/categories.schema.js";
+export * from "../modules/messages/messages.schema.js";

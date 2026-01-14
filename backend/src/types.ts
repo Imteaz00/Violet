@@ -1,3 +1,4 @@
+import { messages } from "./modules/messages/messages.schema.js";
 import {
   productImages,
   products,
@@ -24,3 +25,6 @@ export type NewTransaction = typeof transactions.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export type Message = typeof messages.$inferSelect;
+export type NewMessage = typeof messages.$inferInsert;

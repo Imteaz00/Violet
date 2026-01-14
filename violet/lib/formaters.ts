@@ -19,3 +19,17 @@ const DATE_FORMATTER = new Intl.DateTimeFormat(["ban", "id"]);
 export function formatDate(date: Date) {
   return DATE_FORMATTER.format(date);
 }
+
+const DATE_TIME_FORMATTER = new Intl.DateTimeFormat(["ban", "id"], {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true,
+});
+
+export function formatDateTime(date: Date) {
+  return DATE_TIME_FORMATTER.format(date);
+}

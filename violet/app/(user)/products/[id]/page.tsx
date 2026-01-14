@@ -9,7 +9,7 @@ import { formatDate } from "../../../../lib/formaters";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`, {
-    next: { revalidate: 3600 }, // Revalidate every hour
+    next: { revalidate: 120 },
   });
   if (!res.ok) {
     throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);

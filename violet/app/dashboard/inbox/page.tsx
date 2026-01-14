@@ -1,7 +1,12 @@
-import React from "react";
+import fetchMessages from "@/actions/fetchMessages";
+import MessaageCard from "@/components/dashboard/MessageCard";
+import { MessageType } from "@/types";
 
-function InboxPage() {
-  return <div>hi</div>;
+export default async function InboxPage() {
+  const messages: MessageType[] = await fetchMessages();
+
+  if (!messages?.length) {
+    return <div>No messages found.</div>;
+  }
+  return messages.map((message) => <MessaageCard key={message.id} message={message} />);
 }
-
-export default InboxPage;
