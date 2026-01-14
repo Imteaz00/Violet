@@ -1,7 +1,7 @@
 import { ProductType } from "../types";
 import Image from "next/image";
 import Link from "next/link";
-import { formatCurrency } from "../lib/formaters";
+import { formatCurrency } from "../lib/formatters";
 import { Button } from "./ui/button";
 import { ShoppingBagIcon } from "lucide-react";
 

@@ -7,5 +7,11 @@ export default async function MyProductsPage() {
   if (!products?.length) {
     return <div>No products found.</div>;
   }
-  return products.map((product) => <ProductCard key={product.id} product={product} />);
+  return (
+    <>
+      {products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </>
+  );
 }

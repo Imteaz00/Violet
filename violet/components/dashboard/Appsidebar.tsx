@@ -4,7 +4,6 @@ import {
   ChevronUp,
   Inbox,
   Package2Icon,
-  Search,
   ShoppingBagIcon,
   Truck,
   User2,

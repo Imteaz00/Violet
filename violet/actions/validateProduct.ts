@@ -4,6 +4,9 @@ import { auth } from "@clerk/nextjs/server";
 
 export default async function validateProduct(productId: string) {
   try {
+    if (!productId?.trim()) {
+      throw new Error("Product ID is required");
+    }
     const { userId, getToken } = await auth();
     if (!userId) {
       throw new Error("Unauthorized");
@@ -14,7 +17,7 @@ export default async function validateProduct(productId: string) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (!res.ok) {

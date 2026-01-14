@@ -1,11 +1,8 @@
-import ProductInteraction from "@/components/ProductInteraction";
-import { formatCurrency } from "@/lib/formaters";
+import { formatCurrency } from "@/lib/formatters";
 import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatDate } from "../../../../lib/formaters";
+import { formatDate } from "../../../../lib/formatters";
 import {
   Table,
   TableBody,
@@ -121,11 +118,11 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell className="text-center">Expirey Date</TableCell>
+              <TableCell className="text-center">Expiry Date</TableCell>
               <TableCell className="text-center">
                 {formatDate(new Date(product.expiryDate))}
               </TableCell>
-            </TableRow>
+            </TableRow>{" "}
             <TableRow>
               <TableCell className="text-center">Bought From</TableCell>
               <TableCell className="text-center">{product.boughtFrom}</TableCell>

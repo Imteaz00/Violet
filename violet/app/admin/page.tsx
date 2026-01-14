@@ -4,13 +4,12 @@ import {
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function DashboardPageage() {
+export default function DashboardPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-center">Welcome to Admin dashboard!</h1>
@@ -20,7 +19,7 @@ export default function DashboardPageage() {
             <CardTitle>Users</CardTitle>
             <CardDescription>Number of registered users</CardDescription>
             <CardAction>
-              <Button variant="link" className="p-0">
+              <Button variant="link" className="p-0" asChild>
                 <Link href="/admin/users">View</Link>
               </Button>
             </CardAction>

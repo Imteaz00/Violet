@@ -184,8 +184,8 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
-    const user = await getUserById(userId!);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const user = await getUserById(userId);
     const { id } = req.params;
 
     const existingProduct = await productQueries.getProductById(id);

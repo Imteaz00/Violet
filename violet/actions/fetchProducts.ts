@@ -18,7 +18,9 @@ export default async function fetchProducts({
   queryParams.set("sort", sort || "newest");
   queryParams.set("limit", params === "homepage" ? "8" : "20");
 
-  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`);
+  const res = await fetch(`${BACKEND_URL}/products?${queryParams.toString()}`, {
+    next: { revalidate: 60 },
+  });
   if (!res.ok) {
     throw new Error(`Failed to fetch products: ${res.statusText}`);
   }

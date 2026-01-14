@@ -9,8 +9,8 @@ export default function Navbar() {
         <SidebarTrigger />
         <span className="text-muted-foreground text-2xl">|</span>
 
-        <h1 className="pl-4 text-2xl hover:underline hover:underline-offset-4 hover:cursor-pointer hover:text-accent-foreground">
-          <Link href="/dashboard">DashBoard</Link>
+        <h1 className="pl-4 text-2xl hover:underline hover:underline-offset-4 hover:text-accent-foreground">
+          <Link href="/dashboard">Dashboard</Link>
         </h1>
       </div>
       <ModeToggle />

@@ -20,6 +20,6 @@ export const messages = pgTable("messages", {
 });
 
 export const messageRelations = relations(messages, ({ one }) => ({
-  sender: one(users, { fields: [messages.sender], references: [users.id] }),
-  receiver: one(users, { fields: [messages.receiver], references: [users.id] }),
+  senderUser: one(users, { fields: [messages.sender], references: [users.id] }),
+  receiverUser: one(users, { fields: [messages.receiver], references: [users.id] }),
 }));

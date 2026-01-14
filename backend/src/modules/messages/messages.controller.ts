@@ -20,7 +20,10 @@ export const createMessage = async (req: Request, res: Response) => {
       text,
     });
     res.status(201).json(message);
-  } catch (error) {}
+  } catch (error) {
+    console.error("Error creating message:", error);
+    res.status(500).json({ error: "Failed to create message" });
+  }
 };
 
 export const countMessage = async (req: Request, res: Response) => {
@@ -68,10 +71,10 @@ export const getUserMessages = async (req: Request, res: Response) => {
     }
 
     const messages = await messageQueries.getUserMessages(id);
-    await messageQueries.markMessagesAsSeen(userId);
+    await messageQueries.markMessagesAsSeen(id);
     res.status(200).json(messages);
   } catch (error) {
-    console.error("Error deleting category:", error);
-    res.status(500).json({ error: "Failed to delete category" });
+    console.error("Error getting user messages:", error);
+    res.status(500).json({ error: "Failed to get user messages" });
   }
 };

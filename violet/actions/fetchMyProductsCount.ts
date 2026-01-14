@@ -8,6 +8,7 @@ export async function fetchMyProductsCount() {
     const { userId, getToken } = await auth();
     if (!userId) throw new Error("User not authenticated");
     const token = await getToken();
+    if (!token) throw new Error("Failed to obtain token");
     const res = await fetch(`${BACKEND_URL}/products/count`, {
       headers: { Authorization: `Bearer ${token}` },
     });

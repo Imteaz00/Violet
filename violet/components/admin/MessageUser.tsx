@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -21,8 +21,8 @@ export default function MessageUser({ user }: { user: UserType }) {
     setIsLoading(true);
     try {
       const data = await sendMessage({ receiver, text });
-      if (data?.error || data === undefined) {
-        toast.error(data.error);
+      if (data === undefined || data?.error) {
+        toast.error(data?.error ?? "Failed to send message");
         setIsLoading(false);
         return;
       }
@@ -33,6 +33,7 @@ export default function MessageUser({ user }: { user: UserType }) {
       setIsLoading(false);
     }
   }
+  const messageRef = useRef<HTMLInputElement>(null);
 
   return (
     <Dialog>
@@ -45,11 +46,11 @@ export default function MessageUser({ user }: { user: UserType }) {
         <DialogHeader>
           <DialogTitle>Send Message to Seller: {user.name}</DialogTitle>
           <DialogDescription>
-            <Input id="message" placeholder="Type your message here" type="text" />
+            <Input ref={messageRef} placeholder="Type your message here" type="text" />
             <Button
               onClick={() => {
                 const input = document.getElementById("message") as HTMLInputElement;
-                const message = input.value;
+                const message = messageRef.current?.value ?? "";
                 handleMessage(user, message);
               }}
               className="mt-2 w-full duration-300 hover:scale-105 transition-all"

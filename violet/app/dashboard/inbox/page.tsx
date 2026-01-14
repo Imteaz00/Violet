@@ -8,5 +8,11 @@ export default async function InboxPage() {
   if (!messages?.length) {
     return <div>No messages found.</div>;
   }
-  return messages.map((message) => <MessaageCard key={message.id} message={message} />);
+  return (
+    <>
+      {messages.map((message) => (
+        <MessaageCard key={message.id} message={message} />
+      ))}
+    </>
+  );
 }

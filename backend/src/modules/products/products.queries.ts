@@ -62,8 +62,7 @@ export const getAllProducts = async ({
   }
   if (status === "active" || status === "validating" || status === "sold") {
     conditions.push(eq(products.status, status));
-  } else if (status === "all") {
-  } else {
+  } else if (status !== "all") {
     conditions.push(eq(products.status, STATUS.ACTIVE));
   }
 

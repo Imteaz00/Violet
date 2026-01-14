@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 import DeleteProduct from "../dashboard/DeleteProduct";
 import { STATUS } from "@/constants";
-import validateProduct from "@/actions/validateProduct";
 import ValidateProduct from "./ValidateProduct";
 
 export default function AdminProductCard({ product }: { product: ProductType }) {

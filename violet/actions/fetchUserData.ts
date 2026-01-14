@@ -9,6 +9,10 @@ export default async function fetchUserData(): Promise<UserType | null> {
     const { userId, getToken } = await auth();
     if (userId) {
       const token = await getToken();
+      if (!token) {
+        console.error("Failed to get authentication token");
+        return null;
+      }
       const res = await fetch(`${BACKEND_URL}/users/${userId}`, {
         method: "GET",
         headers: {

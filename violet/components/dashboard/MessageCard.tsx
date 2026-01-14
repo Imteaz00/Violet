@@ -1,9 +1,9 @@
 import { MessageType } from "@/types";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "../ui/item";
 import { Badge } from "../ui/badge";
-import { formatDateTime } from "@/lib/formaters";
+import { formatDateTime } from "@/lib/formatters";
 
-export default function MessaageCard({ message }: { message: MessageType }) {
+export default function MessageCard({ message }: { message: MessageType }) {
   return (
     <Item variant="outline" className="bg-card relative">
       <ItemContent>

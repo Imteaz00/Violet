@@ -12,7 +12,7 @@ export async function fetchInboxCount() {
     });
     if (!res.ok) {
       console.error("Failed to fetch inbox count:", res.status, res.statusText);
-      throw new Error(`Failed to fetch inbox count: ${res.statusText}`);
+      return 0;
     }
     const data = await res.json();
     return data.count || 0;

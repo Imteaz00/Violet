@@ -21,13 +21,12 @@ export default async function sendMessage({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         receiver: receiver.id,
         text,
       }),
-      credentials: "include",
     });
     if (!res.ok) {
       console.error("Response not ok:", res.status, res.statusText);
@@ -37,5 +36,6 @@ export default async function sendMessage({
     return data;
   } catch (error) {
     console.error("Error sending message:", error);
+    throw error;
   }
 }

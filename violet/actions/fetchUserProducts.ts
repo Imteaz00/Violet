@@ -1,3 +1,4 @@
+"use server";
 import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import { auth } from "@clerk/nextjs/server";

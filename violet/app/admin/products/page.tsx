@@ -1,7 +1,7 @@
 import fetchAdminProducts from "@/actions/fetchAdminProducts";
 import AdminProductCard from "@/components/admin/ProductCard";
 
-export default async function MyProductsPage() {
+export default async function AdminProductsPage() {
   const products = await fetchAdminProducts();
 
   if (!products?.length) {
