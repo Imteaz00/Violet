@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "build": "npm install && npm install --prefix backend && npm install --prefix violet && npm run build --prefix violet && npm run build --prefix backend",
+        "build": "npm install && npm install --prefix backend && npm run build --prefix backend",
         "start": "npm run db:push --prefix backend && concurrently \"npm run start --prefix backend\" \"npm run start --prefix violet\"",
         "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix violet\""
     },
