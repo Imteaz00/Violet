@@ -25,7 +25,7 @@ export const connections = pgTable("connections", {
   productId: uuid("product_id")
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
-  status: connectionStatusEnum("status").notNull().default(STATUS.PENDING),
+  status: connectionStatusEnum("status").notNull().default(STATUS.AWAITING),
   sellerId: text("seller_id")
     .notNull()
     .references(() => users.id),

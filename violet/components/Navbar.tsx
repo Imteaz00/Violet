@@ -10,7 +10,7 @@ import { Suspense } from "react";
 
 export default function Navbar() {
   return (
-    <nav className="w-full flex items-center justify-between border-b pb-4 bg-secondary rounded-lg px-4 pt-3 shadow-md">
+    <nav className="w-full flex items-center justify-between border-b pb-4 bg-card rounded-lg px-4 pt-3 shadow-md">
       <Link href="/" className="flex items-center">
         <h1 className="text-4xl text-primary font-semibold tracking-wider">
           {" "}
@@ -34,7 +34,7 @@ export default function Navbar() {
         <SignedOut>
           <ButtonGroup>
             <SignInButton mode="modal">
-              <Button variant={"secondary"} className="w-17">
+              <Button variant="secondary" className="w-17">
                 <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground">
                   Sign In
                 </span>

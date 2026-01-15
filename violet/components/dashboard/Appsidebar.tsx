@@ -34,7 +34,9 @@ import { Button } from "../ui/button";
 import useBagStore from "@/stores/bagStore";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchMyProductsCount } from "@/actions/fetchMyProductsCount";
+import { fetchMyProductCount } from "@/actions/fetchMyProductsCount";
+import { fetchInboxCount } from "@/actions/fetchInboxCount";
+import { fetchMyOrderCount } from "@/actions/fetchOrderCount";
 
 const items = [
   {
@@ -59,7 +61,7 @@ const items = [
   },
   {
     title: "My Orders",
-    url: "#",
+    url: "/dashboard/myOrders",
     icon: Truck,
   },
   {
@@ -76,20 +78,28 @@ export default function Appsidebar() {
 
   const [myProductsCount, setMyProductsCount] = useState<number | null>(null);
   const [messageCount, setMessageCount] = useState<number | null>(null);
+  const [orderCount, setOrderCount] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchMyProductsCount()
+    fetchMyProductCount()
       .then((count) => setMyProductsCount(count))
       .catch((err) => {
         console.error("Failed to fetch products count:", err);
         setMyProductsCount(0);
       });
 
-    fetchMyProductsCount()
+    fetchInboxCount()
       .then((count) => setMessageCount(count))
       .catch((err) => {
         console.error("Failed to fetch products count:", err);
         setMessageCount(0);
+      });
+
+    fetchMyOrderCount()
+      .then((count) => setOrderCount(count))
+      .catch((err) => {
+        console.error("Failed to fetch orders count:", err);
+        setOrderCount(0);
       });
   }, []);
   return (
@@ -117,10 +127,15 @@ export default function Appsidebar() {
                       <div className="flex gap-2">
                         <item.icon /> <span>{item.title}</span>
                       </div>
-                      {item.title === "Inbox" && <span>{messageCount}</span>}
-                      {item.title === "My Bag" && <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>}
-                      {item.title === "My Products" && (
+                      {item.title === "Inbox" && messageCount !== 0 && <span>{messageCount}</span>}
+                      {item.title === "My Bag" && bag.length !== 0 && (
+                        <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>
+                      )}
+                      {item.title === "My Products" && myProductsCount !== 0 && (
                         <SidebarMenuBadge>{myProductsCount}</SidebarMenuBadge>
+                      )}
+                      {item.title === "My Orders" && orderCount !== 0 && (
+                        <SidebarMenuBadge>{orderCount}</SidebarMenuBadge>
                       )}
                     </Button>
                   </SidebarMenuItem>
@@ -132,10 +147,17 @@ export default function Appsidebar() {
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
-                    {item.title === "Inbox" && <SidebarMenuBadge>{messageCount}</SidebarMenuBadge>}
-                    {item.title === "My Bag" && <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>}
-                    {item.title === "My Products" && (
+                    {item.title === "Inbox" && messageCount !== 0 && (
+                      <SidebarMenuBadge>{messageCount}</SidebarMenuBadge>
+                    )}
+                    {item.title === "My Bag" && bag.length !== 0 && (
+                      <SidebarMenuBadge>{bag.length}</SidebarMenuBadge>
+                    )}
+                    {item.title === "My Products" && myProductsCount !== 0 && (
                       <SidebarMenuBadge>{myProductsCount}</SidebarMenuBadge>
+                    )}
+                    {item.title === "My Orders" && orderCount !== 0 && (
+                      <SidebarMenuBadge>{orderCount}</SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
                 )

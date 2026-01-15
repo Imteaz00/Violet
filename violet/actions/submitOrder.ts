@@ -2,6 +2,7 @@
 
 import { BACKEND_URL } from "@/server";
 import { BagItemType, ShippingFormInputs } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function submitOrder({
   shippingForm,
@@ -12,12 +13,15 @@ export default async function submitOrder({
   payment: { method: string; transactionId?: string };
   bag: BagItemType[];
 }) {
+  const { getToken } = await auth();
+  const token = await getToken();
   const results = await Promise.all(
     bag.map(async (item) => {
       const res = await fetch(`${BACKEND_URL}/connections/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           productId: item.id,
