@@ -1,6 +1,8 @@
 import fetchUserOrders from "@/actions/fetchUserOrder";
 import OrderCard from "@/components/dashboard/OrderCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function MyOrdersPage() {
   const orders = await fetchUserOrders();
 

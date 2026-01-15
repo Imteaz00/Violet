@@ -1,6 +1,8 @@
 import fetchAllOrders from "@/actions/fetchAllOrders";
 import OrderCard from "@/components/admin/OrderCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function FetchAllPage() {
   const orders = await fetchAllOrders();
 

@@ -17,7 +17,7 @@ export default function Footer() {
       <div className="flex flex-col gap-4 text-sm text-secondary-foreground items-center md:items-start">
         <p className="text-sm text-muted-foreground">Links</p>
         <Link href="/">Homepage</Link>
-        <Link href="/">Contacts</Link>
+        <Link href="/dashboard">Dashboard</Link>
         <Link href="/">Terms of Services</Link>
         <Link href="/">Privacy Policy</Link>
       </div>

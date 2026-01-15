@@ -64,7 +64,10 @@ export const updateConnectionStatus = async (
   return connection;
 };
 
-export const deleteConnection = async (id: string) => {
-  const [connection] = await db.delete(connections).where(eq(connections.id, id)).returning();
+export const deleteConnection = async (
+  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
+  id: string
+) => {
+  const [connection] = await tx.delete(connections).where(eq(connections.id, id)).returning();
   return connection;
 };

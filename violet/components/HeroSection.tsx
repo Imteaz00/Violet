@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Users, PlusCircle, Sparkles, Repeat } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import SearchBar from "./SearchBar";
 
 export function HeroSection() {
   return (
@@ -21,22 +23,31 @@ export function HeroSection() {
             Join group shares, pay only for what you need, and unlock better prices.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex justify-center gap-4 mb-6">
             <Button className="hover:scale-105 transition-all duration-300">
               <Link href={`/products?type=share`}>Browse Active Shares</Link>
             </Button>
             <Button
-              size="lg"
               variant="secondary"
               className="text-violet-400 hover:scale-105 transition-all duration-300"
             >
               <Link href="/dashboard/create">Start a Share</Link>
             </Button>
           </div>
+          <div className="flex justify-center">
+            <Suspense fallback={<div className="w-48 h-10 bg-muted animate-pulse rounded" />}>
+              <SearchBar />
+            </Suspense>
+          </div>
         </div>
 
         {/* cards */}
-        <div className="mt-16 grid gap-6 md:grid-cols-4">
+        <div className="mt-10 grid gap-6 md:grid-cols-4">
+          <HeroCard
+            icon={<Repeat />}
+            title="Resell with Ease"
+            description="List unused portions of your products and reduce your cost."
+          />
           <HeroCard
             icon={<PlusCircle />}
             title="Start a Share"
@@ -51,11 +62,6 @@ export function HeroSection() {
             icon={<Sparkles />}
             title="Try Before Committing"
             description="Test if the products suites your needs."
-          />
-          <HeroCard
-            icon={<Repeat />}
-            title="Resell with Ease"
-            description="List unused portions from your shares and reduce your cost."
           />
         </div>
       </div>

@@ -6,7 +6,7 @@ import { getUserById } from "../users/users.queries.js";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    let { sort, category, search, limit, offset, status } = req.query;
+    let { sort, category, search, limit, offset, status, type } = req.query;
 
     const parsedLimit = limit ? parseInt(String(limit), 10) : 20;
     const parsedOffset = offset ? parseInt(String(offset), 10) : 0;
@@ -26,6 +26,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
       limit: parsedLimit,
       offset: parsedOffset,
       status: status ? String(status) : "",
+      type: type ? String(type) : "",
     });
     res.status(200).json(products);
   } catch (error) {

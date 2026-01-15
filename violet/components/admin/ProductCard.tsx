@@ -6,6 +6,7 @@ import { Badge } from "../ui/badge";
 import DeleteProduct from "../dashboard/DeleteProduct";
 import { STATUS } from "@/constants";
 import ValidateProduct from "./ValidateProduct";
+import Image from "next/image";
 
 export default function AdminProductCard({ product }: { product: ProductType }) {
   return (
@@ -13,7 +14,7 @@ export default function AdminProductCard({ product }: { product: ProductType }) 
       <ItemMedia variant="image">
         <Link href={`/admin/products/${product.id}`}>
           <div className="absolute aspect-2/3">
-            {/* <Image src={product.images[0]}/ alt={product.name} fill className="object-cover hover-scale-105 transition-all duration-300"> */}
+            {/* <Image src={product.[0]} alt={product.title} fill className="object-cover hover-scale-105 transition-all duration-300" /> */}
           </div>
         </Link>
       </ItemMedia>

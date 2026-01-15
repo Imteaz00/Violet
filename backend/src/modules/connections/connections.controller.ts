@@ -186,8 +186,24 @@ export const deleteConnectionStatus = async (req: Request, res: Response) => {
       return res.status(403).json({ error: "Can only delete own connections" });
     }
 
-    const deletedConnection = await connectionQueries.deleteConnectionStatus(orderId);
-    res.status(200).json(deletedConnection);
+    const data = await db.transaction(async (tx) => {
+      const updatedProduct = await decreaseRemainingShare(
+        tx,
+        -existingConnection.noOfShares,
+        existingConnection.productId
+      );
+      if (!updatedProduct) {
+        tx.rollback();
+        throw new Error("Failed to decrease remaining shares");
+      }
+      const deletedConnection = await connectionQueries.deleteConnection(tx, orderId);
+
+      return deletedConnection;
+    });
+    if (!data) {
+      return res.status(409).json({ error: "Failed to create connection" });
+    }
+    res.status(200).json(data);
   } catch (error) {
     console.error("Error deleting connection:", error);
     res.status(500).json({ error: "Failed to delete connection" });

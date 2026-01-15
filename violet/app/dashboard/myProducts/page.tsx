@@ -1,6 +1,8 @@
 import fetchUserProducts from "@/actions/fetchUserProducts";
 import ProductCard from "@/components/dashboard/ProductCard";
 
+export const dynamic = "force-dynamic";
+
 export default async function MyProductsPage() {
   const products = await fetchUserProducts();
 

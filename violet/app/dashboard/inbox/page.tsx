@@ -2,6 +2,8 @@ import fetchMessages from "@/actions/fetchMessages";
 import MessaageCard from "@/components/dashboard/MessageCard";
 import { MessageType } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 export default async function InboxPage() {
   const messages: MessageType[] = await fetchMessages();
 

@@ -19,9 +19,6 @@ export default function Navbar() {
         </h1>
       </Link>
       <div className="flex items-center gap-2">
-        <Suspense fallback={<div className="w-48 h-10 bg-muted animate-pulse rounded" />}>
-          <SearchBar />
-        </Suspense>
         <ModeToggle />
         <ShoppingBagIcon />
         <Link
