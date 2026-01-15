@@ -1,4 +1,4 @@
-import { eq, ExtractTablesWithRelations } from "drizzle-orm";
+import { and, count, eq, ExtractTablesWithRelations, or } from "drizzle-orm";
 import { db } from "../../config/db.js";
 import type { NewConnection } from "../../types.js";
 import { PgTransaction } from "drizzle-orm/pg-core";
@@ -35,6 +35,23 @@ export const getUserConnection = async (userId: string) => {
   });
 };
 
+export const getConnectionCount = async (userId: string) => {
+  const [connection] = await db
+    .select({ count: count() })
+    .from(connections)
+    .where(
+      and(
+        eq(connections.buyerId, userId),
+        or(
+          eq(connections.status, "awaiting"),
+          eq(connections.status, "pending"),
+          eq(connections.status, "delivering")
+        )
+      )
+    );
+  return connection.count;
+};
+
 export const updateConnectionStatus = async (
   id: string,
   status: "pending" | "delivering" | "confirming" | "done"
@@ -44,5 +61,10 @@ export const updateConnectionStatus = async (
     .set({ status })
     .where(eq(connections.id, id))
     .returning();
+  return connection;
+};
+
+export const deleteConnection = async (id: string) => {
+  const [connection] = await db.delete(connections).where(eq(connections.id, id)).returning();
   return connection;
 };

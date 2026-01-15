@@ -1,3 +1,4 @@
+import { HeroSection } from "@/components/HeroSection";
 import ProductList from "@/components/ProductList";
 
 export default async function Homepage({
@@ -8,11 +9,8 @@ export default async function Homepage({
   const category = (await searchParams).category;
   return (
     <div>
+      <HeroSection />
       <ProductList category={category} params="homepage" />
     </div>
   );
 }
-
-<div className="relative aspect-3/1 mb-12">
-  {/* <Image src="/featured.png" alt="Featured Product" fill /> */}
-</div>;

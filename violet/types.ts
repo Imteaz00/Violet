@@ -132,16 +132,18 @@ export const shippingForm = z.object({
 export type ShippingFormInputs = z.infer<typeof shippingForm>;
 
 export type OrderType = ShippingFormInputs & {
-  _id: string;
+  id: string;
   noOfShares: number;
   productId: string;
   buyerId: string | null;
-  status: "pending" | "delivering" | "confirming" | "done";
+  status: "awaiting" | "pending" | "delivering" | "confirming" | "done";
   sellerId: string;
   createdAt: Date;
   product: ProductType;
-  buyer: UserType | null;
+  buyer?: UserType;
   seller: UserType;
+  paymentMethod: string;
+  transactionId?: string;
 };
 
 export type BagStoreStateType = {

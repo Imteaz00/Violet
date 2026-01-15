@@ -20,6 +20,8 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { CopyIcon } from "lucide-react";
+import Image from "next/image";
 
 export default function PaymentForm({
   handleOrderSubmit,
@@ -38,12 +40,19 @@ export default function PaymentForm({
 
   const handleSubmit = () => {
     setIsLoading(true);
-    handleOrderSubmit({ method: selectedPayment, transactionId: transactionId || undefined });
     try {
       handleOrderSubmit({ method: selectedPayment, transactionId: transactionId || undefined });
     } catch (error) {
       setIsLoading(false);
     }
+  };
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("01752882255");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
   };
 
   return (
@@ -65,10 +74,31 @@ export default function PaymentForm({
               <FieldLabel htmlFor="bkash">
                 <Field orientation="horizontal">
                   <FieldContent>
-                    <FieldTitle>Bkash</FieldTitle>
+                    <FieldTitle>
+                      <Image
+                        src="/bkash-logo.png"
+                        alt="Bkash Logo"
+                        width={50}
+                        height={20}
+                        className="bg-foreground"
+                      />
+                      Bkash
+                    </FieldTitle>
                     <FieldDescription>
                       {selectedPayment === "bkash" && (
                         <Field>
+                          <FieldTitle className="text-xl">
+                            01752882255
+                            <Button
+                              title="Copy Number"
+                              disabled={copied}
+                              variant={"ghost"}
+                              className="ml-2 border-2"
+                              onClick={handleCopy}
+                            >
+                              {copied ? "Copied" : <CopyIcon />}
+                            </Button>
+                          </FieldTitle>
                           <FieldLabel htmlFor="transactionId">Transaction Id</FieldLabel>
                           <Input
                             id="transactionId"
@@ -92,7 +122,6 @@ export default function PaymentForm({
       <div>
         <Dialog>
           <DialogTrigger asChild>
-            {" "}
             <Button
               className="w-full duration-300 hover:scale-110 transition-all"
               disabled={selectedPayment === "bkash" && transactionId.trim() === ""}
