@@ -1,23 +1,21 @@
 import Appsidebar from "@/components/dashboard/Appsidebar";
 import Navbar from "@/components/dashboard/Navbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
-
-// async function checkAdmin() {
-//     const { userId } = await auth();
-//     const user = await currentUser()
-
-//     if (!userId || !user) {
-//         redirect("/", RedirectType.replace)
-//     }
-// }
+import { redirect, RedirectType } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // await checkAdmin()
+  const user = await currentUser();
+
+  if (!user) {
+    redirect("/sign-in", RedirectType.replace);
+  }
+
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (

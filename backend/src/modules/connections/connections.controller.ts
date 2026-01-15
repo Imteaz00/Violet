@@ -175,6 +175,7 @@ export const deleteConnectionStatus = async (req: Request, res: Response) => {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
     const user = await getUserById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
 
     const { orderId } = req.params;
     const existingConnection = await connectionQueries.getConnectionById(orderId);

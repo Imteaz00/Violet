@@ -7,6 +7,7 @@ export default async function fetchAllOrders(): Promise<OrderType[]> {
     const { userId, getToken } = await auth();
     if (!userId) return [];
     const token = await getToken();
+    if (!token) return [];
 
     const res = await fetch(`${BACKEND_URL}/connections/`, {
       method: "GET",

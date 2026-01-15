@@ -34,7 +34,7 @@ import { Button } from "../ui/button";
 import useBagStore from "@/stores/bagStore";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { fetchMyProductCount } from "@/actions/fetchMyProductsCount";
+import { fetchMyProductCount } from "@/actions/fetchMyProductCount";
 import { fetchInboxCount } from "@/actions/fetchInboxCount";
 import { fetchMyOrderCount } from "@/actions/fetchOrderCount";
 
@@ -91,7 +91,7 @@ export default function Appsidebar() {
     fetchInboxCount()
       .then((count) => setMessageCount(count))
       .catch((err) => {
-        console.error("Failed to fetch products count:", err);
+        console.error("Failed to fetch inbox count:", err);
         setMessageCount(0);
       });
 

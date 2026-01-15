@@ -1,7 +1,7 @@
 import fetchAllOrders from "@/actions/fetchAllOrders";
 import OrderCard from "@/components/admin/OrderCard";
 
-export default async function MyOrdersPage() {
+export default async function FetchAllPage() {
   const orders = await fetchAllOrders();
 
   if (!orders?.length) {

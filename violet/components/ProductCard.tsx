@@ -15,7 +15,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
                 hover:before:opacity-100 before:opacity-70 transition"
     >
       <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-5/6">
+        <div className="relative aspect-8/9">
           {/* <Image src={product.images[0]}/ alt={product.name} fill className="object-cover hover-scale-105 transition-all duration-300"> */}
         </div>
       </Link>

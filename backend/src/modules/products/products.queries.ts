@@ -32,6 +32,7 @@ export const getAllProducts = async ({
   limit,
   offset,
   status,
+  type,
 }: {
   category: string;
   search: string;
@@ -39,6 +40,7 @@ export const getAllProducts = async ({
   limit: number;
   offset: number;
   status: string;
+  type: string;
 }) => {
   // Normalize inputs: treat empty strings as absent
   let qCategory = category?.trim() || undefined;
@@ -64,6 +66,10 @@ export const getAllProducts = async ({
     conditions.push(eq(products.status, status));
   } else if (status !== "all") {
     conditions.push(eq(products.status, STATUS.ACTIVE));
+  }
+
+  if (type === "sell" || type === "share") {
+    conditions.push(eq(products.type, type));
   }
 
   // Base query options

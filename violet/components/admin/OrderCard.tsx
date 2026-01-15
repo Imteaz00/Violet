@@ -14,13 +14,6 @@ export default function OrderCard({ order }: { order: OrderType }) {
   };
   return (
     <Item variant="outline" className="bg-card relative">
-      <ItemMedia variant="image">
-        <Link href={`/products/${order.id}`}>
-          <div className="absolute aspect-2/3">
-            {/* <Image src={order.images[0]}/ alt={order.name} fill className="object-cover hover-scale-105 transition-all duration-300"> */}
-          </div>
-        </Link>
-      </ItemMedia>
       <ItemContent>
         <ItemTitle className="font-semibold text-lg">
           {order.product.title}{" "}

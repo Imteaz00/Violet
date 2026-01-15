@@ -7,19 +7,15 @@ import DeleteOrder from "./DeleteOrder";
 
 export default function OrderCard({ order }: { order: OrderType }) {
   const getPrice = () => {
+    if (!order.product.noOfShares) {
+      return formatCurrency(0);
+    }
     return formatCurrency(
       Math.ceil(order.product.askingPrice / order.product.noOfShares) * order.noOfShares
     );
   };
   return (
     <Item variant="outline" className="bg-card relative">
-      <ItemMedia variant="image">
-        <Link href={`/products/${order.id}`}>
-          <div className="absolute aspect-2/3">
-            {/* <Image src={order.images[0]}/ alt={order.name} fill className="object-cover hover-scale-105 transition-all duration-300"> */}
-          </div>
-        </Link>
-      </ItemMedia>
       <ItemContent>
         <ItemTitle className="font-semibold text-lg">
           {order.product.title}{" "}

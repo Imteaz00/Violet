@@ -15,6 +15,9 @@ export default async function submitOrder({
 }) {
   const { getToken } = await auth();
   const token = await getToken();
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
   const results = await Promise.all(
     bag.map(async (item) => {
       const res = await fetch(`${BACKEND_URL}/connections/create`, {

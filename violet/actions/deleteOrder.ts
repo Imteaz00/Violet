@@ -12,6 +12,9 @@ export default async function deleteOrder(orderId: string) {
     throw new Error("Authentication required");
   }
   const token = await getToken();
+  if (!token) {
+    throw new Error("Failed to get authentication token");
+  }
   const res = await fetch(`${BACKEND_URL}/connections/${orderId}`, {
     method: "DELETE",
     headers: {

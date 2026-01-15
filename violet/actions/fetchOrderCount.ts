@@ -17,7 +17,6 @@ export async function fetchMyOrderCount() {
       throw new Error(`Failed to fetch orders count: ${res.statusText}`);
     }
     const data = await res.json();
-    console.log("Orders count data:", data);
     return data.count || 0;
   } catch (error) {
     console.error("Error fetching orders count:", error);

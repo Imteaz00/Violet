@@ -2,12 +2,11 @@
 
 import { Button } from "../ui/button";
 import { toast } from "react-toastify";
-import deleteOrder from "@/actions/deletOrder";
+import deleteOrder from "@/actions/deleteOrder";
 import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogTrigger,
-  AlertDialogDescription,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -43,7 +42,7 @@ export default function DeleteOrder({ orderId }: { orderId: string }) {
           size="sm"
           className=" transition-transform duration-300 hover:scale-105"
         >
-          Cancel
+          Cancel Order
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

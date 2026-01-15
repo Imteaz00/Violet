@@ -8,6 +8,7 @@ export default async function fetchUserOrders(): Promise<OrderType[]> {
     const { userId, getToken } = await auth();
     if (!userId) throw new Error("User not authenticated");
     const token = await getToken();
+    if (!token) throw new Error("Failed to retrieve authentication token");
     const res = await fetch(`${BACKEND_URL}/connections/user-connections`, {
       headers: { Authorization: `Bearer ${token}` },
     });

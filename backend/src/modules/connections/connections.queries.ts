@@ -64,7 +64,7 @@ export const updateConnectionStatus = async (
   return connection;
 };
 
-export const deleteConnectionStatus = async (id: string) => {
+export const deleteConnection = async (id: string) => {
   const [connection] = await db.delete(connections).where(eq(connections.id, id)).returning();
   return connection;
 };

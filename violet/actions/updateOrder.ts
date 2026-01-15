@@ -13,6 +13,9 @@ export default async function updateOrder(orderId: string) {
     }
 
     const token = await getToken();
+    if (!token) {
+      throw new Error("Failed to obtain authentication token");
+    }
     const res = await fetch(`${BACKEND_URL}/connections/${orderId}`, {
       method: "PUT",
       headers: {
