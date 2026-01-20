@@ -2,7 +2,6 @@ import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { products } from "../products/products.schema.js";
 import { users } from "../users/users.schema.js";
-import { transactions } from "../transactions/transactions.schema.js";
 
 export const productImages = pgTable("product_images", {
   id: text("id").notNull().primaryKey(),
@@ -12,6 +11,7 @@ export const productImages = pgTable("product_images", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
     .notNull()

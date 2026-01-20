@@ -16,7 +16,12 @@ export default function ProductCard({ product }: { product: ProductType }) {
     >
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-8/9">
-          {/* <Image src={product.images[0]}/ alt={product.name} fill className="object-cover hover-scale-105 transition-all duration-300"> */}
+          <Image
+            src={product.productImages[0]?.url}
+            alt={product.title}
+            fill
+            className="object-cover hover-scale-105 transition-all duration-300"
+          />
         </div>
       </Link>
       <div className="flex flex-col gap-3 p-4">
@@ -28,7 +33,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
               {formatCurrency(
                 product.noOfShares > 0
                   ? Math.ceil(product.askingPrice / product.noOfShares)
-                  : product.askingPrice
+                  : product.askingPrice,
               )}
             </p>
             <p className="text-xs text-muted-foreground">per share</p>

@@ -5,7 +5,7 @@ export default function Footer() {
     <div className="mt-16 flex flex-col items-center gap-8 md:flex-row md:items-start md:gap-0 md:justify-between bg-secondary p-8 rounded-lg">
       <div className="flex flex-col gap-4 items-center md:items-start">
         <Link href="/" className="flex items-center">
-          <p className="text-2xl text-primary font-semibold tracking-wider">
+          <p className="text-2xl text-primary font-semibold tracking-wider font-serif">
             {" "}
             {/* hidden md:block */}
             VIOLET

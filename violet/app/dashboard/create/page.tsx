@@ -20,9 +20,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
-import { createProduct, getCategories } from "./create.action";
+import { createProduct } from "@/actions/createProduct";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { XIcon } from "lucide-react";
+import { fetchCategories } from "@/actions/fetchCategories";
 
 export default function CreateProductPage() {
   const {
@@ -40,9 +42,12 @@ export default function CreateProductPage() {
   });
   const [formData, setFormData] = useState<CreateProductType>();
   const [categories, setCategories] = useState<CategoryType[]>();
+  const [images, setImages] = useState<File[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    getCategories()
+    fetchCategories()
       .then((categories) => setCategories(categories))
       .catch((err) => {
         console.error("Failed to fetch categories:", err);
@@ -50,19 +55,53 @@ export default function CreateProductPage() {
       });
   }, []);
 
+  const handleImageAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    if (images.length + files.length > 5) {
+      toast.error("You can only add up to 5 images");
+      return;
+    }
+
+    // Validate each file size (5MB limit)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+    const validFiles: File[] = [];
+
+    for (const file of Array.from(files)) {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`${file.name} exceeds 5MB limit`);
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setImages([...images, ...validFiles]);
+    }
+
+    e.target.value = "";
+  };
+
+  const handleImageRemove = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
   const handleForm: SubmitHandler<CreateProductType> = (data) => {
+    if (images.length === 0) {
+      toast.error("Please upload at least 1 product image");
+      return;
+    }
     setFormData(data);
   };
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const handleFinalSubmit = async () => {
     if (!formData) return;
     setIsSubmitting(true);
     try {
-      await createProduct(formData);
+      await createProduct(formData, images);
       toast.success("Product created successfully!");
-      router.push("/products");
+      router.push("/dashboard/myProducts");
     } catch (error) {
       console.error("Failed to create product:", error);
       toast.error("Failed to create product. Please try again.");
@@ -288,6 +327,81 @@ export default function CreateProductPage() {
           />
           {errors.condition && (
             <p className="text-xs text-destructive">{errors.condition.message}</p>
+          )}
+        </div>
+
+        {/* IMAGES */}
+        <div className="flex flex-col gap-4">
+          <div>
+            <label className="font-medium">
+              Product Images{" "}
+              <span className="text-sm text-muted-foreground">(max 5 images, max 5MB each)</span>
+            </label>
+            <div className="mt-2">
+              <input
+                name="productImages"
+                type="file"
+                id="image-upload"
+                multiple
+                accept="image/*"
+                onChange={handleImageAdd}
+                disabled={images.length >= 5}
+                className="hidden"
+              />
+              <label
+                htmlFor="image-upload"
+                className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-muted-foreground rounded-lg cursor-pointer transition-colors ${
+                  images.length >= 5
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:border-primary hover:bg-accent/50"
+                }`}
+              >
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <svg
+                    className="w-8 h-8 mb-2 text-muted-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium">Click to upload</span> or drag and drop
+                  </p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 5 images</p>
+                </div>
+              </label>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              {images.length === 0 && <span className="text-destructive">*required</span>}
+            </p>
+          </div>
+
+          {/* IMAGE PREVIEW */}
+          {images.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleImageRemove(index)}
+                    className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <XIcon />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
 

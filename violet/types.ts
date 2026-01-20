@@ -85,7 +85,7 @@ export type ProductType = CreateProductType & {
   user: UserType;
   remainingShares: number;
   userId: string;
-  //   image: any;
+  productImages: ImageType[];
 };
 
 export const createProductForm = z.object({
@@ -159,9 +159,21 @@ export type BagStoreActionsType = {
 
 export type MessageType = {
   id: string;
-  senderId: string;
-  receiverId: string;
+  senderId?: string;
+  receiverId?: string;
   text: string;
   createdAt: Date;
   seen: boolean;
+  senderUser?: UserType;
+  receiverUser?: UserType;
+};
+
+export type ImageType = {
+  id: string;
+  url: string;
+  createdAt: Date;
+  productId: string;
+  userId: string;
+  product: ProductType;
+  user: UserType;
 };

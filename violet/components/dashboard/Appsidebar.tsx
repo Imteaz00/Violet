@@ -178,9 +178,9 @@ export default function Appsidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
+                  {/* <DropdownMenuItem>
                     <Button variant="ghost">Account</Button>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuItem>
                     <SignOutButton>
                       <Button variant="ghost" className="">

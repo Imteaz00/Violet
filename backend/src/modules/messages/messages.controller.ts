@@ -16,7 +16,7 @@ export const createMessage = async (req: Request, res: Response) => {
 
     const message = await messageQueries.createMessage({
       sender: userId,
-      receiver,
+      receiver: receiver === "admin" ? null : receiver,
       text,
     });
     res.status(201).json(message);

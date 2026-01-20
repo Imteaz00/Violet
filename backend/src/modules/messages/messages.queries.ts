@@ -19,6 +19,10 @@ export const countMessage = async (userId: string) => {
 export const getAllMessages = async () => {
   return db.query.messages.findMany({
     orderBy: (messages, { desc }) => [desc(messages.createdAt)],
+    with: {
+      senderUser: true,
+      receiverUser: true,
+    },
   });
 };
 export const getUserMessages = async (userId: string) => {

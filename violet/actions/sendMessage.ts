@@ -8,7 +8,7 @@ export default async function sendMessage({
   receiver,
   text,
 }: {
-  receiver: UserType;
+  receiver: UserType | "admin";
   text: string;
 }) {
   try {
@@ -24,7 +24,7 @@ export default async function sendMessage({
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        receiver: receiver.id,
+        receiver: receiver === "admin" ? "admin" : receiver.id,
         text,
       }),
     });
