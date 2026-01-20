@@ -19,8 +19,7 @@ const steps = [
 ];
 
 const pricePerShare = (askingPrice: number, noOfShares: number) =>
-  noOfShares > 0 ? Math.ceil((askingPrice * 1.1) / noOfShares) : askingPrice * 1.1;
-
+  noOfShares > 0 ? Math.ceil((askingPrice * 1.1) / noOfShares) : Math.ceil(askingPrice * 1.1);
 export default function BagPage() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const searchParams = useSearchParams();
@@ -49,7 +48,7 @@ export default function BagPage() {
     }
     try {
       const success = await submitOrder({
-        shippingForm: shippingForm!,
+        shippingForm,
         payment: { method, transactionId },
         bag,
       });
@@ -57,6 +56,7 @@ export default function BagPage() {
       toast.success(`Order placed successfully for: ${success.join(", ")}`);
       router.replace("/", { scroll: false });
     } catch (error) {
+      console.error("Order submission failed:", error);
       toast.error("Failed to place order. Please try again.");
     }
   };

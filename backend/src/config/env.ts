@@ -11,6 +11,4 @@ export const ENV = {
   cs_key: process.env.CLERK_SECRET_KEY,
   frontend_url: process.env.FRONTEND_URL,
   cloudinary_url: process.env.CLOUDINARY_URL,
-  percentage: process.env.PERCENTAGE,
-  delivery: process.env.DELIVERY,
 };

@@ -1,5 +1,5 @@
 import fetchAllMessages from "@/actions/fetchAllMessages";
-import MessageCard from "@/components/admin/MassageCard";
+import MessageCard from "@/components/admin/MessageCard";
 import { MessageType } from "@/types";
 
 export const dynamic = "force-dynamic";

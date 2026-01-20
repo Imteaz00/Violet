@@ -9,6 +9,7 @@ import { db } from "../../config/db.js";
 export const createConnection = async (req: Request, res: Response) => {
   try {
     const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const {
       productId,
@@ -63,7 +64,7 @@ export const createConnection = async (req: Request, res: Response) => {
       return { connection, updatedProduct };
     });
     if (!data) {
-      return res.status(409).json({ error: "Failed to create connection" });
+      return res.status(409).json({ error: "Failed to delete connection" });
     }
 
     res.status(201).json(data);

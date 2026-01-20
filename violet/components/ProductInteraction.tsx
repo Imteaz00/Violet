@@ -41,6 +41,7 @@ export default function ProductInteraction({ product }: { product: ProductType }
       .catch((error) => {
         console.error("Failed to fetch user ID:", error);
         // Optionally: show a toast notification
+        toast.error("Failed to fetch user information");
       });
   }, []);
 
