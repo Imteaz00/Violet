@@ -33,24 +33,16 @@ export default function Categories() {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 rounded-lg text-sm bg-muted mb-4 mt-2">
-      {categories.map((category) =>
-        category.slug === selectedCategory ? (
-          <Button
-            className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md"
-            key={category.slug}
-          >
-            {category.name}
-          </Button>
-        ) : (
-          <div
-            className="flex items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md hover:bg-accent hover:text-accent-foreground text-muted-foreground transition-all duration-300"
-            key={category.name}
-            onClick={() => handleChange(category.slug)}
-          >
-            {category.name}
-          </div>
-        )
-      )}
+      {categories.map((category) => (
+        <Button
+          className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md"
+          key={category.slug}
+          variant={(selectedCategory ?? "all") === category.slug ? "default" : "link"}
+          onClick={() => handleChange(category.slug)}
+        >
+          {category.name}
+        </Button>
+      ))}
     </div>
   );
 }

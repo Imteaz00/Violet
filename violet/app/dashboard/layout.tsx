@@ -1,5 +1,6 @@
 import Appsidebar from "@/components/dashboard/Appsidebar";
 import Navbar from "@/components/dashboard/Navbar";
+import Feedback from "@/components/Feedback";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { currentUser } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
@@ -23,6 +24,7 @@ export default async function DashboardLayout({
       <SidebarProvider defaultOpen={defaultOpen}>
         <Appsidebar />
         <div className="w-full relative min-h-screen bg-secondary rounded-tl-4xl shadow-lg -ml-px overflow-hidden">
+          <Feedback />
           <Navbar />
           <div className="px-4">{children}</div>
         </div>

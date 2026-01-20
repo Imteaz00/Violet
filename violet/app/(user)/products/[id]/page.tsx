@@ -6,6 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { formatDate } from "../../../../lib/formatters";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`, {
@@ -45,13 +52,31 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-6 bg-card rounded-lg p-6 shadow-lg">
-      <div className="w-full lg:w-5/12 relative aspect-2/3">
-        {/* <Image
-                    src={product.images[0]}
-                    alt={product.title}
-                    fill
-                    className="object-contain rounded-md"
-                /> */}
+      <div className="w-full lg:w-5/12 flex flex-col items-center justify-center">
+        {product.productImages?.length > 0 ? (
+          <Carousel className="w-full" opts={{ align: "start", loop: true }}>
+            <CarouselContent>
+              {product.productImages.map((image) => (
+                <CarouselItem key={image.id}>
+                  <div className="relative w-full aspect-square">
+                    <Image
+                      src={image.url}
+                      alt={product.title}
+                      fill
+                      className="object-contain rounded-md"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-6" />
+            <CarouselNext className="-right-6" />
+          </Carousel>
+        ) : (
+          <div className="relative w-full aspect-square bg-muted rounded-md flex items-center justify-center">
+            <span className="text-muted-foreground">No image available</span>
+          </div>
+        )}{" "}
       </div>
       <div className="w-full lg:w-7/12 flex flex-col gap-4">
         <div>
@@ -73,8 +98,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <h2 className="text-2xl font-semibold">
           {formatCurrency(
             product.noOfShares > 0
-              ? Math.ceil(product.askingPrice / product.noOfShares)
-              : product.askingPrice
+              ? Math.ceil((product.askingPrice * 1.1) / product.noOfShares)
+              : product.askingPrice * 1.1,
           )}{" "}
           <span className="text-sm font-normal text-muted-foreground"> per share</span>
         </h2>

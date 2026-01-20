@@ -7,8 +7,14 @@ import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import * as schema from "../../config/schema.js";
 import { STATUS } from "../../constants.js";
 
-export const createProduct = async (data: NewProduct) => {
-  const [product] = await db.insert(products).values(data).returning();
+type DbTransaction = PgTransaction<
+  NodePgQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
+
+export const createProduct = async (tx: DbTransaction, data: NewProduct) => {
+  const [product] = await tx.insert(products).values(data).returning();
   return product;
 };
 
@@ -19,8 +25,8 @@ export const countProduct = async (userId: string) => {
     .where(
       and(
         or(eq(products.status, STATUS.ACTIVE), eq(products.status, STATUS.VALIDATING)),
-        eq(products.userId, userId)
-      )
+        eq(products.userId, userId),
+      ),
     );
   return product.count;
 };
@@ -55,8 +61,8 @@ export const getAllProducts = async ({
         ilike(products.title, pattern),
         ilike(products.description, pattern),
         ilike(products.location, pattern),
-        ilike(products.condition, pattern)
-      )
+        ilike(products.condition, pattern),
+      ),
     );
   }
   if (qCategory) {
@@ -118,16 +124,12 @@ export const updateProduct = async (id: string, data: Partial<NewProduct>) => {
   return product;
 };
 
-export const deleteProduct = async (id: string) => {
-  const [product] = await db.delete(products).where(eq(products.id, id)).returning();
+export const deleteProduct = async (tx: DbTransaction, id: string) => {
+  const [product] = await tx.delete(products).where(eq(products.id, id)).returning();
   return product;
 };
 
-export const decreaseRemainingShare = async (
-  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  noOfShares: number,
-  id: string
-) => {
+export const decreaseRemainingShare = async (tx: DbTransaction, noOfShares: number, id: string) => {
   const [product] = await tx
     .update(products)
     .set({ remainingShares: sql`${products.remainingShares}-${noOfShares}` })

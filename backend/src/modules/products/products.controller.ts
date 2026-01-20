@@ -3,6 +3,9 @@ import * as productQueries from "./products.queries.js";
 import { getAuth } from "@clerk/express";
 import { ROLE, STATUS } from "../../constants.js";
 import { getUserById } from "../users/users.queries.js";
+import { db } from "../../config/db.js";
+import { createProductImage, deleteProductImage } from "../productImages/productImages.queries.js";
+import cloudinary from "cloudinary";
 
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -92,6 +95,7 @@ export const createProduct = async (req: Request, res: Response) => {
       type,
       district,
       category,
+      images,
     } = req.body;
 
     if (
@@ -102,29 +106,51 @@ export const createProduct = async (req: Request, res: Response) => {
       !expiryDate ||
       !quantity ||
       !condition ||
-      !district
+      !district ||
+      !images
     ) {
       return res.status(400).json({ error: "All info not provided" });
     }
-    const product = await productQueries.createProduct({
-      title,
-      description,
-      boughtFrom,
-      askingPrice,
-      sellingReason,
-      expiryDate,
-      location,
-      district,
-      type,
-      quantity,
-      condition,
-      noOfShares,
-      userId,
-      remainingShares: noOfShares,
-      category,
+
+    if (!Array.isArray(images) || images.length === 0) {
+      return res.status(400).json({ error: "At least one image is required" });
+    }
+
+    if (images.length > 5) {
+      return res.status(400).json({ error: "A maximum of 5 images are allowed" });
+    }
+
+    const data = await db.transaction(async (tx) => {
+      const product = await productQueries.createProduct(tx, {
+        title,
+        description,
+        boughtFrom,
+        askingPrice,
+        sellingReason,
+        expiryDate,
+        location,
+        district,
+        type,
+        quantity,
+        condition,
+        noOfShares,
+        userId,
+        remainingShares: noOfShares,
+        category,
+      });
+
+      for (const image of images as { url: string; public_id: string }[]) {
+        await createProductImage(tx, {
+          userId,
+          productId: product.id,
+          url: image.url,
+          id: image.public_id,
+        });
+      }
+      return product;
     });
 
-    res.status(201).json(product);
+    res.status(201).json(data);
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ error: "Failed to create product" });
@@ -195,7 +221,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     if (existingProduct.userId != userId && user?.role !== ROLE.ADMIN)
       return res.status(403).json({ error: "Can only delete own products" });
-    await productQueries.deleteProduct(id);
+    await db.transaction(async (tx) => {
+      for (const image of existingProduct.productImages) {
+        await cloudinary.v2.uploader.destroy(image.id);
+        await deleteProductImage(tx, image.id);
+      }
+      await productQueries.deleteProduct(tx, id);
+    });
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Error deleting product:", error);

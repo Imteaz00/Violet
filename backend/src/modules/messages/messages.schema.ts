@@ -5,12 +5,8 @@ import { users } from "../users/users.schema.js";
 export const messages = pgTable("messages", {
   id: uuid("id").defaultRandom().primaryKey(),
   text: text("text").notNull(),
-  receiver: text("receiver")
-    .notNull()
-    .references(() => users.id, { onDelete: "no action" }),
-  sender: text("sender")
-    .notNull()
-    .references(() => users.id, { onDelete: "no action" }),
+  receiver: text("receiver").references(() => users.id, { onDelete: "no action" }),
+  sender: text("sender").references(() => users.id, { onDelete: "no action" }),
   seen: boolean("seen").notNull().default(false),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })

@@ -9,15 +9,23 @@ import connectionRouters from "./modules/connections/connections.routes.js";
 import categoryRouters from "./modules/categories/categories.router.js";
 // import transactionRouters from "./modules/transactions/transactions.routes.js";
 import messageRouters from "./modules/messages/messages.router.js";
-import path from "path";
+import rateLimit from "express-rate-limit";
 
 const app = express();
+
+const rateLimiter = rateLimit({
+  windowMs: 10 * 1000, // 10 seconds
+  max: 20, // limit each IP to 20 requests per windowMs
+  message: "Too many requests, please try again later.",
+  skip: (req) => req.path === "/health",
+});
 
 if (!ENV.frontend_url) {
   throw new Error("Frontend URL is missing.");
 }
 
 app.use(cors({ origin: ENV.frontend_url, credentials: true }));
+app.use(rateLimiter);
 app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

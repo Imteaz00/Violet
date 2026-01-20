@@ -44,7 +44,7 @@ export async function seed() {
     { name: "Body Care", slug: "body-care" },
   ];
 
-  await db.insert(categories).values(categoryValues).onConflictDoNothing();
+  //   await db.insert(categories).values(categoryValues).onConflictDoNothing();
 
   const insertedCategories = await db.select().from(categories);
 
@@ -80,9 +80,10 @@ export async function seed() {
       id: faker.string.uuid(),
       productId: product.id,
       userId: product.userId,
+      url: faker.image.url(),
       createdAt: new Date(),
       updatedAt: new Date(),
-    }))
+    })),
   );
 
   await db.insert(productImages).values(imageRows);

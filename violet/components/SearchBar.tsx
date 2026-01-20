@@ -18,12 +18,12 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="w-64 md:flex items-center gap-2 rounded-md ring-1 ring-foreground px-2 py-1">
+    <div className="w-64 flex items-center gap-2 rounded-md ring-1 ring-foreground px-2 py-1">
       <Search className="w-4 h-4 text-foreground" />
       <input
         id="search"
         placeholder="Skin, Hair, ..."
-        className="text-sm outline-0"
+        className="text-sm outline-0 flex-1"
         autoComplete="off"
         value={value}
         onChange={(e) => setValue(e.target.value)}

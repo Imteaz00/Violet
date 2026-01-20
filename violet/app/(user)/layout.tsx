@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SyncOnMount from "@/components/SyncOnMount";
+import Feedback from "@/components/Feedback";
 
 export const metadata: Metadata = {
   title: "Violet",
@@ -15,6 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="mx-auto p-4 sm:px-0 sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-6xl">
+      <Feedback />
       <Navbar />
       <SyncOnMount />
       {children}

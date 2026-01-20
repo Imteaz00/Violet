@@ -12,6 +12,7 @@ export default function ShoppingBagIcon() {
   return (
     <Button
       variant={"ghost"}
+      size="icon-sm"
       className="hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-110"
       asChild
     >

@@ -15,8 +15,11 @@ import {
   AlertDialogCancel,
   AlertDialogFooter,
 } from "../ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 export default function DeleteProduct({ productId }: { productId: string }) {
+  const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
   async function handleDelete(productId: string) {
     setIsDeleting(true);
     try {
@@ -27,14 +30,13 @@ export default function DeleteProduct({ productId }: { productId: string }) {
         return;
       }
       toast.success("Product deleted successfully!");
-      window.location.reload();
+      router.push("/");
     } catch (error) {
       toast.error("Failed to delete product");
       setIsDeleting(false);
     }
   }
 
-  const [isDeleting, setIsDeleting] = useState(false);
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
