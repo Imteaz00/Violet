@@ -37,7 +37,7 @@ export default function Categories() {
         <Button
           className="flex h-6 items-center justify-center gap-2 cursor-pointer px-2 py-1 rounded-md"
           key={category.slug}
-          variant={selectedCategory === category.slug ? "default" : "link"}
+          variant={(selectedCategory ?? "all") === category.slug ? "default" : "link"}
           onClick={() => handleChange(category.slug)}
         >
           {category.name}

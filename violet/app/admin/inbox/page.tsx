@@ -1,5 +1,5 @@
 import fetchAllMessages from "@/actions/fetchAllMessages";
-import MessaageCard from "@/components/admin/MassageCard";
+import MessageCard from "@/components/admin/MassageCard";
 import { MessageType } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +13,7 @@ export default async function InboxPage() {
   return (
     <>
       {messages.map((message) => (
-        <MessaageCard key={message.id} message={message} />
+        <MessageCard key={message.id} message={message} />
       ))}
     </>
   );

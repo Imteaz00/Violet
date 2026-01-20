@@ -21,28 +21,26 @@ export default async function Navbar() {
       <div className="flex items-center md:gap-2">
         <ModeToggle />
         <ShoppingBagIcon />
-        <Link
-          href="/dashboard"
-          title="Dashboard"
-          className={
-            userId
-              ? "items-center justify-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-all cursor-pointer duration-300 hover:scale-110"
-              : "hidden"
-          }
-        >
-          <LayoutDashboardIcon className="w-4 h-4" />
-        </Link>
+        {userId && (
+          <Link
+            href="/dashboard"
+            title="Dashboard"
+            className="items-center justify-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-all cursor-pointer duration-300 hover:scale-110"
+          >
+            <LayoutDashboardIcon className="w-4 h-4" />
+          </Link>
+        )}
         <SignedOut>
           <ButtonGroup>
             <SignInButton mode="modal">
-              <Button variant="secondary" className="w-12 h-6 md:h-8 md:w-15">
+              <Button variant="secondary" className="w-12 h-6 md:h-8 md:w-16">
                 <span className="transition-transform duration-300 hover:scale-110 hover:text-accent-foreground text-xs md:text-sm">
                   Sign In
                 </span>
               </Button>
             </SignInButton>
             <SignUpButton mode="modal">
-              <Button className="w-12 h-6 md:h-8 md:w-15">
+              <Button className="w-12 h-6 md:h-8 md:w-16">
                 <span className="transition-transform duration-300 hover:scale-110 text-xs md:text-sm">
                   Sign Up
                 </span>

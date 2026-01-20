@@ -64,11 +64,11 @@ const items = [
     url: "/dashboard/myOrders",
     icon: Truck,
   },
-  {
-    title: "Transactions",
-    url: "#",
-    icon: ReceiptTextIcon,
-  },
+  //   {
+  //     title: "Transactions",
+  //     url: "#",
+  //     icon: ReceiptTextIcon,
+  //   },
 ];
 
 export default function Appsidebar() {
@@ -160,7 +160,7 @@ export default function Appsidebar() {
                       <SidebarMenuBadge>{orderCount}</SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
-                )
+                ),
               )}
             </SidebarMenu>
           </SidebarGroupContent>

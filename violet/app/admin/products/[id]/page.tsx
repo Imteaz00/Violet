@@ -64,24 +64,29 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-6 bg-card rounded-lg p-6 shadow-lg">
       <div className="w-full lg:w-5/12 flex flex-col items-center justify-center">
-        <Carousel className="w-full" opts={{ align: "start", loop: true }}>
-          <CarouselContent>
-            {product.productImages.map((image, index) => (
-              <CarouselItem key={image.id}>
-                <div className="relative w-full aspect-square">
-                  <Image
-                    src={image.url}
-                    alt={product.title}
-                    fill
-                    className="object-contain rounded-md"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="-left-6" />
-          <CarouselNext className="-right-6" />
-        </Carousel>
+        {product.productImages?.length > 0 ? (
+          <Carousel className="w-full" opts={{ align: "start", loop: true }}>
+            <CarouselContent>
+              {product.productImages.map((image, index) => (
+                <CarouselItem key={image.id}>
+                  <div className="relative w-full aspect-square">
+                    <Image
+                      src={image.url}
+                      alt={product.title}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      className="object-contain rounded-md"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-6" />
+            <CarouselNext className="-right-6" />
+          </Carousel>
+        ) : (
+          <>No Image found</>
+        )}
       </div>
       <div className="w-full lg:w-7/12 flex flex-col gap-4">
         <h1 className="text-2xl font-medium">{product.title}</h1>
@@ -120,7 +125,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <TableRow>
               <TableCell className="text-center">Price per Share</TableCell>
               <TableCell className="text-center">
-                {formatCurrency(Math.ceil(product.askingPrice / product.noOfShares))}
+                {formatCurrency(Math.ceil((product.askingPrice * 1.1) / product.noOfShares))}
               </TableCell>
             </TableRow>
             <TableRow>

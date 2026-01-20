@@ -174,6 +174,6 @@ export type ImageType = {
   createdAt: Date;
   productId: string;
   userId: string;
-  product: ProductType;
-  user: UserType;
+  product?: ProductType;
+  user?: UserType;
 };

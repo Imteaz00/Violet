@@ -7,10 +7,13 @@ import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import * as schema from "../../config/schema.js";
 import { STATUS } from "../../constants.js";
 
-export const createProduct = async (
-  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  data: NewProduct,
-) => {
+type DbTransaction = PgTransaction<
+  NodePgQueryResultHKT,
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
+
+export const createProduct = async (tx: DbTransaction, data: NewProduct) => {
   const [product] = await tx.insert(products).values(data).returning();
   return product;
 };
@@ -121,19 +124,12 @@ export const updateProduct = async (id: string, data: Partial<NewProduct>) => {
   return product;
 };
 
-export const deleteProduct = async (
-  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  id: string,
-) => {
+export const deleteProduct = async (tx: DbTransaction, id: string) => {
   const [product] = await tx.delete(products).where(eq(products.id, id)).returning();
   return product;
 };
 
-export const decreaseRemainingShare = async (
-  tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  noOfShares: number,
-  id: string,
-) => {
+export const decreaseRemainingShare = async (tx: DbTransaction, noOfShares: number, id: string) => {
   const [product] = await tx
     .update(products)
     .set({ remainingShares: sql`${products.remainingShares}-${noOfShares}` })

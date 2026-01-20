@@ -19,7 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createProduct } from "@/actions/createProduct";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,10 @@ export default function CreateProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
+  const imageUrls = useMemo(() => {
+    return images.map((img) => URL.createObjectURL(img));
+  }, [images]);
+
   useEffect(() => {
     fetchCategories()
       .then((categories) => setCategories(categories))
@@ -54,6 +58,12 @@ export default function CreateProductPage() {
         setCategories([]);
       });
   }, []);
+
+  useEffect(() => {
+    return () => {
+      imageUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [imageUrls]);
 
   const handleImageAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -371,7 +381,7 @@ export default function CreateProductPage() {
                     />
                   </svg>
                   <p className="text-sm text-muted-foreground">
-                    <span className="font-medium">Click to upload</span> or drag and drop
+                    <span className="font-medium">Click to upload</span>
                   </p>
                   <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 5 images</p>
                 </div>
@@ -417,10 +427,12 @@ export default function CreateProductPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {Object.keys(errors).length > 0 ? "Warning" : "Confirm Your Submission"}
+                {Object.keys(errors).length > 0 || images.length === 0
+                  ? "Warning"
+                  : "Confirm Your Submission"}
               </DialogTitle>
               <DialogDescription>
-                {Object.keys(errors).length > 0 ? (
+                {Object.keys(errors).length > 0 || images.length === 0 ? (
                   "All required fields are not filled"
                 ) : (
                   <div className="gap-2">
@@ -507,7 +519,7 @@ export default function CreateProductPage() {
                 )}
               </DialogDescription>
             </DialogHeader>
-            {!(Object.keys(errors).length > 0) && (
+            {!(Object.keys(errors).length > 0 || images.length === 0) && (
               <Button
                 className="transition-transform duration-300 pl-10 pr-10 hover:scale-105 w-full"
                 type="button"

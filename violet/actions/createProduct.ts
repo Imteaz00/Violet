@@ -12,7 +12,12 @@ export async function createProduct(formData: CreateProductType, images: File[])
     if (!token) {
       return { error: "Authentication required" };
     }
-    const uploadedImages = await uploadImage(images);
+    let uploadedImages;
+    try {
+      uploadedImages = await uploadImage(images);
+    } catch (uploadError) {
+      return { error: uploadError instanceof Error ? uploadError.message : "Image upload failed" };
+    }
     const res = await fetch(`${BACKEND_URL}/products/create`, {
       method: "POST",
       headers: {
@@ -41,6 +46,8 @@ async function uploadImage(images: File[]): Promise<{ public_id: string; url: st
 
   // Upload images sequentially to avoid body size limit
   for (const image of images) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
     const form = new FormData();
     form.append("file", image, image.name);
     form.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);

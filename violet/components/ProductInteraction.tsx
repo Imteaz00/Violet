@@ -46,8 +46,8 @@ export default function ProductInteraction({ product }: { product: ProductType }
 
   const calculatedTotal = formatCurrency(
     product.noOfShares > 0
-      ? Math.ceil(product.askingPrice / product.noOfShares) * quantity
-      : product.askingPrice * quantity
+      ? Math.ceil((product.askingPrice * 1.1) / product.noOfShares) * quantity
+      : product.askingPrice * 1.1 * quantity,
   );
   return (
     <div className="flex flex-col gap-4 mt-4">

@@ -52,19 +52,23 @@ export default function Feedback() {
               <DialogHeader>
                 <DialogTitle>Send Feedback</DialogTitle>
                 <DialogDescription>
-                  <Input ref={messageRef} placeholder="Type your message here" type="text" />
-                  <Button
-                    onClick={() => {
-                      const input = document.getElementById("message") as HTMLInputElement;
-                      const message = messageRef.current?.value ?? "";
-                      handleMessage(message);
-                    }}
-                    className="mt-2 w-full duration-300 hover:scale-105 transition-all"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Processing..." : "Confirm"}
-                  </Button>
+                  Please share your feedback or report any issues you've encountered.
                 </DialogDescription>
+                <Input ref={messageRef} placeholder="Type your message here" type="text" />
+                <Button
+                  onClick={() => {
+                    const message = messageRef.current?.value ?? "";
+                    if (!message.trim()) {
+                      toast.error("Please enter a message");
+                      return;
+                    }
+                    handleMessage(message);
+                  }}
+                  className="mt-2 w-full duration-300 hover:scale-105 transition-all"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : "Confirm"}
+                </Button>
               </DialogHeader>
             </DialogContent>
           </Dialog>

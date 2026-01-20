@@ -19,7 +19,7 @@ const steps = [
 ];
 
 const pricePerShare = (askingPrice: number, noOfShares: number) =>
-  noOfShares > 0 ? Math.ceil(askingPrice / noOfShares) : askingPrice;
+  noOfShares > 0 ? Math.ceil((askingPrice * 1.1) / noOfShares) : askingPrice * 1.1;
 
 export default function BagPage() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
@@ -31,9 +31,9 @@ export default function BagPage() {
 
   const total = formatCurrency(
     bag.reduce(
-      (acc, item) => acc + pricePerShare(item.askingPrice, item.noOfShares) * item.shares,
-      0
-    )
+      (acc, item) => acc + pricePerShare(item.askingPrice, item.noOfShares) * item.shares + 80,
+      0,
+    ),
   );
 
   const handleOrderSubmit = async ({
@@ -118,9 +118,13 @@ export default function BagPage() {
                         Remaining Shares: {item.remainingShares}/{item.noOfShares}
                       </p>
                     </div>
-                    <p className="font-medium">
-                      ${formatCurrency(pricePerShare(item.askingPrice, item.noOfShares))}
-                    </p>
+                    <div>
+                      <p className="font-medium">
+                        {formatCurrency(pricePerShare(item.askingPrice, item.noOfShares))}
+                        <span className="text-accent-foreground text-sm"> x{item.shares}</span>
+                      </p>
+                      <p className="text-sm text-muted-foreground">+80 (shipping fee)</p>
+                    </div>
                   </div>
                 </div>
                 <Button
@@ -154,7 +158,9 @@ export default function BagPage() {
                     </span>
                   </p>
                   <p className="font-medium">
-                    {formatCurrency(pricePerShare(item.askingPrice, item.noOfShares) * item.shares)}
+                    {formatCurrency(
+                      pricePerShare(item.askingPrice, item.noOfShares) * item.shares + 80,
+                    )}
                   </p>
                 </div>
               ))}

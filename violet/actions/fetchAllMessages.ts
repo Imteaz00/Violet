@@ -15,8 +15,11 @@ export default async function fetchAllMessages(): Promise<MessageType[]> {
       console.error("Failed to fetch messages:", res.status, res.statusText);
       throw new Error(`Failed to fetch messages: ${res.statusText}`);
     }
-    const data = await res.json();
-    return data;
+    const data: unknown = await res.json();
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid response format: expected array");
+    }
+    return data as MessageType[];
   } catch (error) {
     console.error("Error fetching messages:", error);
     return [];

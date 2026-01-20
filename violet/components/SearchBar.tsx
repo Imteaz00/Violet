@@ -23,7 +23,7 @@ export default function SearchBar() {
       <input
         id="search"
         placeholder="Skin, Hair, ..."
-        className="text-sm outline-0"
+        className="text-sm outline-0 flex-1"
         autoComplete="off"
         value={value}
         onChange={(e) => setValue(e.target.value)}

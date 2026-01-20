@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 
 export default function DeleteProduct({ productId }: { productId: string }) {
   const router = useRouter();
+  const [isDeleting, setIsDeleting] = useState(false);
   async function handleDelete(productId: string) {
     setIsDeleting(true);
     try {
@@ -36,7 +37,6 @@ export default function DeleteProduct({ productId }: { productId: string }) {
     }
   }
 
-  const [isDeleting, setIsDeleting] = useState(false);
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>

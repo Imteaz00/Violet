@@ -11,7 +11,7 @@ export default function OrderCard({ order }: { order: OrderType }) {
       return formatCurrency(0);
     }
     return formatCurrency(
-      Math.ceil(order.product.askingPrice / order.product.noOfShares) * order.noOfShares
+      Math.ceil((order.product.askingPrice * 1.1) / order.product.noOfShares) * order.noOfShares,
     );
   };
   return (

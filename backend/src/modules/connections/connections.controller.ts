@@ -4,7 +4,6 @@ import { getAuth } from "@clerk/express";
 import { ROLE, STATUS, USER_LOCATION } from "../../constants.js";
 import { getUserById } from "../users/users.queries.js";
 import { decreaseRemainingShare, getProductById } from "../products/products.queries.js";
-import { PERCENTAGE } from "../../percentage.js";
 import { db } from "../../config/db.js";
 
 export const createConnection = async (req: Request, res: Response) => {
@@ -190,7 +189,7 @@ export const deleteConnectionStatus = async (req: Request, res: Response) => {
       const updatedProduct = await decreaseRemainingShare(
         tx,
         -existingConnection.noOfShares,
-        existingConnection.productId
+        existingConnection.productId,
       );
       if (!updatedProduct) {
         tx.rollback();

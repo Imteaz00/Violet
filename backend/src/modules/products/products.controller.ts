@@ -139,14 +139,14 @@ export const createProduct = async (req: Request, res: Response) => {
         category,
       });
 
-      images.forEach(async (image: { url: string; public_id: string }) => {
+      for (const image of images as { url: string; public_id: string }[]) {
         await createProductImage(tx, {
           userId,
           productId: product.id,
           url: image.url,
           id: image.public_id,
         });
-      });
+      }
       return product;
     });
 
@@ -221,7 +221,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 
     if (existingProduct.userId != userId && user?.role !== ROLE.ADMIN)
       return res.status(403).json({ error: "Can only delete own products" });
-    db.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
       for (const image of existingProduct.productImages) {
         await cloudinary.v2.uploader.destroy(image.id);
         await deleteProductImage(tx, image.id);

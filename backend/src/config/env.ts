@@ -10,4 +10,7 @@ export const ENV = {
   cp_key: process.env.CLERK_PUBLISHABLE_KEY,
   cs_key: process.env.CLERK_SECRET_KEY,
   frontend_url: process.env.FRONTEND_URL,
+  cloudinary_url: process.env.CLOUDINARY_URL,
+  percentage: process.env.PERCENTAGE,
+  delivery: process.env.DELIVERY,
 };

@@ -8,7 +8,7 @@ export default function MessageCard({ message }: { message: MessageType }) {
     <Item variant="outline" className="bg-card relative">
       <ItemContent>
         <ItemTitle className="font-semibold text-lg">
-          From: {message.senderUser?.name || "Unknown"}
+          <span>From: {message.senderUser?.name || "Unknown"}</span>
           {!message.seen && <Badge className="ml-2">New</Badge>}
           <span className="text-muted-foreground text-sm">
             {formatDateTime(new Date(message.createdAt))}
