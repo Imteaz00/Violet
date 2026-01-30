@@ -20,12 +20,12 @@ export const getAllConnections = async () => {
   });
 };
 
-// export const getConnectionById = async (id: string) => {
-//   return db.query.connections.findFirst({
-//     where: eq(connections.id, id),
-//     with: { buyer: true, seller: true, product: true },
-//   });
-// };
+export const getConnectionById = async (id: string) => {
+  return db.query.connections.findFirst({
+    where: eq(connections.id, id),
+    with: { buyer: true, seller: true, product: true },
+  });
+};
 
 export const getUserConnection = async (userId: string) => {
   return db.query.connections.findMany({
