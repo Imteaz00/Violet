@@ -24,7 +24,7 @@ export function HeroSection() {
           </p>
 
           <div className="mt-8 flex justify-center gap-4 mb-6">
-            <Button className="hover:scale-105 transition-all duration-300">
+            <Button asChild className="hover:scale-105 transition-all duration-300">
               <Link href={`/products?type=share`}>Browse Active Shares</Link>
             </Button>
             <Button
@@ -61,7 +61,7 @@ export function HeroSection() {
           <HeroCard
             icon={<Sparkles />}
             title="Try Before Committing"
-            description="Test if the products suites your needs."
+            description="Test if the products suit your needs."
           />
         </div>
       </div>

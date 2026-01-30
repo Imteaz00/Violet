@@ -64,6 +64,9 @@ export const getProductById = async (req: Request, res: Response) => {
 
     const user = await getUserById(userId);
     const product = await productQueries.getProductById(id, user?.role === ROLE.ADMIN);
+
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    return res.status(200).json(product);
   } catch (error) {
     console.error("Error getting product:", error);
     res.status(500).json({ error: "Failed to get product" });
