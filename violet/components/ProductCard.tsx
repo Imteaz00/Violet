@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatCurrency } from "../lib/formatters";
 import { Button } from "./ui/button";
 import { ShoppingBagIcon } from "lucide-react";
+import { PRICING } from "@/constants";
 
 export default function ProductCard({ product }: { product: ProductType }) {
   return (
@@ -32,8 +33,10 @@ export default function ProductCard({ product }: { product: ProductType }) {
             <p className="text-sm text-card-foreground">
               {formatCurrency(
                 product.noOfShares > 0
-                  ? Math.ceil((product.askingPrice * 1.1) / product.noOfShares)
-                  : product.askingPrice * 1.1,
+                  ? Math.ceil(
+                      (product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares,
+                    )
+                  : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
               )}
             </p>
             <p className="text-xs text-muted-foreground">per share</p>

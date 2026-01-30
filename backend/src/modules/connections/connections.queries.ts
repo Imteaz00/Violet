@@ -8,7 +8,7 @@ import { connections } from "./connections.schema.js";
 
 export const createConnection = async (
   tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  data: NewConnection
+  data: NewConnection,
 ) => {
   const [connection] = await tx.insert(connections).values(data).returning();
   return connection;
@@ -20,12 +20,12 @@ export const getAllConnections = async () => {
   });
 };
 
-export const getConnectionById = async (id: string) => {
-  return db.query.connections.findFirst({
-    where: eq(connections.id, id),
-    with: { buyer: true, seller: true, product: true },
-  });
-};
+// export const getConnectionById = async (id: string) => {
+//   return db.query.connections.findFirst({
+//     where: eq(connections.id, id),
+//     with: { buyer: true, seller: true, product: true },
+//   });
+// };
 
 export const getUserConnection = async (userId: string) => {
   return db.query.connections.findMany({
@@ -45,16 +45,16 @@ export const getConnectionCount = async (userId: string) => {
         or(
           eq(connections.status, "awaiting"),
           eq(connections.status, "pending"),
-          eq(connections.status, "delivering")
-        )
-      )
+          eq(connections.status, "delivering"),
+        ),
+      ),
     );
   return connection.count;
 };
 
 export const updateConnectionStatus = async (
   id: string,
-  status: "pending" | "delivering" | "confirming" | "done"
+  status: "pending" | "delivering" | "confirming" | "done",
 ) => {
   const connection = await db
     .update(connections)
@@ -66,7 +66,7 @@ export const updateConnectionStatus = async (
 
 export const deleteConnection = async (
   tx: PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>,
-  id: string
+  id: string,
 ) => {
   const [connection] = await tx.delete(connections).where(eq(connections.id, id)).returning();
   return connection;

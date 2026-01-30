@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/formatters";
 import { ShippingFormInputs } from "../../../types";
 import { ArrowRight, Trash2 } from "lucide-react";
+import { PRICING } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import ShippingForm from "@/components/ShippingForm";
@@ -19,7 +20,9 @@ const steps = [
 ];
 
 const pricePerShare = (askingPrice: number, noOfShares: number) =>
-  noOfShares > 0 ? Math.ceil((askingPrice * 1.1) / noOfShares) : Math.ceil(askingPrice * 1.1);
+  noOfShares > 0
+    ? Math.ceil((askingPrice * PRICING.MARKUP_MULTIPLIER) / noOfShares)
+    : Math.ceil(askingPrice * PRICING.MARKUP_MULTIPLIER);
 export default function BagPage() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const searchParams = useSearchParams();
@@ -30,7 +33,10 @@ export default function BagPage() {
 
   const total = formatCurrency(
     bag.reduce(
-      (acc, item) => acc + pricePerShare(item.askingPrice, item.noOfShares) * item.shares + 80,
+      (acc, item) =>
+        acc +
+        pricePerShare(item.askingPrice, item.noOfShares) * item.shares +
+        PRICING.SHIPPING_INSIDE_CITY,
       0,
     ),
   );
@@ -123,7 +129,9 @@ export default function BagPage() {
                         {formatCurrency(pricePerShare(item.askingPrice, item.noOfShares))}
                         <span className="text-accent-foreground text-sm"> x{item.shares}</span>
                       </p>
-                      <p className="text-sm text-muted-foreground">+80 (shipping fee)</p>
+                      <p className="text-sm text-muted-foreground">
+                        +{formatCurrency(PRICING.SHIPPING_INSIDE_CITY)} (shipping fee)
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -159,7 +167,8 @@ export default function BagPage() {
                   </p>
                   <p className="font-medium">
                     {formatCurrency(
-                      pricePerShare(item.askingPrice, item.noOfShares) * item.shares + 80,
+                      pricePerShare(item.askingPrice, item.noOfShares) * item.shares +
+                        PRICING.SHIPPING_INSIDE_CITY,
                     )}
                   </p>
                 </div>

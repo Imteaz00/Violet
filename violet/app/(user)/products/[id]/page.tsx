@@ -13,11 +13,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { PRICING } from "@/constants";
 
 const fetchProduct = async (id: string) => {
-  const res = await fetch(`${BACKEND_URL}/products/${id}`, {
-    next: { revalidate: 120 },
-  });
+  const res = await fetch(`${BACKEND_URL}/products/${id}`);
   if (!res.ok) {
     throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
   }
@@ -98,8 +97,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <h2 className="text-2xl font-semibold">
           {formatCurrency(
             product.noOfShares > 0
-              ? Math.ceil((product.askingPrice * 1.1) / product.noOfShares)
-              : product.askingPrice * 1.1,
+              ? Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares)
+              : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
           )}{" "}
           <span className="text-sm font-normal text-muted-foreground"> per share</span>
         </h2>

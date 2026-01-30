@@ -16,3 +16,9 @@ export const STATUS = {
 export const USER_LOCATION = "user location" as const;
 
 export const ROLE = { ADMIN: "admin", USER: "user" } as const;
+
+export const PRICING = {
+  MARKUP_MULTIPLIER: 1.1, // 10% markup for platform fees/shipping
+  SHIPPING_INSIDE_CITY: 80.0,
+  SHIPPING_OUTSIDE_CITY: 150.0,
+} as const;

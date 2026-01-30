@@ -3,18 +3,10 @@ import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import { notFound } from "next/navigation";
 import { formatDate } from "../../../../lib/formatters";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableRow } from "@/components/ui/table";
 import DeleteProduct from "@/components/dashboard/DeleteProduct";
 import ValidateProduct from "@/components/admin/ValidateProduct";
-import { STATUS } from "@/constants";
+import { STATUS, PRICING } from "@/constants";
 import MessageUser from "@/components/admin/MessageUser";
 import {
   Carousel,
@@ -125,7 +117,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <TableRow>
               <TableCell className="text-center">Price per Share</TableCell>
               <TableCell className="text-center">
-                {formatCurrency(Math.ceil((product.askingPrice * 1.1) / product.noOfShares))}
+                {formatCurrency(
+                  Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares),
+                )}
               </TableCell>
             </TableRow>
             <TableRow>

@@ -24,9 +24,9 @@ export default function Footer() {
       <div className="flex flex-col gap-4 text-sm text-secondary-foreground items-center md:items-start">
         <p className="text-sm text-muted-foreground">Products</p>
         <Link href="/products">All Products</Link>
-        <Link href="/">New Arrivals</Link>
+        <Link href="/dashboard/create">Sell</Link>
         <Link href="/">Best Sellers</Link>
-        <Link href="/">Sale</Link>
+        {/* <Link href="/">Sale</Link> */}
       </div>
       <div className="flex flex-col gap-4 text-sm text-secondary-foreground items-center md:items-start">
         <p className="text-sm text-muted-foreground">Company</p>

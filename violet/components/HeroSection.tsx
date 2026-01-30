@@ -31,7 +31,7 @@ export function HeroSection() {
               variant="secondary"
               className="text-violet-400 hover:scale-105 transition-all duration-300"
             >
-              <Link href="/dashboard/create">Start a Share</Link>
+              <Link href="/dashboard/create">Resell or Share</Link>
             </Button>
           </div>
           <div className="flex justify-center">

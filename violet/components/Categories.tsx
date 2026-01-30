@@ -5,9 +5,11 @@ import { CONSTANT } from "@/constants";
 import { useEffect, useState } from "react";
 import { fetchCategories } from "@/actions/fetchCategories";
 import { CategoryType } from "@/types";
+import { Skeleton } from "./ui/skeleton";
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -19,19 +21,39 @@ export default function Categories() {
     router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
   useEffect(() => {
-    fetchCategories().then((data) => {
-      if (!data) return;
-      setCategories([
-        {
-          name: "All",
-          slug: "all",
-        },
-        ...data,
-      ]);
-    });
+    let mounted = true;
+
+    fetchCategories()
+      .then((data) => {
+        if (!mounted) return;
+        setCategories([
+          {
+            name: "All",
+            slug: "all",
+          },
+          ...(data ?? []),
+        ]);
+      })
+      .finally(() => {
+        if (mounted) setIsLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  return (
+  const renderSkeletons = () => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 rounded-lg text-sm bg-muted mb-4 mt-2">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <Skeleton key={index} className="h-6 rounded-md" />
+      ))}
+    </div>
+  );
+
+  return isLoading ? (
+    renderSkeletons()
+  ) : (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 rounded-lg text-sm bg-muted mb-4 mt-2">
       {categories.map((category) => (
         <Button

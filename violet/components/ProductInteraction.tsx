@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { getUserId } from "@/app/(user)/actions/user.action";
 import { formatCurrency } from "../lib/formatters";
+import { PRICING } from "@/constants";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);
@@ -47,8 +48,8 @@ export default function ProductInteraction({ product }: { product: ProductType }
 
   const calculatedTotal = formatCurrency(
     product.noOfShares > 0
-      ? Math.ceil((product.askingPrice * 1.1) / product.noOfShares) * quantity
-      : product.askingPrice * 1.1 * quantity,
+      ? Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares) * quantity
+      : product.askingPrice * PRICING.MARKUP_MULTIPLIER * quantity,
   );
   return (
     <div className="flex flex-col gap-4 mt-4">
