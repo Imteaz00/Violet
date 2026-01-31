@@ -1,5 +1,4 @@
 import { formatCurrency } from "@/lib/formatters";
-import { BACKEND_URL } from "@/server";
 import { ProductType } from "@/types";
 import { notFound } from "next/navigation";
 import { formatDate } from "../../../../lib/formatters";
@@ -16,39 +15,14 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-
-const fetchProduct = async (id: string) => {
-  const res = await fetch(`${BACKEND_URL}/products/${id}`, {
-    next: { revalidate: 120 },
-  });
-  if (!res.ok) {
-    throw new Error(`Failed to fetch product: ${res.status} ${res.statusText}`);
-  }
-  const data: ProductType = await res.json();
-  return data;
-};
-
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  try {
-    const product = await fetchProduct(id);
-    return {
-      title: product.title,
-      description: product.description,
-    };
-  } catch (error) {
-    return {
-      title: "Product Not Found",
-      description: "The requested product could not be found.",
-    };
-  }
-}
+import fetchAdminProductsById from "@/actions/fetchAdminProductById";
+import calculatePrice from "@/lib/calculatePrice";
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let product: ProductType;
   try {
-    product = await fetchProduct(id);
+    product = await fetchAdminProductsById(id);
   } catch {
     notFound();
   }
@@ -84,7 +58,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <h1 className="text-2xl font-medium">{product.title}</h1>
         <p className="text-muted-foreground">{product.description}</p>
         <Table>
-          <TableCaption>Product Details</TableCaption>
           <TableBody>
             <TableRow>
               <TableCell className="text-center">Seller</TableCell>
@@ -117,9 +90,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <TableRow>
               <TableCell className="text-center">Price per Share</TableCell>
               <TableCell className="text-center">
-                {formatCurrency(
-                  Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares),
-                )}
+                {formatCurrency(calculatePrice(product.askingPrice, product.noOfShares))}
               </TableCell>
             </TableRow>
             <TableRow>

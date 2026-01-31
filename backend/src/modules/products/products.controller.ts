@@ -53,18 +53,23 @@ export const countProduct = async (req: Request, res: Response) => {
 export const getProductById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { userId } = getAuth(req);
 
-    if (!userId) {
-      const product = await productQueries.getProductById(id, false);
+    const product = await productQueries.getProductById(id);
 
-      if (!product) return res.status(404).json({ error: "Product not found" });
-      return res.status(200).json(product);
-    }
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    return res.status(200).json(product);
+  } catch (error) {
+    console.error("Error getting product:", error);
+    res.status(500).json({ error: "Failed to get product" });
+  }
+};
 
-    const user = await getUserById(userId);
-    const product = await productQueries.getProductById(id, user?.role === ROLE.ADMIN);
+export const getProductByIdAdmin = async (req: Request, res: Response) => {
+  try {
+    console.log("Admin get product by id called");
+    const { id } = req.params;
 
+    const product = await productQueries.getProductByIdAdmin(id);
     if (!product) return res.status(404).json({ error: "Product not found" });
     return res.status(200).json(product);
   } catch (error) {
@@ -188,7 +193,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       type,
     } = req.body;
 
-    const existingProduct = await productQueries.getProductById(id, false);
+    const existingProduct = await productQueries.getProductById(id);
 
     if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
@@ -225,7 +230,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
     const user = await getUserById(userId);
     const { id } = req.params;
 
-    const existingProduct = await productQueries.getProductById(id, false);
+    const existingProduct = await productQueries.getProductById(id);
 
     if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 
@@ -255,7 +260,7 @@ export const validateProduct = async (req: Request, res: Response) => {
     if (user?.role !== ROLE.ADMIN) return res.status(403).json({ error: "Forbidden" });
 
     const { id } = req.params;
-    const existingProduct = await productQueries.getProductById(id, false);
+    const existingProduct = await productQueries.getProductById(id);
 
     if (!existingProduct) return res.status(404).json({ error: "Product not found" });
 

@@ -9,6 +9,7 @@ productRouters.get("/myProduct", requireAuth(), productControler.getUserProduct)
 productRouters.post("/create", requireAuth(), productControler.createProduct);
 productRouters.get("/count", requireAuth(), productControler.countProduct);
 productRouters.put("/:id/validate", requireAuth(), productControler.validateProduct);
+productRouters.get("/:id/admin", requireAuth(), productControler.getProductByIdAdmin);
 productRouters.get("/:id", productControler.getProductById);
 // productRouters.put("/:id", requireAuth(), productControler.updateProduct);
 productRouters.delete("/:id", requireAuth(), productControler.deleteProduct);

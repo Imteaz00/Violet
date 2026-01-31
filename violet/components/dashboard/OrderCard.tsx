@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import { OrderType } from "../../types";
 import { formatCurrency, formatDateTime } from "@/lib/formatters";
 import DeleteOrder from "./DeleteOrder";
+import calculatePrice from "@/lib/calculatePrice";
 
 export default function OrderCard({ order }: { order: OrderType }) {
   const getPrice = () => {
@@ -11,7 +12,7 @@ export default function OrderCard({ order }: { order: OrderType }) {
       return formatCurrency(0);
     }
     return formatCurrency(
-      Math.ceil((order.product.askingPrice * 1.1) / order.product.noOfShares) * order.noOfShares,
+      calculatePrice(order.product.askingPrice, order.product.noOfShares) * order.noOfShares,
     );
   };
   return (

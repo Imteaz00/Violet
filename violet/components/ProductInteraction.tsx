@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { getUserId } from "@/app/(user)/actions/user.action";
 import { formatCurrency } from "../lib/formatters";
 import { PRICING } from "@/constants";
+import calculatePrice from "@/lib/calculatePrice";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);
@@ -48,7 +49,7 @@ export default function ProductInteraction({ product }: { product: ProductType }
 
   const calculatedTotal = formatCurrency(
     product.noOfShares > 0
-      ? Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares) * quantity
+      ? calculatePrice(product.askingPrice, product.noOfShares) * quantity
       : product.askingPrice * PRICING.MARKUP_MULTIPLIER * quantity,
   );
   return (

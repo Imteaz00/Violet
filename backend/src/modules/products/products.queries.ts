@@ -82,7 +82,7 @@ export const getAllProducts = async ({
   const queryOptions: any = {
     limit,
     offset,
-    with: { user: true, productImages: true },
+    with: { productImages: true },
   };
   if (conditions.length) queryOptions.where = and(...conditions);
 
@@ -97,14 +97,25 @@ export const getAllProducts = async ({
   return db.query.products.findMany({ ...queryOptions, orderBy });
 };
 
-export const getProductById = async (id: string, admin: boolean) => {
+export const getProductById = async (id: string) => {
   const isUuid = (value: string) =>
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
   if (!isUuid(id)) return null;
 
   return db.query.products.findFirst({
     where: eq(products.id, id),
-    with: admin ? { user: true, productImages: true } : { productImages: true },
+    with: { productImages: true },
+  });
+};
+
+export const getProductByIdAdmin = async (id: string) => {
+  const isUuid = (value: string) =>
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
+  if (!isUuid(id)) return null;
+
+  return db.query.products.findFirst({
+    where: eq(products.id, id),
+    with: { productImages: true, user: true },
   });
 };
 

@@ -5,6 +5,7 @@ import { formatCurrency } from "../lib/formatters";
 import { Button } from "./ui/button";
 import { ShoppingBagIcon } from "lucide-react";
 import { PRICING } from "@/constants";
+import calculatePrice from "@/lib/calculatePrice";
 
 export default function ProductCard({ product }: { product: ProductType }) {
   return (
@@ -33,9 +34,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
             <p className="text-sm text-card-foreground">
               {formatCurrency(
                 product.noOfShares > 0
-                  ? Math.ceil(
-                      (product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares,
-                    )
+                  ? calculatePrice(product.askingPrice, product.noOfShares)
                   : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
               )}
             </p>

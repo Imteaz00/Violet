@@ -9,15 +9,19 @@ import connectionRouters from "./modules/connections/connections.routes.js";
 import categoryRouters from "./modules/categories/categories.router.js";
 // import transactionRouters from "./modules/transactions/transactions.routes.js";
 import messageRouters from "./modules/messages/messages.router.js";
-import { rateLimit } from "express-rate-limit";
+import { rateLimit, ipKeyGenerator } from "express-rate-limit";
 
 const app = express();
+
+// Trust proxy - required when behind a reverse proxy (AWS Lambda, nginx, etc.)
+app.set("trust proxy", 1);
 
 const rateLimiter = rateLimit({
   windowMs: 10 * 1000, // 10 seconds
   max: 20, // limit each IP to 20 requests per windowMs
   message: "Too many requests, please try again later.",
   skip: (req) => req.path === "/health",
+  keyGenerator: (req) => ipKeyGenerator(req.ip || "unknown"),
 });
 
 if (!ENV.frontend_url) {

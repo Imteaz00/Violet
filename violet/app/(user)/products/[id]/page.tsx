@@ -14,6 +14,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { PRICING } from "@/constants";
+import calculatePrice from "@/lib/calculatePrice";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`);
@@ -97,7 +98,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <h2 className="text-2xl font-semibold">
           {formatCurrency(
             product.noOfShares > 0
-              ? Math.ceil((product.askingPrice * PRICING.MARKUP_MULTIPLIER) / product.noOfShares)
+              ? calculatePrice(product.askingPrice, product.noOfShares)
               : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
           )}{" "}
           <span className="text-sm font-normal text-muted-foreground"> per share</span>

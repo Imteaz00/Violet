@@ -12,6 +12,7 @@ import PaymentForm from "@/components/PaymentForm";
 import useBagStore from "@/stores/bagStore";
 import submitOrder from "@/actions/submitOrder";
 import { toast } from "react-toastify";
+import calculatePrice from "@/lib/calculatePrice";
 
 const steps = [
   { id: 1, name: "Shopping Bag" },
@@ -20,9 +21,7 @@ const steps = [
 ];
 
 const pricePerShare = (askingPrice: number, noOfShares: number) =>
-  noOfShares > 0
-    ? Math.ceil((askingPrice * PRICING.MARKUP_MULTIPLIER) / noOfShares)
-    : Math.ceil(askingPrice * PRICING.MARKUP_MULTIPLIER);
+  noOfShares > 0 ? calculatePrice(askingPrice, noOfShares) : calculatePrice(askingPrice, 1); // Prevent division by zero
 export default function BagPage() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const searchParams = useSearchParams();

@@ -5,11 +5,12 @@ import { OrderType } from "../../types";
 import { formatCurrency, formatDateTime } from "@/lib/formatters";
 import DeleteOrder from "./DeleteOrder";
 import UpdateOrder from "./UpdateOrder";
+import calculatePrice from "@/lib/calculatePrice";
 
 export default function OrderCard({ order }: { order: OrderType }) {
   const getPrice = () => {
     return formatCurrency(
-      Math.ceil((order.product.askingPrice * 1.1) / order.product.noOfShares) * order.noOfShares,
+      calculatePrice(order.product.askingPrice, order.product.noOfShares) * order.noOfShares,
     );
   };
   return (
