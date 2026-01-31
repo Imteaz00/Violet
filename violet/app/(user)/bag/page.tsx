@@ -20,8 +20,13 @@ const steps = [
   { id: 3, name: "Payment" },
 ];
 
-const pricePerShare = (askingPrice: number, noOfShares: number) =>
-  noOfShares > 0 ? calculatePrice(askingPrice, noOfShares) : calculatePrice(askingPrice, 1); // Prevent division by zero
+const pricePerShare = (askingPrice: number, noOfShares: number) => {
+  if (noOfShares <= 0) {
+    console.warn(`Invalid noOfShares value: ${noOfShares}. Defaulting to 1.`);
+    return calculatePrice(askingPrice, 1);
+  }
+  return calculatePrice(askingPrice, noOfShares);
+};
 export default function BagPage() {
   const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const searchParams = useSearchParams();

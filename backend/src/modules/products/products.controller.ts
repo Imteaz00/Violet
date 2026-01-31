@@ -60,13 +60,12 @@ export const getProductById = async (req: Request, res: Response) => {
     return res.status(200).json(product);
   } catch (error) {
     console.error("Error getting product:", error);
-    res.status(500).json({ error: "Failed to get product" });
+    return res.status(500).json({ error: "Failed to get product" });
   }
 };
 
 export const getProductByIdAdmin = async (req: Request, res: Response) => {
   try {
-    console.log("Admin get product by id called");
     const { id } = req.params;
 
     const product = await productQueries.getProductByIdAdmin(id);

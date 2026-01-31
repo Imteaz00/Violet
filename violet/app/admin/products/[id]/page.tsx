@@ -15,15 +15,16 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-import fetchAdminProductsById from "@/actions/fetchAdminProductById";
+import fetchAdminProductById from "@/actions/fetchAdminProductById";
 import calculatePrice from "@/lib/calculatePrice";
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let product: ProductType;
   try {
-    product = await fetchAdminProductsById(id);
-  } catch {
+    product = await fetchAdminProductById(id);
+  } catch (error) {
+    console.error(`Failed to fetch product ${id}:`, error);
     notFound();
   }
 

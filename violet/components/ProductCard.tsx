@@ -35,7 +35,7 @@ export default function ProductCard({ product }: { product: ProductType }) {
               {formatCurrency(
                 product.noOfShares > 0
                   ? calculatePrice(product.askingPrice, product.noOfShares)
-                  : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
+                  : calculatePrice(product.askingPrice, 1),
               )}
             </p>
             <p className="text-xs text-muted-foreground">per share</p>

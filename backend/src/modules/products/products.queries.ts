@@ -13,6 +13,9 @@ type DbTransaction = PgTransaction<
   ExtractTablesWithRelations<typeof schema>
 >;
 
+const isUuid = (value: string) =>
+  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
+
 export const createProduct = async (tx: DbTransaction, data: NewProduct) => {
   const [product] = await tx.insert(products).values(data).returning();
   return product;
@@ -98,8 +101,6 @@ export const getAllProducts = async ({
 };
 
 export const getProductById = async (id: string) => {
-  const isUuid = (value: string) =>
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
   if (!isUuid(id)) return null;
 
   return db.query.products.findFirst({
@@ -109,8 +110,6 @@ export const getProductById = async (id: string) => {
 };
 
 export const getProductByIdAdmin = async (id: string) => {
-  const isUuid = (value: string) =>
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(value);
   if (!isUuid(id)) return null;
 
   return db.query.products.findFirst({
