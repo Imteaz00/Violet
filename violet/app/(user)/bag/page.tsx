@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/formatters";
-import { ShippingFormInputs, shippingForm } from "../../../types";
+import { ShippingFormInputs } from "../../../types";
 import { ArrowRight, Trash2 } from "lucide-react";
 import { PRICING } from "@/constants";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -133,7 +133,7 @@ export default function BagPage() {
                       <p className="text-sm font-medium">{item.title}</p>
                       <p className="text-xs text-muted-foreground">Quantity: {item.shares}</p>
                       <p className="text-xs text-muted-foreground">
-                        Remaining <RemainingShares product={item} size="sm" />
+                        Remaining <RemainingShares product={item} size="text-sm" />
                       </p>
                     </div>
                     <div>
@@ -166,8 +166,8 @@ export default function BagPage() {
             <h2 className="font-semibold">Details</h2>
             <div className="flex flex-col gap-4">
               {bag.map((item) => (
-                <>
-                  <div key={item.id} className="flex justify-between text-sm">
+                <div key={item.id}>
+                  <div className="flex justify-between text-sm">
                     <p className="text-muted-foreground">
                       {item.title}
                       <span className="text-xs text-accent-foreground">
@@ -185,18 +185,18 @@ export default function BagPage() {
                     <div className="flex justify-between text-sm">
                       <p className="text-muted-foreground text-xs">Delivery Fee (Inside City)</p>
                       <p className="text-xs text-muted-foreground">
-                        +{formatCurrency(PRICING.SHIPPING_INSIDE_CITY)}
+                        {formatCurrency(PRICING.SHIPPING_INSIDE_CITY)}
                       </p>
                     </div>
                   ) : (
                     <div className="flex justify-between text-sm">
                       <p className="text-muted-foreground text-xs">Delivery Fee (Outside City)</p>
                       <p className="text-xs text-muted-foreground">
-                        +{formatCurrency(PRICING.SHIPPING_OUTSIDE_CITY)}
+                        {formatCurrency(PRICING.SHIPPING_OUTSIDE_CITY)}
                       </p>
                     </div>
                   )}
-                </>
+                </div>
               ))}
               <hr className="border-gray-200" />
               <div className="flex justify-between">
