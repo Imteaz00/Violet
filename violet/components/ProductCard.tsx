@@ -43,10 +43,10 @@ export default function ProductCard({ product }: { product: ProductType }) {
           </div>
           <div>
             <p className="text-xs text-muted-foreground">Remaining</p>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground">
               <RemainingShares product={product} size="lg" />
-            </p>
-          </div>
+            </div>
+          </div>{" "}
         </div>
         <Link href={`/products/${product.id}`} className="mt-auto">
           <Button className="transition-colors duration-300 w-full">

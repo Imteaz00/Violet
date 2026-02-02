@@ -91,7 +91,7 @@ export default function ProductInteraction({ product }: { product: ProductType }
           disabled={
             product.remainingShares === 0 ||
             product.userId === userId ||
-            shares >= product.remainingShares
+            shares + quantity > product.remainingShares
           }
           onClick={handleAddToCart}
           className="py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium flex-1"

@@ -17,7 +17,11 @@ export default function Filter() {
   const pathName = usePathname();
   const handleFilter = (value: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set("type", value);
+    if (value === "all") {
+      params.delete("type");
+    } else {
+      params.set("type", value);
+    }
     router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
   return (

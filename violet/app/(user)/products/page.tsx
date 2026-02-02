@@ -7,7 +7,7 @@ export default async function ProductPage({
     category?: string;
     sort?: string;
     search?: string;
-    type?: "sell" | "share" | undefined;
+    type?: "sell" | "share";
   }>;
 }) {
   const { category, sort, search, type } = await searchParams;

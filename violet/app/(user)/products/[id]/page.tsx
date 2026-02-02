@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         </div>
         <p className="text-muted-foreground">{product.description}</p>
         <p className="text-sm text-muted-foreground">
-          Remaining <RemainingShares product={product} size="lg" />
+          Remaining <RemainingShares product={product} size="text-lg" />
         </p>
         <p className="text-muted-foreground text-sm">Quantity: {product.quantity} (whole)</p>
         <div className="flex flex-row justify-between items-center">

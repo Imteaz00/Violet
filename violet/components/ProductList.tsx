@@ -18,7 +18,7 @@ export default async function ProductList({
   params: "homepage" | "products";
   sort?: string;
   search?: string;
-  type?: "sell" | "share" | undefined;
+  type?: "sell" | "share";
 }) {
   const products = await fetchProducts({ category, sort, search, params, type });
   return (
