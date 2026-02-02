@@ -18,7 +18,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="w-64 flex items-center gap-2 rounded-md ring-1 ring-foreground px-2 py-1">
+    <div className="w-24 md:w-64 flex items-center gap-2 rounded-md ring-1 ring-foreground px-2 py-1">
       <Search className="w-4 h-4 text-foreground" />
       <input
         id="search"

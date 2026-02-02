@@ -35,8 +35,8 @@ export default function Feedback() {
   const messageRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Alert className="bg-destructive relative z-50">
-      <AlertDescription className="text-primary-foreground inline">
+    <Alert className="bg-destructive relative z-50 py-0">
+      <AlertDescription className="text-primary-foreground inline text-center w-full text-xs">
         <span>
           This is an Alpha version. If you find any discrepancy{" "}
           <Dialog>

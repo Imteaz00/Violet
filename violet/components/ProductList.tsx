@@ -5,26 +5,32 @@ import { CONSTANT } from "@/constants";
 import Filter from "./Filter";
 import SearchBar from "./SearchBar";
 import fetchProducts from "@/actions/fetchProducts";
+import Sort from "./Sort";
 
 export default async function ProductList({
   category,
   sort,
   search,
   params,
+  type,
 }: {
   category: string | undefined;
   params: "homepage" | "products";
   sort?: string;
   search?: string;
+  type?: "sell" | "share" | undefined;
 }) {
-  const products = await fetchProducts({ category, sort, search, params });
+  const products = await fetchProducts({ category, sort, search, params, type });
   return (
     <div className="w-full">
       <Categories />
       {params === "products" && (
-        <div className="flex justify-between h-10 mb-5 items-center ml-5">
+        <div className="flex justify-between h-10 mb-5 items-center md:ml-5">
           <SearchBar />
-          <Filter />
+          <div className="flex gap-1">
+            <Filter />
+            <Sort />
+          </div>
         </div>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-12">

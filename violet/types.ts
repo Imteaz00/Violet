@@ -153,7 +153,7 @@ export type BagStoreStateType = {
 
 export type BagStoreActionsType = {
   addToBag: (product: BagItemType) => void;
-  removeFromBag: (product: BagItemType) => void;
+  removeFromBag: (id: string) => void;
   emptyBag: () => void;
 };
 
