@@ -1,7 +1,7 @@
 "use client";
 
 import useBagStore from "@/stores/bagStore";
-import { ProductType } from "@/types";
+import { BagItemType, ProductType } from "@/types";
 import { Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -10,12 +10,14 @@ import { getUserId } from "@/app/(user)/actions/user.action";
 import { formatCurrency } from "../lib/formatters";
 import { PRICING } from "@/constants";
 import calculatePrice from "@/lib/calculatePrice";
+import ShoppingBagIcon from "./ShoppingBagIcon";
 
 export default function ProductInteraction({ product }: { product: ProductType }) {
   const [quantity, setQuantity] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
 
-  const { addToBag } = useBagStore();
+  const { bag, addToBag } = useBagStore();
+  const shares = bag.find((item: BagItemType) => item.id === product.id)?.shares || 0;
 
   const handleQuantityChange = (type: "increment" | "decrement") => {
     if (type === "increment") {
@@ -83,17 +85,26 @@ export default function ProductInteraction({ product }: { product: ProductType }
           <div className="text-destructive font-medium">Sold Out</div>
         )}
       </div>
-      <Button
-        variant={"secondary"}
-        disabled={product.remainingShares === 0 || product.userId === userId}
-        onClick={handleAddToCart}
-        className=" px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium"
-      >
-        <span className="flex items-center gap-2 transition-transform duration-300 pl-10 pr-10 hover:scale-110">
-          <Plus className="w-4 h-4" />
-          Add to Bag <span className="text-muted-foreground">(Total: {calculatedTotal})</span>
-        </span>
-      </Button>
+      <div className="flex flex-row items-center gap-2">
+        <Button
+          variant={"secondary"}
+          disabled={
+            product.remainingShares === 0 ||
+            product.userId === userId ||
+            shares + quantity > product.remainingShares
+          }
+          onClick={handleAddToCart}
+          className="py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium flex-1"
+        >
+          <span className="flex items-center gap-2 transition-transform duration-300 px-auto hover:scale-110">
+            <Plus className="w-4 h-4" />
+            Add to Bag <span className="text-muted-foreground">(Total: {calculatedTotal})</span>
+          </span>
+        </Button>
+        <Button className="p-1" variant={"outline"}>
+          <ShoppingBagIcon />
+        </Button>
+      </div>
     </div>
   );
 }

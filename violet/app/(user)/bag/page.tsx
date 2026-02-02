@@ -13,6 +13,9 @@ import useBagStore from "@/stores/bagStore";
 import submitOrder from "@/actions/submitOrder";
 import { toast } from "react-toastify";
 import calculatePrice from "@/lib/calculatePrice";
+import Image from "next/image";
+import RemainingShares from "@/components/RemainingShares";
+import Link from "next/link";
 
 const steps = [
   { id: 1, name: "Shopping Bag" },
@@ -40,7 +43,9 @@ export default function BagPage() {
       (acc, item) =>
         acc +
         pricePerShare(item.askingPrice, item.noOfShares) * item.shares +
-        PRICING.SHIPPING_INSIDE_CITY,
+        (shippingForm?.district === item.district || !shippingForm?.district
+          ? PRICING.SHIPPING_INSIDE_CITY
+          : PRICING.SHIPPING_OUTSIDE_CITY),
       0,
     ),
   );
@@ -112,20 +117,23 @@ export default function BagPage() {
               <div className="flex items-center justify-between" key={item.id}>
                 {/* IMAGE AND DETAILS */}
                 <div className="flex gap-8">
-                  <div className="relative w-32 h-32 rounded-lg overflow-hidden">
-                    {/* <Image
-                      src={item.images[item.selectedColor]}
-                      alt={item.name}
+                  <Link
+                    href={`/products/${item.id}`}
+                    className="relative w-32 h-32 rounded-lg overflow-hidden"
+                  >
+                    <Image
+                      src={item.productImages[0]?.url}
+                      alt={item.title}
                       fill
-                      className="object-contain"
-                    /> */}
-                  </div>
+                      className="object-contain rounded-md"
+                    />
+                  </Link>
                   <div className="flex flex-col justify-between">
                     <div className="flex flex-col gap-1">
                       <p className="text-sm font-medium">{item.title}</p>
                       <p className="text-xs text-muted-foreground">Quantity: {item.shares}</p>
                       <p className="text-xs text-muted-foreground">
-                        Remaining Shares: {item.remainingShares}/{item.noOfShares}
+                        Remaining <RemainingShares product={item} size="text-sm" />
                       </p>
                     </div>
                     <div>
@@ -133,16 +141,13 @@ export default function BagPage() {
                         {formatCurrency(pricePerShare(item.askingPrice, item.noOfShares))}
                         <span className="text-accent-foreground text-sm"> x{item.shares}</span>
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        +{formatCurrency(PRICING.SHIPPING_INSIDE_CITY)} (shipping fee)
-                      </p>
                     </div>
                   </div>
                 </div>
                 <Button
                   variant={"destructive"}
                   className="w-8 h-8 duration-300 hover:scale-110 hover:text-accent-foreground"
-                  onClick={() => removeFromBag(item)}
+                  onClick={() => removeFromBag(item.id)}
                 >
                   <Trash2 className="w-3 h-3" />
                 </Button>
@@ -161,20 +166,36 @@ export default function BagPage() {
             <h2 className="font-semibold">Details</h2>
             <div className="flex flex-col gap-4">
               {bag.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <p className="text-muted-foreground">
-                    {item.title}
-                    <span className="text-xs text-accent-foreground">
-                      {"  x"}
-                      {item.shares}
-                    </span>
-                  </p>
-                  <p className="font-medium">
-                    {formatCurrency(
-                      pricePerShare(item.askingPrice, item.noOfShares) * item.shares +
-                        PRICING.SHIPPING_INSIDE_CITY,
-                    )}
-                  </p>
+                <div key={item.id}>
+                  <div className="flex justify-between text-sm">
+                    <p className="text-muted-foreground">
+                      {item.title}
+                      <span className="text-xs text-accent-foreground">
+                        {"  x"}
+                        {item.shares}
+                      </span>
+                    </p>
+                    <p className="font-medium">
+                      {formatCurrency(
+                        pricePerShare(item.askingPrice, item.noOfShares) * item.shares,
+                      )}
+                    </p>
+                  </div>
+                  {shippingForm?.district === item.district || !shippingForm?.district ? (
+                    <div className="flex justify-between text-sm">
+                      <p className="text-muted-foreground text-xs">Delivery Fee (Inside City)</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatCurrency(PRICING.SHIPPING_INSIDE_CITY)}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-sm">
+                      <p className="text-muted-foreground text-xs">Delivery Fee (Outside City)</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatCurrency(PRICING.SHIPPING_OUTSIDE_CITY)}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
               <hr className="border-gray-200" />

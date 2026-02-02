@@ -15,14 +15,14 @@ const useBagStore = create<BagStoreStateType & BagStoreActionsType>()(
               bag: state.bag.map((item, index) =>
                 index === existingIndex
                   ? { ...item, shares: item.shares + (product.shares || 1) }
-                  : item
+                  : item,
               ),
             };
           }
           return { bag: [...state.bag, { ...product, shares: product.shares || 1 }] };
         }),
-      removeFromBag: (product) =>
-        set((state) => ({ bag: state.bag.filter((p) => p.id !== product.id) })),
+      removeFromBag: (id: string) =>
+        set((state) => ({ bag: state.bag.filter((p) => p.id !== id) })),
       emptyBag: () => set({ bag: [] }),
     }),
     {
@@ -33,8 +33,8 @@ const useBagStore = create<BagStoreStateType & BagStoreActionsType>()(
           state.hasHydrated = true;
         }
       },
-    }
-  )
+    },
+  ),
 );
 
 export default useBagStore;

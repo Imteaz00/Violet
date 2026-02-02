@@ -212,7 +212,7 @@ export default function CreateProductPage() {
           <label className="font-medium">Description</label>
           <input
             {...register("description")}
-            placeholder="This product is great for..."
+            placeholder="This is a product for..."
             className="w-full h-10 border-b border-muted-foreground bg-transparent text-sm outline-none focus:border-primary transition-colors"
           />
           {errors.description && (

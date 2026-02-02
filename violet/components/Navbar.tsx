@@ -12,7 +12,7 @@ export default async function Navbar() {
   return (
     <nav className="w-full flex items-center justify-between border-b pb-4 bg-card rounded-lg px-4 pt-3 shadow-md">
       <Link href="/" className="flex items-center">
-        <h1 className="text-4xl text-primary font-semibold tracking-wider font-serif">
+        <h1 className="text-2xl md:text-4xl text-primary font-semibold tracking-wider font-serif">
           {" "}
           {/* hidden md:block */}
           VIOLET

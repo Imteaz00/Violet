@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/carousel";
 import { PRICING } from "@/constants";
 import calculatePrice from "@/lib/calculatePrice";
+import RemainingShares from "@/components/RemainingShares";
+import { Button } from "@/components/ui/button";
 
 const fetchProduct = async (id: string) => {
   const res = await fetch(`${BACKEND_URL}/products/${id}`);
@@ -82,27 +84,30 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         <div>
           <h1 className="text-2xl font-medium">{product.title}</h1>
           <p className="text-muted-foreground text-sm">
-            Category:{" "}
-            <Link href={`/products?category=${product.category}`} className="underline">
-              {product.category}
+            Category:
+            <Link href={`/products?category=${product.category}`}>
+              <Button className="p-1" variant="link">
+                {product.category}
+              </Button>
             </Link>
           </p>
         </div>
         <p className="text-muted-foreground">{product.description}</p>
         <p className="text-sm text-muted-foreground">
-          Remaining Shares:{" "}
-          <span className="text-accent-foreground text-lg">{product.remainingShares}</span> /
-          {product.noOfShares}
+          Remaining <RemainingShares product={product} size="text-lg" />
         </p>
         <p className="text-muted-foreground text-sm">Quantity: {product.quantity} (whole)</p>
-        <h2 className="text-2xl font-semibold">
-          {formatCurrency(
-            product.noOfShares > 0
-              ? calculatePrice(product.askingPrice, product.noOfShares)
-              : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
-          )}{" "}
-          <span className="text-sm font-normal text-muted-foreground"> per share</span>
-        </h2>
+        <div className="flex flex-row justify-between items-center">
+          <h2 className="text-2xl font-semibold">
+            {formatCurrency(
+              product.noOfShares > 0
+                ? calculatePrice(product.askingPrice, product.noOfShares)
+                : product.askingPrice * PRICING.MARKUP_MULTIPLIER,
+            )}{" "}
+            <span className="text-sm font-normal text-muted-foreground"> per share</span>
+          </h2>
+          <p className="text-muted-foreground text-xs">(Inclusive)</p>
+        </div>
         <ProductInteraction product={product} />
         <div className="text-sm text-muted-foreground">
           <p>Location: {product.district}</p>
